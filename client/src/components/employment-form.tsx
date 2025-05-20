@@ -142,8 +142,13 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
   // Update employment data when form changes
   const watchedEmploymentEntries = form.watch('employmentEntries');
   useEffect(() => {
+    // Only process entries that have valid dates
+    const validEntries = watchedEmploymentEntries.filter(entry => 
+      entry.startDate && (entry.endDate || entry.isCurrent)
+    );
+      
     // Convert form data to a format suitable for gap detection
-    const entries = watchedEmploymentEntries.map(entry => {
+    const entries = validEntries.map(entry => {
       const formattedEntry: any = { ...entry };
       if (entry.startDate) {
         formattedEntry.startDate = parse(entry.startDate, 'yyyy-MM-dd', new Date());
@@ -156,7 +161,10 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       return formattedEntry;
     });
     
-    setEmploymentData(entries);
+    // Only update if we have at least 2 entries with valid dates (needed for gap detection)
+    if (entries.length >= 2) {
+      setEmploymentData(entries);
+    }
   }, [watchedEmploymentEntries]);
   
   // Update employment gaps in form when gaps change

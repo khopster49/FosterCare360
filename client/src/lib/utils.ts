@@ -29,11 +29,11 @@ export function formatDate(date: string | Date): string {
 export function calculateEmploymentGaps(employments: EmploymentEntry[]): { startDate: Date; endDate: Date; days: number }[] {
   if (!employments || employments.length < 2) return [];
   
-  // Sort employments by end date (most recent first)
+  // Sort employments by start date (oldest first)
   const sortedEmployments = [...employments].sort((a, b) => {
-    const dateA = a.endDate ? new Date(a.endDate).getTime() : Date.now();
-    const dateB = b.endDate ? new Date(b.endDate).getTime() : Date.now();
-    return dateB - dateA;
+    const dateA = new Date(a.startDate).getTime();
+    const dateB = new Date(b.startDate).getTime();
+    return dateA - dateB;
   });
   
   const gaps = [];
@@ -54,8 +54,8 @@ export function calculateEmploymentGaps(employments: EmploymentEntry[]): { start
       const gapStartDate = addDays(currentEndDate, 1);
       const gapDays = differenceInDays(nextStartDate, gapStartDate);
       
-      // Only include gaps longer than 31 days
-      if (gapDays > 31) {
+      // Only include gaps of 31 days or longer
+      if (gapDays >= 31) {
         gaps.push({
           startDate: gapStartDate,
           endDate: nextStartDate,

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Upload, CheckCircle } from "lucide-react";
+import { Loader2, Upload, CheckCircle, ShieldCheck, FileSignature } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import {
   Select,
@@ -27,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 // Create schema for DBS check
 const dbsCheckSchema = z.object({
@@ -153,51 +156,75 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   
   if (isComplete) {
     return (
-      <div className="flex flex-col items-center justify-center py-10">
-        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
-          <CheckCircle className="h-10 w-10 text-green-600" />
-        </div>
-        <h2 className="text-2xl font-medium text-center mb-2">Application Submitted</h2>
-        <p className="text-neutral-700 text-center mb-6 max-w-md">
-          Your fostering application has been successfully submitted. We'll review your information and be in touch soon.
-        </p>
-        <Alert className="max-w-md">
-          <AlertTitle>What happens next?</AlertTitle>
-          <AlertDescription>
-            <p className="mt-2">
-              1. You'll receive a confirmation email shortly
+      <Card className="border-green-200">
+        <CardContent className="pt-6">
+          <div className="flex flex-col items-center justify-center py-10">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
+              <CheckCircle className="h-10 w-10 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-medium text-center mb-4">Application Submitted</h2>
+            <p className="text-neutral-700 text-center mb-8 max-w-md">
+              Your fostering application has been successfully submitted. We'll review your information and be in touch soon.
             </p>
-            <p className="mt-1">
-              2. We'll process your references and DBS checks
-            </p>
-            <p className="mt-1">
-              3. A fostering advisor will contact you to discuss next steps
-            </p>
-          </AlertDescription>
-        </Alert>
-      </div>
+            
+            <div className="w-full max-w-md">
+              <div className="flex items-center gap-2 mb-4">
+                <h3 className="text-lg font-medium text-green-700">What happens next?</h3>
+                <Separator className="flex-1" />
+              </div>
+              
+              <ol className="space-y-4 text-sm text-neutral-700">
+                <li className="flex items-start gap-2">
+                  <span className="bg-green-100 text-green-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">1</span>
+                  <div>
+                    <p className="font-medium">Confirmation Email</p>
+                    <p>You'll receive a confirmation email shortly with details about your application.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-green-100 text-green-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</span>
+                  <div>
+                    <p className="font-medium">Background Checks</p>
+                    <p>We'll process your references and DBS checks as required by UK fostering regulations.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="bg-green-100 text-green-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">3</span>
+                  <div>
+                    <p className="font-medium">Initial Contact</p>
+                    <p>A fostering advisor will contact you to discuss next steps in the assessment process.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         {/* DBS Check Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-medium mb-3">DBS (Disclosure and Barring Service) Check</h3>
-          
-          <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4">
-            <p className="text-sm text-neutral-700 mb-4">
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <ShieldCheck className="h-6 w-6 text-primary" />
+              <h3 className="text-lg font-medium text-primary">DBS (Disclosure and Barring Service) Check</h3>
+            </div>
+            <p className="text-sm text-neutral-600 mb-4">
               An enhanced DBS check is required for all fostering applicants to ensure the safety of vulnerable children.
+              This is a mandatory requirement under UK fostering regulations.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
               <FormField
                 control={form.control}
                 name="dbsCheck.existingDbs"
                 render={({ field }) => (
                   <FormItem className="col-span-full">
-                    <FormLabel>Do you have an existing DBS certificate issued within the last 12 months?</FormLabel>
+                    <FormLabel>Are you registered with the Disclosure and Barring Scheme Update Service?</FormLabel>
                     <FormControl>
                       <RadioGroup 
                         onValueChange={(value) => field.onChange(value === "yes")}
@@ -220,61 +247,73 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
               />
               
               {hasExistingDbs && (
-                <>
-                  <FormField
-                    control={form.control}
-                    name="dbsCheck.dbsNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>DBS Certificate Number</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. 001234567890" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <div className="md:col-span-2">
-                    <FormLabel htmlFor="dbsUpload">Upload DBS Certificate</FormLabel>
-                    <div className="flex items-center justify-center w-full mt-1">
-                      <label
-                        htmlFor="dbsUpload"
-                        className="flex flex-col items-center justify-center w-full h-24 border-2 border-neutral-200 border-dashed rounded-lg cursor-pointer bg-neutral-50 hover:bg-neutral-100"
-                      >
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                          <Upload className="text-neutral-400 mb-1 h-5 w-5" />
-                          <p className="mb-1 text-sm text-neutral-700">
-                            <span className="font-medium">Click to upload</span> or drag and drop
-                          </p>
-                          <p className="text-xs text-neutral-500">PDF, JPG, or PNG (max. 5MB)</p>
-                        </div>
-                        <input
-                          id="dbsUpload"
-                          type="file"
-                          className="hidden"
-                          accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={handleDbsFileChange}
-                        />
-                      </label>
-                    </div>
-                    {dbsFile && (
-                      <p className="text-sm text-green-600 mt-2">
-                        File selected: {dbsFile.name}
-                      </p>
-                    )}
+                <div className="col-span-full space-y-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-md font-medium text-primary">DBS Certificate Details</h4>
+                    <Separator className="flex-1" />
                   </div>
-                </>
+                
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="dbsCheck.dbsNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>DBS/PVG Certificate or Membership Number</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. 001234567890" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="col-span-full">
+                      <FormLabel htmlFor="dbsUpload">Upload DBS Certificate</FormLabel>
+                      <div className="flex items-center justify-center w-full mt-1">
+                        <label
+                          htmlFor="dbsUpload"
+                          className="flex flex-col items-center justify-center w-full h-24 border-2 border-neutral-200 border-dashed rounded-lg cursor-pointer bg-neutral-50 hover:bg-neutral-100"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="text-neutral-400 mb-1 h-5 w-5" />
+                            <p className="mb-1 text-sm text-neutral-700">
+                              <span className="font-medium">Click to upload</span> or drag and drop
+                            </p>
+                            <p className="text-xs text-neutral-500">PDF, JPG, or PNG (max. 5MB)</p>
+                          </div>
+                          <input
+                            id="dbsUpload"
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={handleDbsFileChange}
+                          />
+                        </label>
+                      </div>
+                      {dbsFile && (
+                        <p className="text-sm text-green-600 mt-2">
+                          File selected: {dbsFile.name}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             
             {!hasExistingDbs && (
               <div id="new-dbs-section">
-                <p className="text-sm text-neutral-700 mb-4">
-                  To process a new DBS check, we need to collect additional personal information:
+                <div className="flex items-center gap-2 mb-4 mt-6">
+                  <h4 className="text-md font-medium text-primary">DBS Application Information</h4>
+                  <Separator className="flex-1" />
+                </div>
+                
+                <p className="text-sm text-neutral-600 mb-4">
+                  To process a new DBS check, we need to collect the following additional personal information:
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
                     name="dbsCheck.nationalInsurance"
@@ -325,41 +364,53 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                             </div>
                           </RadioGroup>
                         </FormControl>
+                        <FormDescription>
+                          If no, you will need to provide a full 5-year address history as part of the DBS check process.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
                 
-                <p className="text-sm mt-4 text-neutral-700">
-                  By proceeding, you consent to a DBS check being performed. You'll receive further instructions about ID verification for the DBS check.
-                </p>
+                <div className="bg-primary/5 border border-primary/10 rounded-md p-4 mt-6">
+                  <p className="text-sm text-neutral-700">
+                    By proceeding, you consent to a DBS check being performed. You'll receive further instructions about ID verification for the DBS check via email.
+                  </p>
+                </div>
               </div>
             )}
-          </div>
-        </div>
+          </CardContent>
+        </Card>
         
         {/* Declaration Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-medium mb-3">Final Declaration</h3>
-          
-          <div className="bg-neutral-50 border border-neutral-200 rounded-md p-4">
-            <p className="text-sm text-neutral-700 mb-4">Please read and confirm the following statements:</p>
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <FileSignature className="h-6 w-6 text-primary" />
+              <h3 className="text-lg font-medium text-primary">Final Declaration</h3>
+            </div>
             
-            <div className="space-y-4">
+            <p className="text-sm text-neutral-600 mb-6">
+              Please read and confirm the following statements by checking each box. These declarations are required 
+              to complete your fostering application in compliance with UK fostering regulations.
+            </p>
+            
+            <div className="space-y-6">
               <FormField
                 control={form.control}
                 name="declaration.accurateInfo"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-primary/5 p-4 rounded-md border border-primary/10">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-1"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
+                      <FormLabel className="font-medium">
                         I confirm that the information provided in this application is complete and accurate to the best of my knowledge.
                       </FormLabel>
                       <FormMessage />
@@ -372,15 +423,16 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                 control={form.control}
                 name="declaration.falseInfoConsequences"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-primary/5 p-4 rounded-md border border-primary/10">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-1"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
+                      <FormLabel className="font-medium">
                         I understand that providing false information may result in my application being rejected or approval being withdrawn if already granted.
                       </FormLabel>
                       <FormMessage />
@@ -393,16 +445,17 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                 control={form.control}
                 name="declaration.consentToChecks"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-primary/5 p-4 rounded-md border border-primary/10">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-1"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I consent to references being sought, DBS checks being conducted, and right to work verification as part of my application process.
+                      <FormLabel className="font-medium">
+                        I consent to the necessary checks being carried out in relation to my application, including reference checks, employment verification, DBS checks, and health assessments.
                       </FormLabel>
                       <FormMessage />
                     </div>
@@ -414,16 +467,17 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                 control={form.control}
                 name="declaration.dataProtection"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-primary/5 p-4 rounded-md border border-primary/10">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
+                        className="mt-1"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        I understand that my personal data will be processed in accordance with the Data Protection Act 2018 and GDPR for the purpose of assessing my application.
+                      <FormLabel className="font-medium">
+                        I understand that my personal information will be processed in accordance with data protection regulations and will only be used for the purposes of assessing my suitability as a foster carer.
                       </FormLabel>
                       <FormMessage />
                     </div>
@@ -431,8 +485,8 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                 )}
               />
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
         
         <div className="mt-8 flex justify-between">
           <Button
@@ -445,9 +499,8 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
           
           <Button 
             type="submit" 
-            variant="default"
-            className="bg-green-600 hover:bg-green-700"
             disabled={isSubmitting}
+            className="bg-primary hover:bg-primary/90"
           >
             {isSubmitting ? (
               <>

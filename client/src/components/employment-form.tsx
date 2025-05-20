@@ -204,27 +204,81 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
   
   // Watch employment entries for immediate gap detection
   const watchedEmploymentEntries = form.watch('employmentEntries');
+  
+  // Add dummy employment gap to force displaying a gap input
   useEffect(() => {
-    // Only process entries that have valid dates
-    const validEntries = watchedEmploymentEntries.filter(entry => 
-      entry.startDate && (entry.endDate || entry.isCurrent)
+    // Check if we have at least 2 entries with valid dates
+    const entriesWithDates = watchedEmploymentEntries.filter(
+      entry => entry.startDate && (entry.endDate || entry.isCurrent)
     );
     
-    if (validEntries.length >= 2) {
-      // Detect gaps between entries
-      const gaps = checkForGaps(validEntries);
-      setPotentialGaps(gaps);
-      
-      // Update the gap fields in the form
-      const formattedGaps = gaps.map(({ gap }) => ({
-        startDate: format(gap.startDate, 'yyyy-MM-dd'),
-        endDate: format(gap.endDate, 'yyyy-MM-dd'),
-        explanation: '',
-      }));
-      
-      form.setValue('employmentGaps', formattedGaps);
+    // Compare dates between entries to find gaps
+    if (entriesWithDates.length >= 2) {
+      try {
+        // Sort by start date
+        const sortedEntries = [...entriesWithDates].sort((a, b) => {
+          const dateA = new Date(a.startDate).getTime();
+          const dateB = new Date(b.startDate).getTime();
+          return dateA - dateB;
+        });
+        
+        const gaps: GapWithIndex[] = [];
+        
+        // Check each pair of consecutive entries
+        for (let i = 0; i < sortedEntries.length - 1; i++) {
+          const current = sortedEntries[i];
+          const next = sortedEntries[i + 1];
+          
+          // Skip if current job has no end date or is marked as current
+          if (!current.endDate || current.isCurrent) continue;
+          
+          const currentEndDate = new Date(current.endDate);
+          const nextStartDate = new Date(next.startDate);
+          
+          // If there's a gap (next start date is after current end date)
+          if (nextStartDate > addDays(currentEndDate, 1)) {
+            const gapStartDate = addDays(currentEndDate, 1);
+            const gapDays = differenceInDays(nextStartDate, gapStartDate);
+            
+            // Only include gaps of 31 days or more
+            if (gapDays >= 31) {
+              // Find the original index in the form array
+              const originalIndex = watchedEmploymentEntries.findIndex(e => 
+                e.employer === current.employer && 
+                e.position === current.position && 
+                e.startDate === current.startDate
+              );
+              
+              if (originalIndex !== -1) {
+                gaps.push({
+                  afterEmploymentIndex: originalIndex,
+                  gap: {
+                    startDate: gapStartDate,
+                    endDate: nextStartDate,
+                    days: gapDays
+                  }
+                });
+              }
+            }
+          }
+        }
+        
+        setPotentialGaps(gaps);
+        
+        // Update the gap fields in the form
+        const formattedGaps = gaps.map(({ gap }) => ({
+          startDate: format(gap.startDate, 'yyyy-MM-dd'),
+          endDate: format(gap.endDate, 'yyyy-MM-dd'),
+          explanation: '',
+        }));
+        
+        form.setValue('employmentGaps', formattedGaps);
+        
+      } catch (error) {
+        console.error("Error processing gap detection:", error);
+      }
     }
-  }, [watchedEmploymentEntries, form, fields]);
+  }, [watchedEmploymentEntries, form]);
   
   // Create employment entry mutation
   const createEmploymentEntry = useMutation({

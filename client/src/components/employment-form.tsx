@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { format, parse } from "date-fns";
-import { Loader2, Plus, Trash, AlertTriangle, Briefcase, CalendarClock } from "lucide-react";
+import { format, parse, differenceInDays, addDays, isAfter } from "date-fns";
+import { Loader2, Plus, Trash, AlertTriangle, Briefcase } from "lucide-react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useEmploymentGaps } from "@/hooks/use-employment-gaps";
 
 import {
   Form,
@@ -63,20 +62,33 @@ interface EmploymentFormProps {
   onBack: () => void;
 }
 
+// Interface for employment gaps
+interface Gap {
+  startDate: Date;
+  endDate: Date;
+  days: number;
+}
+
+// Interface for gaps with associated employment
+interface GapWithIndex {
+  afterEmploymentIndex: number;
+  gap: Gap;
+}
+
 export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [submitting, setSubmitting] = useState(false);
-  const [employmentData, setEmploymentData] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [potentialGaps, setPotentialGaps] = useState<GapWithIndex[]>([]);
   
-  // Fetch existing employment entries if any
-  const { data: existingEmployment } = useQuery({
+  // Fetch existing employment entries if available
+  const { data: existingEntries = [] } = useQuery({
     queryKey: [`/api/applicants/${applicantId}/employment`],
     enabled: !!applicantId,
   });
   
-  // Fetch existing gaps if any
-  const { data: existingGaps } = useQuery({
+  // Fetch existing employment gaps if available
+  const { data: existingGaps = [] } = useQuery({
     queryKey: [`/api/applicants/${applicantId}/gaps`],
     enabled: !!applicantId,
   });
@@ -92,7 +104,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           position: "",
           startDate: "",
           endDate: "",
-          isCurrent: true,
+          isCurrent: false,
           duties: "",
           referenceName: "",
           referenceEmail: "",
@@ -104,22 +116,18 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
     },
   });
   
+  const { formState } = form;
+  
   // Set up field array for employment entries
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "employmentEntries",
   });
   
-  // Set up employment gaps hook
-  const { gaps, setExplanation, getExplanation, getGapsWithExplanations } = useEmploymentGaps({
-    employmentEntries: employmentData,
-    gapsFromServer: existingGaps || [],
-  });
-  
   // Update form when entries change
   useEffect(() => {
-    if (existingEmployment && existingEmployment.length > 0) {
-      const formattedEntries = existingEmployment.map((entry: any) => ({
+    if (existingEntries && existingEntries.length > 0) {
+      const formattedEntries = existingEntries.map((entry: any) => ({
         ...entry,
         startDate: entry.startDate ? format(new Date(entry.startDate), 'yyyy-MM-dd') : '',
         endDate: entry.endDate ? format(new Date(entry.endDate), 'yyyy-MM-dd') : '',
@@ -137,47 +145,86 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       
       form.setValue('employmentGaps', formattedGaps);
     }
-  }, [existingEmployment, existingGaps, form]);
+  }, [existingEntries, existingGaps, form]);
   
-  // Update employment data when form changes
+  // Function to check for gaps between employment entries
+  const checkForGaps = (entries: any[]): GapWithIndex[] => {
+    if (!entries || entries.length < 2) return [];
+    
+    // Sort entries by start date (oldest first)
+    const sortedEntries = [...entries].sort((a, b) => {
+      const dateA = new Date(a.startDate).getTime();
+      const dateB = new Date(b.startDate).getTime();
+      return dateA - dateB;
+    });
+    
+    const gaps: GapWithIndex[] = [];
+    
+    // Check for gaps between consecutive employment periods
+    for (let i = 0; i < sortedEntries.length - 1; i++) {
+      const current = sortedEntries[i];
+      const next = sortedEntries[i + 1];
+      
+      // Skip if current job is ongoing or missing end date
+      if (!current.endDate || current.isCurrent) continue;
+      
+      const currentEndDate = new Date(current.endDate);
+      const nextStartDate = new Date(next.startDate);
+      
+      // Check if there's a gap
+      if (isAfter(nextStartDate, addDays(currentEndDate, 1))) {
+        const gapStartDate = addDays(currentEndDate, 1);
+        const gapDays = differenceInDays(nextStartDate, gapStartDate);
+        
+        // Only include gaps of 31 days or more
+        if (gapDays >= 31) {
+          // Find the original index of this entry in the unfiltered employment entries
+          const originalIndex = fields.findIndex(f => 
+            f.employer === current.employer && 
+            f.position === current.position &&
+            f.startDate === current.startDate
+          );
+          
+          if (originalIndex !== -1) {
+            gaps.push({
+              afterEmploymentIndex: originalIndex,
+              gap: {
+                startDate: gapStartDate,
+                endDate: nextStartDate,
+                days: gapDays
+              }
+            });
+          }
+        }
+      }
+    }
+    
+    return gaps;
+  };
+  
+  // Watch employment entries for immediate gap detection
   const watchedEmploymentEntries = form.watch('employmentEntries');
   useEffect(() => {
     // Only process entries that have valid dates
     const validEntries = watchedEmploymentEntries.filter(entry => 
       entry.startDate && (entry.endDate || entry.isCurrent)
     );
+    
+    if (validEntries.length >= 2) {
+      // Detect gaps between entries
+      const gaps = checkForGaps(validEntries);
+      setPotentialGaps(gaps);
       
-    // Convert form data to a format suitable for gap detection
-    const entries = validEntries.map(entry => {
-      const formattedEntry: any = { ...entry };
-      if (entry.startDate) {
-        formattedEntry.startDate = parse(entry.startDate, 'yyyy-MM-dd', new Date());
-      }
-      if (entry.endDate && !entry.isCurrent) {
-        formattedEntry.endDate = parse(entry.endDate, 'yyyy-MM-dd', new Date());
-      } else if (entry.isCurrent) {
-        formattedEntry.endDate = null;
-      }
-      return formattedEntry;
-    });
-    
-    // Only update if we have at least 2 entries with valid dates (needed for gap detection)
-    if (entries.length >= 2) {
-      setEmploymentData(entries);
+      // Update the gap fields in the form
+      const formattedGaps = gaps.map(({ gap }) => ({
+        startDate: format(gap.startDate, 'yyyy-MM-dd'),
+        endDate: format(gap.endDate, 'yyyy-MM-dd'),
+        explanation: '',
+      }));
+      
+      form.setValue('employmentGaps', formattedGaps);
     }
-  }, [watchedEmploymentEntries]);
-  
-  // Update employment gaps in form when gaps change
-  useEffect(() => {
-    const gapsWithExplanations = getGapsWithExplanations();
-    const formattedGaps = gapsWithExplanations.map(gap => ({
-      startDate: format(gap.startDate, 'yyyy-MM-dd'),
-      endDate: format(gap.endDate, 'yyyy-MM-dd'),
-      explanation: gap.explanation || '',
-    }));
-    
-    form.setValue('employmentGaps', formattedGaps);
-  }, [gaps, getGapsWithExplanations, form]);
+  }, [watchedEmploymentEntries, form, fields]);
   
   // Create employment entry mutation
   const createEmploymentEntry = useMutation({
@@ -201,13 +248,13 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
     },
   });
   
-  // Handle form submission
-  async function onSubmit(values: EmploymentFormValues) {
-    setSubmitting(true);
+  // Submit handler
+  const onSubmit = async (values: EmploymentFormValues) => {
+    setIsSubmitting(true);
     try {
       // Submit each employment entry
       for (const entry of values.employmentEntries) {
-        const entryData = { ...entry };
+        const entryData = { ...entry, applicantId };
         // If current job, set endDate to null
         if (entryData.isCurrent) {
           entryData.endDate = undefined;
@@ -227,7 +274,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       
       toast({
         title: "Employment history saved",
-        description: "Your employment history has been saved successfully.",
+        description: "Your employment information has been successfully saved.",
       });
       
       onSuccess();
@@ -238,247 +285,272 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
         variant: "destructive",
       });
     } finally {
-      setSubmitting(false);
+      setIsSubmitting(false);
     }
-  }
+  };
+  
+  const submitting = isSubmitting || createEmploymentEntry.isPending || createEmploymentGap.isPending;
   
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        {fields.map((field, index) => (
-          <div 
-            key={field.id}
-            className="employment-entry bg-neutral-50 border border-neutral-200 rounded-md p-4 mb-6"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium flex items-center">
-                {index === 0 && form.watch(`employmentEntries.${index}.isCurrent`) && (
-                  <span className="bg-secondary text-white text-xs px-2 py-1 rounded mr-2">Current</span>
-                )}
-                {index === 0 ? "Employment" : "Previous Employment"}
-              </h3>
-              {fields.length > 1 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => remove(index)}
-                  className="text-neutral-700 hover:text-destructive"
-                >
-                  <Trash className="h-5 w-5" />
-                </Button>
-              )}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Briefcase className="h-6 w-6 text-primary" />
+              <h3 className="text-lg font-medium text-primary">Employment History</h3>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.employer`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Employer Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="XYZ Social Services" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <p className="text-sm text-neutral-600 mb-4">
+              Please provide details of your employment history for the past 5 years, including any periods of unemployment. 
+              This information is required to comply with fostering regulations.
+            </p>
+          </CardContent>
+        </Card>
+        
+        {fields.map((field, index) => {
+          // Find if there's a gap after this employment
+          const gapAfterThisEntry = potentialGaps.find(g => g.afterEmploymentIndex === index);
+          
+          return (
+            <div key={field.id}>
+              <Card className="mb-5 border-primary/10 overflow-hidden">
+                <div className="bg-primary/5 px-6 py-3 flex justify-between items-center">
+                  <h4 className="text-md font-medium text-primary">Employment {index + 1}</h4>
+                  
+                  {fields.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => remove(index)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash className="h-4 w-4 mr-1" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+                
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employer`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employer Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="XYZ Social Services" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.position`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Position</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Social Worker" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.startDate`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Start Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="flex flex-col space-y-1">
+                      <FormField
+                        control={form.control}
+                        name={`employmentEntries.${index}.endDate`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>End Date</FormLabel>
+                            <div className="flex items-center space-x-3">
+                              <FormControl>
+                                <Input 
+                                  type="date" 
+                                  disabled={form.watch(`employmentEntries.${index}.isCurrent`)} 
+                                  {...field} 
+                                />
+                              </FormControl>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name={`employmentEntries.${index}.isCurrent`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={(checked) => {
+                                  field.onChange(checked);
+                                  if (checked) {
+                                    form.setValue(`employmentEntries.${index}.endDate`, "");
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                              <FormLabel>
+                                This is my current job
+                              </FormLabel>
+                            </div>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.duties`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Duties & Responsibilities</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Describe your main responsibilities and duties..."
+                              rows={3}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.referenceName`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Reference Contact Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Jane Smith" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.referenceEmail`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Reference Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="jane.smith@example.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.referencePhone`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Reference Phone Number</FormLabel>
+                          <FormControl>
+                            <Input placeholder="+44 123 456 7890" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.workedWithVulnerable`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Did this role involve working with children or vulnerable adults?</FormLabel>
+                          <FormControl>
+                            <RadioGroup 
+                              onValueChange={(value) => field.onChange(value === "yes")}
+                              defaultValue={field.value ? "yes" : "no"}
+                              className="flex items-center space-x-4 mt-2"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="yes" id={`vulnerable-yes-${index}`} />
+                                <FormLabel htmlFor={`vulnerable-yes-${index}`} className="font-normal">Yes</FormLabel>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="no" id={`vulnerable-no-${index}`} />
+                                <FormLabel htmlFor={`vulnerable-no-${index}`} className="font-normal">No</FormLabel>
+                              </div>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
               
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.position`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Position</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Social Worker" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.startDate`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Start Date</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="flex flex-col space-y-1">
-                <FormField
-                  control={form.control}
-                  name={`employmentEntries.${index}.endDate`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>End Date</FormLabel>
-                      <div className="flex items-center space-x-3">
-                        <FormControl>
-                          <Input 
-                            type="date" 
-                            disabled={form.watch(`employmentEntries.${index}.isCurrent`)} 
-                            {...field} 
-                            value={form.watch(`employmentEntries.${index}.isCurrent`) ? "" : field.value} 
-                          />
-                        </FormControl>
+              {/* Employment gap section - shown directly after the relevant employment entry */}
+              {gapAfterThisEntry && (
+                <Card className="mb-6 border-amber-300 -mt-2">
+                  <CardContent className="pt-5">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="h-5 w-5 text-amber-600 mt-1 flex-shrink-0" />
+                      <div className="w-full">
+                        <h4 className="font-medium text-amber-800 mb-1">Employment Gap Detected</h4>
+                        <p className="text-sm text-amber-700 mb-4">
+                          We've detected a gap of {gapAfterThisEntry.gap.days} days after this employment
+                          ({formatDate(gapAfterThisEntry.gap.startDate)} to {formatDate(gapAfterThisEntry.gap.endDate)}).
+                          Please provide an explanation for this gap.
+                        </p>
                         
                         <FormField
                           control={form.control}
-                          name={`employmentEntries.${index}.isCurrent`}
-                          render={({ field: checkboxField }) => (
-                            <FormItem className="flex items-center space-x-2 space-y-0">
+                          name={`employmentGaps.${potentialGaps.indexOf(gapAfterThisEntry)}.explanation`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Explanation for Gap</FormLabel>
                               <FormControl>
-                                <Checkbox
-                                  checked={checkboxField.value}
-                                  onCheckedChange={checkboxField.onChange}
+                                <Textarea
+                                  placeholder="Please explain what you were doing during this period..."
+                                  rows={3}
+                                  {...field}
                                 />
                               </FormControl>
-                              <FormLabel className="text-sm font-normal">Current</FormLabel>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.duties`}
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Duties & Responsibilities</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe your main responsibilities and duties..."
-                        rows={3}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.referenceName`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reference Contact Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Jane Smith" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.referenceEmail`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reference Email Address</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="jane.smith@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.referencePhone`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reference Phone Number</FormLabel>
-                    <FormControl>
-                      <Input type="tel" placeholder="07XX XXX XXXX" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name={`employmentEntries.${index}.workedWithVulnerable`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Did this role involve working with children or vulnerable adults?</FormLabel>
-                    <FormControl>
-                      <RadioGroup 
-                        onValueChange={(value) => field.onChange(value === "yes")}
-                        defaultValue={field.value ? "yes" : "no"}
-                        className="flex items-center space-x-4 mt-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="yes" id={`vulnerable-yes-${index}`} />
-                          <FormLabel htmlFor={`vulnerable-yes-${index}`} className="font-normal">Yes</FormLabel>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="no" id={`vulnerable-no-${index}`} />
-                          <FormLabel htmlFor={`vulnerable-no-${index}`} className="font-normal">No</FormLabel>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-        ))}
-        
-        {/* Employment Gaps */}
-        {gaps.map((gap, index) => (
-          <div key={index} className="employment-gap bg-amber-50 border border-amber-200 rounded-md p-4 mb-6">
-            <h3 className="text-lg font-medium mb-3 text-neutral-800 flex items-center">
-              <AlertTriangle className="text-amber-500 mr-2 h-5 w-5" />
-              Employment Gap Detected
-            </h3>
-            <p className="text-sm text-neutral-700 mb-3">
-              We've detected a gap of more than 31 days between your employment periods 
-              ({formatDate(gap.startDate)} to {formatDate(gap.endDate)}). 
-              Please provide an explanation.
-            </p>
-            
-            <FormField
-              control={form.control}
-              name={`employmentGaps.${index}.explanation`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Explanation for Gap</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Please explain what you were doing during this period..."
-                      rows={3}
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        setExplanation(gap.startDate, gap.endDate, e.target.value);
-                      }}
-                      value={field.value || getExplanation(gap.startDate, gap.endDate)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
-            />
-          </div>
-        ))}
+            </div>
+          );
+        })}
         
         <div className="mb-6">
           <Button
@@ -501,7 +573,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             }
           >
             <Plus className="h-4 w-4 mr-1" />
-            Add Another Employment
+            Add Employment
           </Button>
         </div>
         
@@ -514,7 +586,11 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             Back: Education History
           </Button>
           
-          <Button type="submit" disabled={submitting}>
+          <Button 
+            type="submit" 
+            disabled={submitting || !formState.isValid}
+            className="bg-primary hover:bg-primary/90"
+          >
             {submitting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

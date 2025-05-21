@@ -101,6 +101,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
         accurateInfo: false,
         falseInfoConsequences: false,
         consentToChecks: false,
+        consentToOnlineDbsCheck: false,
         dataProtection: false,
       },
     },
@@ -462,6 +463,31 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                       <FormLabel className="font-medium">
                         I consent to the necessary checks being carried out in relation to my application, including reference checks, employment verification, DBS checks, and health assessments.
                       </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="declaration.consentToOnlineDbsCheck"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 bg-primary/5 p-4 rounded-md border border-primary/10">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="mt-1"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="font-medium">
+                        I consent to online verification of my DBS status
+                      </FormLabel>
+                      <FormDescription className="text-sm">
+                        This allows Swiis to verify my DBS status through the online DBS Update Service, which may speed up the application process.
+                      </FormDescription>
                       <FormMessage />
                     </div>
                   </FormItem>

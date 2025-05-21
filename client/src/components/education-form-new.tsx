@@ -59,21 +59,29 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
   
+  // Fetch existing education entries if available
+  const { data: existingEntries = [] } = useQuery({
+    queryKey: [`/api/applicants/${applicantId}/education`],
+    enabled: !!applicantId,
+  });
+  
   // Set up the form
   const form = useForm<EducationFormValues>({
     resolver: zodResolver(educationFormSchema),
     defaultValues: {
       applicantId,
-      educationEntries: [
-        {
-          institution: "",
-          qualification: "",
-          startDate: "",
-          endDate: "",
-          details: "",
-          grade: "",
-        },
-      ],
+      educationEntries: existingEntries?.length > 0 
+        ? existingEntries 
+        : [
+            {
+              institution: "",
+              qualification: "",
+              startDate: "",
+              endDate: "",
+              details: "",
+              grade: "",
+            },
+          ],
       breakExplanation: "",
     },
   });
@@ -114,7 +122,8 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
           qualification: entry.qualification,
           startDate: entry.startDate,
           endDate: entry.endDate,
-          details: entry.details || null
+          details: entry.details || "",
+          grade: entry.grade || ""
         };
         
         await createEducationEntry.mutateAsync(formattedEntry);
@@ -136,17 +145,17 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
       setSubmitting(false);
     }
   }
-
+  
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-2 mb-4">
               <GraduationCap className="h-6 w-6 text-primary" />
-              <h3 className="text-lg font-medium text-primary">Education, Training & Qualifications</h3>
+              <h2 className="text-xl font-medium text-primary">Educational History</h2>
             </div>
-            <p className="text-sm text-neutral-600 mb-4">
+            <p className="text-md text-neutral-700 mb-4">
               Please provide details of examination passes, qualifications obtained etc. You will be required to provide 
               proof of relevant professional qualifications. Please provide details in sequence with the most recent first. 
               Where you have had a break in your educational history, please give details.
@@ -203,15 +212,17 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
                     </FormItem>
                   )}
                 />
-                
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 <FormField
                   control={form.control}
                   name={`educationEntries.${index}.institution`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Institution/Awarding Body</FormLabel>
+                      <FormLabel>School/College/University</FormLabel>
                       <FormControl>
-                        <Input placeholder="University of Example" {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -223,23 +234,9 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
                   name={`educationEntries.${index}.qualification`}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Course Details</FormLabel>
+                      <FormLabel>Qualification/Subject</FormLabel>
                       <FormControl>
-                        <Input placeholder="BSc Social Work" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name={`educationEntries.${index}.grade`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Grade/Qualification</FormLabel>
-                      <FormControl>
-                        <Input placeholder="2:1, Pass, Merit, etc." {...field} />
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -247,54 +244,58 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
                 />
               </div>
               
-              <FormField
-                control={form.control}
-                name={`educationEntries.${index}.details`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Additional Details</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Add any relevant details about your studies, achievements, etc."
-                        rows={3}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <FormField
+                  control={form.control}
+                  name={`educationEntries.${index}.grade`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Grade/Result</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name={`educationEntries.${index}.details`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Details</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
         ))}
         
-        <div className="flex justify-center mb-6">
-          <Button
-            type="button"
-            variant="outline"
-            className="text-primary border-primary hover:bg-primary/5"
-            onClick={() =>
-              append({
-                institution: "",
-                qualification: "",
-                startDate: "",
-                endDate: "",
-                details: "",
-                grade: "",
-              })
-            }
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Add Another Education Entry
-          </Button>
-        </div>
-
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => append({
+            institution: "",
+            qualification: "",
+            startDate: "",
+            endDate: "",
+            details: "",
+            grade: "",
+          })}
+          className="mt-2 w-full"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Add Another Education Entry
+        </Button>
+        
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2 mb-4">
-              <h3 className="text-md font-medium text-primary">Other Relevant Training</h3>
-            </div>
-            
             <FormField
               control={form.control}
               name="breakExplanation"

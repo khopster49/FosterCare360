@@ -13,10 +13,11 @@ import { DataProtectionForm } from "@/components/data-protection-form";
 import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
 import { VerificationForm } from "@/components/verification-form";
 import { PrivacyNotice } from "@/components/privacy-notice";
+import { SaveExitButton } from "@/components/save-exit-button";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -60,30 +61,6 @@ export default function Home() {
     totalSteps: steps.length,
   });
   
-  // Save progress mutation
-  const saveProgressMutation = useMutation({
-    mutationFn: async () => {
-      if (!applicantId) return null;
-      return await apiRequest(`/api/applications/${applicantId}/progress`, "PATCH", {
-        step: currentStep
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: "Progress Saved",
-        description: "Your application progress has been saved successfully. You can return later to continue.",
-      });
-      setLocation("/dashboard");
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Failed to Save Progress",
-        description: error.message || "There was an error saving your progress. Please try again.",
-        variant: "destructive",
-      });
-    }
-  });
-  
   // Handle save and exit
   const handleSaveAndExit = () => {
     if (!user) {
@@ -96,7 +73,14 @@ export default function Home() {
       return;
     }
     
-    // Save progress and redirect to dashboard
+    // If no applicant ID yet, inform user they need to complete personal info first
+    if (!applicantId) {
+      toast({
+        title: "Complete Personal Information",
+        description: "Please complete the Personal Information section before saving your progress.",
+      });
+      return;
+    }
     saveProgressMutation.mutate();
   };
 

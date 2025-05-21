@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ interface SaveExitButtonProps {
 
 export function SaveExitButton({ applicantId, currentStep, onSave }: SaveExitButtonProps) {
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [showDialog, setShowDialog] = useState(false);
   
   const { mutate, isPending } = useMutation({
@@ -49,7 +49,7 @@ export function SaveExitButton({ applicantId, currentStep, onSave }: SaveExitBut
       });
       
       // Redirect to dashboard after saving
-      navigate("/dashboard");
+      setLocation("/dashboard");
     },
     onError: (error) => {
       toast({

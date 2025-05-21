@@ -1,10 +1,25 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { configureSession, authRouter } from "./auth-routes";
+import { applicationsRouter } from "./applications-routes";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Configure session
+configureSession(app);
+
+// Register auth routes
+app.use('/api/auth', authRouter);
+
+// Register applications routes
+app.use('/api/applications', applicationsRouter);
 
 app.use((req, res, next) => {
   const start = Date.now();

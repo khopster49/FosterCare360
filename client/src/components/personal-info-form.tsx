@@ -145,8 +145,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         ...(user && typeof user === 'object' && 'id' in user ? { userId: user.id as number } : {}),
         // Add fields for save & return functionality
         status: 'in-progress',
-        lastCompletedStep: 0,
-        saveDate: new Date().toISOString()
+        lastCompletedStep: 0
       };
       
       const response = await apiRequest("/api/applicants", "POST", apiValues);

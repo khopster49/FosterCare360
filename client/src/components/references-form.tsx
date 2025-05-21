@@ -52,6 +52,13 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
   // Use the references hook to determine required references
   const { requiredReferences } = useReferences(employmentEntries);
   
+  // Debug: Log employment entries to see what data we have
+  useEffect(() => {
+    if (employmentEntries && employmentEntries.length > 0) {
+      console.log("Employment entries data:", employmentEntries);
+    }
+  }, [employmentEntries]);
+  
   // Set up the form
   const form = useForm<ReferenceConsentValues>({
     resolver: zodResolver(referenceConsentSchema),

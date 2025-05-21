@@ -105,7 +105,7 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
           <CardContent className="pt-6">
             <div className="flex items-center gap-3 mb-4">
               <PenLine className="h-6 w-6 text-primary" />
-              <h3 className="text-lg font-medium text-primary">Skills and Experience</h3>
+              <h3 className="text-2xl font-medium text-primary">Skills and Experience</h3>
             </div>
             
             <FormField
@@ -113,7 +113,6 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
               name="skillsAndExperience"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-md font-medium">Why are you suited to be a foster carer?</FormLabel>
                   <FormDescription className="text-neutral-700">
                     In your own words, please explain why you consider yourself suited to this position outlining what you would
                     contribute to the post if appointed, by reference to the job description and/or person specification.
@@ -138,7 +137,7 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
             variant="outline"
             onClick={onBack}
           >
-            Back: Employment History
+            Back to Employment
           </Button>
           
           <Button 

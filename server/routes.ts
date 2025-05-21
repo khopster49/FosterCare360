@@ -81,41 +81,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-  
-  // Endpoint to save application progress
-  app.patch("/api/applicants/:id/progress", async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid applicant ID" });
-      }
-      
-      const { lastCompletedStep, saveDate } = req.body;
-      
-      // Validate the progress data
-      if (typeof lastCompletedStep !== 'number' || lastCompletedStep < 0) {
-        return res.status(400).json({ message: "Invalid step number" });
-      }
-      
-      const applicant = await storage.getApplicant(id);
-      if (!applicant) {
-        return res.status(404).json({ message: "Applicant not found" });
-      }
-      
-      const updatedApplicant = await storage.updateApplicant(id, { 
-        lastCompletedStep,
-        saveDate: saveDate || new Date().toISOString(),
-        status: 'in-progress'
-      });
-      
-      return res.json(updatedApplicant);
-    } catch (error) {
-      console.error("Error saving application progress:", error);
-      return res.status(500).json({ 
-        message: "Failed to save application progress" 
-      });
-    }
-  });
 
   // API routes for education entries
   app.post("/api/applicants/:id/education", async (req: Request, res: Response) => {

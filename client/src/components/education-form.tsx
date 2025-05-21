@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Plus, Trash, GraduationCap } from "lucide-react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -87,7 +87,8 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
   // Create education entry mutation
   const createEducationEntry = useMutation({
     mutationFn: async (values: any) => {
-      return await apiRequest(`/api/applicants/${applicantId}/education`, "POST", values);
+      const res = await apiRequest("POST", `/api/applicants/${applicantId}/education`, values);
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/applicants/${applicantId}/education`] });
@@ -106,18 +107,7 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
             `${entry.details}\n\nBreak explanation: ${values.breakExplanation}` : 
             `Break explanation: ${values.breakExplanation}`;
         }
-        
-        // Ensure we pass a properly formatted entry
-        const formattedEntry = {
-          applicantId: applicantId,
-          institution: entry.institution,
-          qualification: entry.qualification,
-          startDate: entry.startDate,
-          endDate: entry.endDate,
-          details: entry.details || null
-        };
-        
-        await createEducationEntry.mutateAsync(formattedEntry);
+        await createEducationEntry.mutateAsync(entry);
       }
       
       toast({

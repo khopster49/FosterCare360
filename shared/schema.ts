@@ -1,63 +1,18 @@
-import { pgTable, text, serial, integer, boolean, date, timestamp, varchar, index } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, date, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // User schema
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  email: text("email").notNull().unique(),
+  username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  phoneNumber: text("phone_number"),
-  verificationToken: text("verification_token"),
-  verificationTokenExpiry: timestamp("verification_token_expiry"),
-  resetPasswordToken: text("reset_password_token"),
-  resetPasswordExpiry: timestamp("reset_password_token_expiry"),
-  verified: boolean("verified").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  lastLoginAt: timestamp("last_login_at"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
-  email: true,
+  username: true,
   password: true,
-  firstName: true,
-  lastName: true,
-  phoneNumber: true,
 });
-
-export const loginSchema = z.object({
-  email: z.string().email({message: "Please enter a valid email address"}),
-  password: z.string().min(8, {message: "Password must be at least 8 characters"}),
-});
-
-export const registerSchema = z.object({
-  email: z.string().email({message: "Please enter a valid email address"}),
-  password: z.string().min(8, {message: "Password must be at least 8 characters"}),
-  confirmPassword: z.string(),
-  firstName: z.string().min(1, {message: "First name is required"}),
-  lastName: z.string().min(1, {message: "Last name is required"}),
-  phoneNumber: z.string().optional(),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
-
-// Session storage for authentication
-export const sessions = pgTable(
-  "sessions",
-  {
-    sid: varchar("sid").primaryKey(),
-    sess: text("sess").notNull(),
-    expire: timestamp("expire").notNull(),
-  },
-  (table) => {
-    return {
-      expireIdx: index("sessions_expire_idx").on(table.expire),
-    };
-  }
-);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -65,7 +20,6 @@ export type User = typeof users.$inferSelect;
 // Applicant Schema
 export const applicants = pgTable("applicants", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
   firstName: text("first_name").notNull(),
   middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
@@ -74,8 +28,6 @@ export const applicants = pgTable("applicants", {
   address: text("address").notNull(),
   city: text("city").notNull(),
   postcode: text("postcode").notNull(),
-  lastCompletedStep: integer("last_completed_step").default(0),
-  saveDate: timestamp("save_date").defaultNow(),
   nationality: text("nationality").notNull(),
   rightToWork: boolean("right_to_work").notNull(),
   workDocumentType: text("work_document_type").notNull(),

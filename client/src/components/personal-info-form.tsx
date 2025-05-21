@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Upload } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -78,12 +78,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   
-  // Fetch current user if logged in
-  const { data: user, isLoading: isUserLoading } = useQuery({
-    queryKey: ['/api/auth/me'],
-    retry: false,
-  });
-  
   // Set up the form
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
@@ -114,18 +108,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
     },
   });
   
-  // Pre-fill form with user data when available
-  useEffect(() => {
-    if (user && typeof user === 'object') {
-      // Type guard for user properties
-      const userData = user as any;
-      form.setValue('firstName', userData.firstName || '');
-      form.setValue('lastName', userData.lastName || '');
-      form.setValue('email', userData.email || '');
-      form.setValue('mobilePhone', userData.phoneNumber || '');
-    }
-  }, [user, form]);
-  
   // Create applicant mutation
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: PersonalInfoFormValues) => {
@@ -141,15 +123,10 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
-        // Associate with user account if logged in
-        ...(user && typeof user === 'object' && 'id' in user ? { userId: user.id as number } : {}),
-        // Add fields for save & return functionality
-        status: 'in-progress',
-        lastCompletedStep: 0
       };
       
-      const response = await apiRequest("/api/applicants", "POST", apiValues);
-      return response;
+      const res = await apiRequest("POST", "/api/applicants", apiValues);
+      return res.json();
     },
     onSuccess: (data) => {
       toast({
@@ -182,7 +159,9 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            
+            <div className="mb-4">
+              <h3 className="text-lg font-medium text-primary">SWIIS Foster Care Application Form</h3>
+            </div>
             <p className="text-sm text-neutral-600 mb-4">
               We are committed to Equal Opportunities in all areas of our operations and welcome all applicants irrespective of age,
               disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & maternity, sex, sexual orientation. 
@@ -271,15 +250,19 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
             />
 
             {/* Middle Name */}
-            <div className="space-y-2">
-              <label htmlFor="middleName" className="text-sm font-medium">Middle Name(s)</label>
-              <Input 
-                id="middleName"
-                placeholder="Optional" 
-                value={form.watch("otherNames") || ""}
-                onChange={(e) => form.setValue("otherNames", e.target.value)}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="middleName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Middle Name(s)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Optional" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             
             {/* Last Name */}
             <FormField

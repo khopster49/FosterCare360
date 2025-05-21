@@ -38,6 +38,7 @@ const steps = [
 export default function Home() {
   const [applicantId, setApplicantId] = useState<number | null>(null);
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   
   // Check if user is logged in
   const { data: user, isLoading: isUserLoading } = useQuery({
@@ -61,6 +62,30 @@ export default function Home() {
     totalSteps: steps.length,
   });
   
+  // Save progress mutation
+  const saveProgressMutation = useMutation({
+    mutationFn: async () => {
+      if (!applicantId) return null;
+      return await apiRequest(`/api/applicants/${applicantId}/progress`, "PATCH", {
+        step: currentStep
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Progress Saved",
+        description: "Your application progress has been saved successfully. You can return later to continue.",
+      });
+      setLocation("/dashboard");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Save Progress",
+        description: error.message || "There was an error saving your progress. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+  
   // Handle save and exit
   const handleSaveAndExit = () => {
     if (!user) {
@@ -81,6 +106,8 @@ export default function Home() {
       });
       return;
     }
+    
+    // Save progress and redirect to dashboard
     saveProgressMutation.mutate();
   };
 

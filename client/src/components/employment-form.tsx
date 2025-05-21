@@ -422,7 +422,15 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                         <FormItem>
                           <FormLabel>Start Date</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <Input 
+                              type="date" 
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                // Force immediate gap detection
+                                setTimeout(() => form.trigger("employmentEntries"), 100);
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -441,7 +449,81 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                                 <Input 
                                   type="date" 
                                   disabled={form.watch(`employmentEntries.${index}.isCurrent`)} 
-                                  {...field} 
+                                  {...field}
+                                  onChange={(e) => {
+                                    field.onChange(e);
+                                    // Force immediate gap detection on end date change
+                                    setTimeout(() => {
+                                      // This forces a recalculation of the gaps
+                                      const currentEndDate = e.target.value;
+                                      if (currentEndDate) {
+                                        const entriesWithDates = form.getValues('employmentEntries').filter(
+                                          entry => entry.startDate && (entry.endDate || entry.isCurrent)
+                                        );
+                                        if (entriesWithDates.length >= 2) {
+                                          const checkGaps = () => {
+                                            try {
+                                              // Sort by start date
+                                              const sortedEntries = [...entriesWithDates].sort((a, b) => {
+                                                return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+                                              });
+                                              
+                                              const gaps: GapWithIndex[] = [];
+                                              
+                                              for (let i = 0; i < sortedEntries.length - 1; i++) {
+                                                const current = sortedEntries[i];
+                                                const next = sortedEntries[i + 1];
+                                                
+                                                if (!current.endDate || current.isCurrent) continue;
+                                                
+                                                const currentEndDate = new Date(current.endDate);
+                                                const nextStartDate = new Date(next.startDate);
+                                                
+                                                if (nextStartDate > new Date(currentEndDate.getTime() + 86400000)) {
+                                                  const gapDays = Math.floor((nextStartDate.getTime() - currentEndDate.getTime()) / 86400000) - 1;
+                                                  
+                                                  if (gapDays >= 31) {
+                                                    const originalIndex = form.getValues('employmentEntries').findIndex(e => 
+                                                      e.employer === current.employer && 
+                                                      e.position === current.position &&
+                                                      e.startDate === current.startDate
+                                                    );
+                                                    
+                                                    if (originalIndex !== -1) {
+                                                      const gapStartDate = new Date(currentEndDate.getTime() + 86400000);
+                                                      
+                                                      gaps.push({
+                                                        afterEmploymentIndex: originalIndex,
+                                                        gap: {
+                                                          startDate: gapStartDate,
+                                                          endDate: nextStartDate,
+                                                          days: gapDays
+                                                        }
+                                                      });
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                              
+                                              setPotentialGaps(gaps);
+                                              
+                                              const formattedGaps = gaps.map(({ gap }) => ({
+                                                startDate: format(gap.startDate, 'yyyy-MM-dd'),
+                                                endDate: format(gap.endDate, 'yyyy-MM-dd'),
+                                                explanation: '',
+                                              }));
+                                              
+                                              form.setValue('employmentGaps', formattedGaps);
+                                            } catch (error) {
+                                              console.error("Error checking gaps:", error);
+                                            }
+                                          };
+                                          
+                                          checkGaps();
+                                        }
+                                      }
+                                    }, 100);
+                                  }}
                                 />
                               </FormControl>
                             </div>

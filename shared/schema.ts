@@ -21,6 +21,7 @@ export type User = typeof users.$inferSelect;
 export const applicants = pgTable("applicants", {
   id: serial("id").primaryKey(),
   firstName: text("first_name").notNull(),
+  middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull(),

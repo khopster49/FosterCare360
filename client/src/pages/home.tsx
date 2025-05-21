@@ -73,7 +73,7 @@ export default function Home() {
               <>
                 <h2 className="text-xl font-medium mb-2">Personal Information</h2>
                 <p className="text-neutral-700 text-sm mb-6">
-                  Please provide your basic personal details as required by UK fostering regulations.
+                  Please provide your basic personal details as required by fostering regulations.
                 </p>
                 <PersonalInfoForm onSuccess={handlePersonalInfoComplete} />
               </>

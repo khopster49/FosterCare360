@@ -69,6 +69,7 @@ export function useFormStepper({
 
   return {
     currentStep,
+    setCurrentStep,
     isFirstStep: currentStep === 0,
     isLastStep: currentStep === totalSteps - 1,
     goToStep,

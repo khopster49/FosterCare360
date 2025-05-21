@@ -31,20 +31,28 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: PrivacyNoticeValues) => {
-      return await apiRequest(`/api/applicants/${applicantId}/privacy-notice`, "POST", values);
+      // First mark the data protection as completed (using the correct field names from the schema)
+      await apiRequest(`/api/applicants/${applicantId}`, "PATCH", {
+        dataProtectionAgreed: true,
+        dataProtectionSignedDate: new Date()
+      });
+      
+      // Then complete the application
+      const result = await apiRequest(`/api/applicants/${applicantId}/submit`, "POST", {});
+      return result;
     },
     onSuccess: () => {
       toast({
-        title: "Privacy Notice Acknowledged",
-        description: "Thank you for acknowledging the privacy notice.",
+        title: "Application Complete",
+        description: "Thank you for completing your application.",
       });
       onSuccess();
     },
     onError: (error) => {
-      console.error("Error:", error);
+      console.error("Error completing application:", error);
       toast({
         title: "Error",
-        description: "There was a problem saving your acknowledgment.",
+        description: "There was a problem completing your application.",
         variant: "destructive",
       });
     },

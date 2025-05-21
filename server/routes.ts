@@ -576,15 +576,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Applicant not found" });
       }
       
-      // Update the applicant with privacy notice acknowledgment
-      // Use data protected field instead since we don't have privacyNoticeAcknowledged in schema
+      // Update the applicant with privacy notice acknowledgment using the correct schema fields
       const updatedApplicant = await storage.updateApplicant(applicantId, {
-        dataProtectionCompleted: true,
-        dataProtectionDate: new Date(),
-        status: 'completed'
+        dataProtectionAgreed: true,
+        dataProtectionSignedDate: new Date()
       });
-      
-      // When the privacy notice is acknowledged, we consider the application complete
       
       return res.status(201).json(updatedApplicant);
     } catch (error) {

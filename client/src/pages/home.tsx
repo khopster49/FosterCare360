@@ -16,6 +16,7 @@ import { ApplicationPDFDownload } from "@/components/application-pdf-generator";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
+import { Button } from "@/components/ui/button";
 
 // Define the steps for the application process
 const steps = [
@@ -264,7 +265,7 @@ export default function Home() {
                     
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
-                      {isDataReady && (
+                      {isDataReady ? (
                         <ApplicationPDFDownload
                           applicant={applicant}
                           education={education}
@@ -274,12 +275,8 @@ export default function Home() {
                           equal={applicant}
                           discipline={applicant}
                         />
-                      )}
-                      {!isDataReady && (
-                        <button 
-                          className="inline-flex items-center px-4 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground" 
-                          disabled
-                        >
+                      ) : (
+                        <Button variant="outline" disabled>
                           <span className="mr-2">
                             <svg className="animate-spin h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -287,7 +284,7 @@ export default function Home() {
                             </svg>
                           </span>
                           Preparing your application...
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>

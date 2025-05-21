@@ -142,11 +142,12 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
         // Associate with user account if logged in
-        ...(user && typeof user === 'object' && 'id' in user ? { userId: user.id as number } : {}),
+        userId: user && typeof user === 'object' && 'id' in user ? Number(user.id) : null,
         // Add fields for save & return functionality
         status: 'in-progress',
-        lastCompletedStep: 0,
-        saveDate: new Date().toISOString()
+        lastCompletedStep: 0
+        // Note: We're removing saveDate field as it's causing validation issues
+        // The server will set the appropriate timestamp
       };
       
       const response = await apiRequest("/api/applicants", "POST", apiValues);

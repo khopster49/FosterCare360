@@ -31,6 +31,7 @@ export const applicants = pgTable("applicants", {
   nationality: text("nationality").notNull(),
   rightToWork: boolean("right_to_work").notNull(),
   workDocumentType: text("work_document_type").notNull(),
+  skillsAndExperience: text("skills_and_experience"),
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
   status: text("status").notNull().default("in_progress"),

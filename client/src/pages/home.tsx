@@ -5,6 +5,7 @@ import { FormStepper } from "@/components/form-stepper";
 import { PersonalInfoForm } from "@/components/personal-info-form";
 import { EducationForm } from "@/components/education-form";
 import { EmploymentForm } from "@/components/employment-form";
+import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
 import { VerificationForm } from "@/components/verification-form";
 import { useFormStepper } from "@/hooks/use-form-stepper";
@@ -15,8 +16,9 @@ const steps = [
   { id: 1, label: "Personal Info" },
   { id: 2, label: "Education" },
   { id: 3, label: "Employment" },
-  { id: 4, label: "References" },
-  { id: 5, label: "Checks" },
+  { id: 4, label: "Skills" },
+  { id: 5, label: "References" },
+  { id: 6, label: "Checks" },
 ];
 
 export default function Home() {
@@ -99,6 +101,20 @@ export default function Home() {
             
             {currentStep === 3 && applicantId && (
               <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Skills and Experience</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please explain why you consider yourself suited to fostering and what you would contribute to the role.
+                </p>
+                <SkillsExperienceForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 4 && applicantId && (
+              <>
                 <h2 className="text-xl font-medium mb-2">References</h2>
                 <p className="text-neutral-700 text-sm mb-6">
                   We will seek references from your last two employers and all previous positions where you worked with children or vulnerable adults.
@@ -111,7 +127,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 4 && applicantId && (
+            {currentStep === 5 && applicantId && (
               <>
                 <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
                 <p className="text-neutral-700 text-sm mb-6">

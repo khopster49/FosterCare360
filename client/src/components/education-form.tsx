@@ -87,8 +87,7 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
   // Create education entry mutation
   const createEducationEntry = useMutation({
     mutationFn: async (values: any) => {
-      const res = await apiRequest("POST", `/api/applicants/${applicantId}/education`, values);
-      return res.json();
+      return await apiRequest(`/api/applicants/${applicantId}/education`, "POST", values);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/applicants/${applicantId}/education`] });

@@ -71,7 +71,7 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
             
             <h2 className="text-xl font-semibold text-orange-500 my-4">Who collects the information.</h2>
             <p className="mb-4">
-              Swiis ('Company') is a 'data controller' and gathers and uses certain information about you. This information is also 
+              Swiis Foster Care ('Company') is a 'data controller' and gathers and uses certain information about you. This information is also 
               used by our affiliated entities and group companies, namely Swiis UK Ltd, Swiis Foster Care Ltd, Swiis Foster Care 
               Scotland Ltd, (our 'group companies') and so, in this notice, references to 'we' or 'us' mean the Company and our 
               group companies.
@@ -170,18 +170,18 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
               Where our processing of your information is based solely on our legitimate interests (or those of a third party), you have the right to object to that processing if you give us specific reasons as to why you are objecting, which are based on your particular situation. If you object, we can no longer process your information unless we can demonstrate legitimate grounds for the processing, which override your interests, rights and freedoms, or the processing is for the establishment, exercise, or defence of legal claims.
             </p>
             <p className="mb-4">
-              Please contact our Data Protection Officer (DPO) Oliver Webber who can be contacted:
+              Please contact our HR Team who can be contacted:
             </p>
             <p className="mb-4">
-              T: 0203 219 2866 M: 07792194435 E: Oliver.Webber@swiis.com if you wish to object in this way.
+              T: 0203 219 2865 E: HRTeam@swiis.com if you wish to object in this way.
             </p>
             
             <h2 className="text-xl font-semibold text-orange-500 my-4">Your rights to correct and access your information and to ask for it to be erased.</h2>
             <p className="mb-4">
-              Please contact our Data Protection Officer (DPO) Oliver Webber who can be contacted:
+              Please contact our HR Team who can be contacted:
             </p>
             <p className="mb-4">
-              T: 0203 219 2866 M: 07792194435 E: Oliver.Webber@swiis.com if (in accordance with applicable law) you would like to correct or request access to information that we hold relating to you or if you have any questions about this notice. You also have the right to ask our Data Protection Officer for some but not all of the information we hold and process to be erased (the 'right to be forgotten') in certain circumstances. Our Data Protection Officer will provide you with further information about the right to be forgotten, if you ask for it.
+              T: 0203 219 2865 E: HRTeam@swiis.com if (in accordance with applicable law) you would like to correct or request access to information that we hold relating to you or if you have any questions about this notice. You also have the right to ask our HR Team for some but not all of the information we hold and process to be erased (the 'right to be forgotten') in certain circumstances. Our HR Team will provide you with further information about the right to be forgotten, if you ask for it.
             </p>
             
             <h2 className="text-xl font-semibold text-orange-500 my-4">Keeping your personal information secure.</h2>

@@ -205,52 +205,24 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
             </p>
           </div>
           
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="flex items-center gap-2">
-                <input 
-                  type="checkbox"
-                  id="acknowledged"
-                  className="w-5 h-5"
-                  checked={form.watch("acknowledged")}
-                  onChange={(e) => form.setValue("acknowledged", e.target.checked)}
-                />
-                <label htmlFor="acknowledged" className="font-medium">
-                  I acknowledge that I have read and understood the privacy notice.
-                </label>
-              </div>
-              
-              {form.formState.errors.acknowledged && (
-                <p className="text-red-500">{form.formState.errors.acknowledged.message}</p>
-              )}
-              
-              <div className="flex justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={onBack}
-                >
-                  Back
-                </Button>
-                <Button 
-                  type="button"
-                  onClick={() => {
-                    if (form.getValues().acknowledged) {
-                      onSuccess(); // Skip all the API calls and just go to the completion page
-                    } else {
-                      toast({
-                        title: "Please acknowledge",
-                        description: "You must acknowledge the privacy notice to proceed",
-                        variant: "destructive"
-                      });
-                    }
-                  }}
-                >
-                  Complete Application
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <div className="mt-8 space-y-6">
+            <div className="flex justify-between">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+              >
+                Back
+              </Button>
+              <Button 
+                type="button"
+                onClick={onSuccess} // Simply go to the completion page
+                className="bg-orange-500 hover:bg-orange-600"
+              >
+                Complete Application
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

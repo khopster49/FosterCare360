@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -12,19 +11,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
 import { queryClient } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [, setLocation] = useLocation();
   const [currentLocation] = useLocation();
 
-  // Fetch user data
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/auth/me"],
-    retry: false,
-  });
-
-  const isAuthenticated = !!user;
+  // Fetch user data using our auth hook
+  const { user, isLoading, isAuthenticated } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -154,25 +149,25 @@ export default function Header() {
           <div className="md:hidden py-4 mt-3 border-t">
             <nav className="flex flex-col space-y-4">
               <Link href="/">
-                <a className="text-gray-600 hover:text-gray-900 py-1">Home</a>
+                <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">Home</span>
               </Link>
               <Link href="/apply">
-                <a className="text-gray-600 hover:text-gray-900 py-1">Apply</a>
+                <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">Apply</span>
               </Link>
               <Link href="/faq">
-                <a className="text-gray-600 hover:text-gray-900 py-1">FAQ</a>
+                <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">FAQ</span>
               </Link>
               <Link href="/contact">
-                <a className="text-gray-600 hover:text-gray-900 py-1">Contact</a>
+                <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">Contact</span>
               </Link>
               
               {isAuthenticated ? (
                 <>
                   <Link href="/dashboard">
-                    <a className="text-gray-600 hover:text-gray-900 py-1">Dashboard</a>
+                    <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">Dashboard</span>
                   </Link>
                   <Link href="/profile">
-                    <a className="text-gray-600 hover:text-gray-900 py-1">Profile Settings</a>
+                    <span className="text-gray-600 hover:text-gray-900 py-1 block cursor-pointer">Profile Settings</span>
                   </Link>
                   <button
                     onClick={handleLogout}

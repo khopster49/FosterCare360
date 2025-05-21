@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +11,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { toast } from "@/hooks/use-toast";
 
+// Define typings for our application data
 interface Application {
   id: number;
   firstName: string;
@@ -37,11 +39,8 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Fetch user information
-  const { data: user, isLoading: userLoading, error: userError } = useQuery({
-    queryKey: ["/api/auth/me"],
-    retry: false,
-  });
+  // Fetch user information using our auth hook
+  const { user, isLoading: userLoading, error: userError, isAuthenticated } = useAuth();
 
   // Fetch applications for the current user
   const { data: applications, isLoading: applicationsLoading, error: applicationsError } = useQuery({

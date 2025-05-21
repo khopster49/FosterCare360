@@ -588,320 +588,394 @@ export function EqualOpportunitiesForm({ applicantId, onSuccess, onBack }: Equal
               <div className="mb-6">
                 <p className="font-medium mb-4">Please state your ethnic group</p>
                 
-                <div className="grid grid-cols-1 gap-4">
-                  {/* Black groups */}
-                  <div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
-                      <FormField
-                        control={form.control}
-                        name="ethnicity"
-                        render={({ field }) => (
-                          <>
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Prefer not to say"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Prefer not to say")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Prefer not to say</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Black African"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Black African")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Black African</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Black Caribbean"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Black Caribbean")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Black Caribbean</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Black other"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Black other")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Black other</FormLabel>
-                            </FormItem>
-                          </>
-                        )}
-                      />
-                    </div>
+                <div className="grid gap-2">
+                  <div className="grid grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Prefer not to say"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Prefer not to say")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Prefer not to say</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                     
-                    {watchEthnicity === "Black other" && (
-                      <div className="flex items-center mb-4">
-                        <span className="mr-2">Please state</span>
-                        <FormField
-                          control={form.control}
-                          name="ethnicityCustomBlack"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormControl>
-                                <Input {...field} placeholder="Please specify" className="max-w-md" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Black African"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Black African")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Black African</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Black Caribbean"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Black Caribbean")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Black Caribbean</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Black other"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Black other")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Black other</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   
-                  {/* Asian groups */}
-                  <div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-2">
+                  {watchEthnicity === "Black other" && (
+                    <div className="flex items-center ml-4 mb-2">
+                      <span className="mr-2">Please state</span>
                       <FormField
                         control={form.control}
-                        name="ethnicity"
+                        name="ethnicityCustomBlack"
                         render={({ field }) => (
-                          <>
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Asian Bangladeshi"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Asian Bangladeshi")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Asian Bangladeshi</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Asian Indian"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Asian Indian")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Asian Indian</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Asian Pakistani"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Asian Pakistani")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Asian Pakistani</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Asian other"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Asian other")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Asian other</FormLabel>
-                            </FormItem>
-                          </>
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input {...field} placeholder="Please specify" className="max-w-md" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                     </div>
+                  )}
+                  
+                  <div className="grid grid-cols-4 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Asian Bangladeshi"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Asian Bangladeshi")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Asian Bangladeshi</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                     
-                    {watchEthnicity === "Asian other" && (
-                      <div className="flex items-center mb-4">
-                        <span className="mr-2">Please state</span>
-                        <FormField
-                          control={form.control}
-                          name="ethnicityCustomAsian"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormControl>
-                                <Input {...field} placeholder="Please specify" className="max-w-md" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Asian Indian"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Asian Indian")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Asian Indian</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Asian Pakistani"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Asian Pakistani")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Asian Pakistani</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Asian other"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Asian other")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Asian other</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   
-                  {/* White groups */}
-                  <div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2">
+                  {watchEthnicity === "Asian other" && (
+                    <div className="flex items-center ml-4 mb-2">
+                      <span className="mr-2">Please state</span>
                       <FormField
                         control={form.control}
-                        name="ethnicity"
+                        name="ethnicityCustomAsian"
                         render={({ field }) => (
-                          <>
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White English"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White English")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White English</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White Irish"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White Irish")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White Irish</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White Northern Irish"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White Northern Irish")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White Northern Irish</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White Scottish"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White Scottish")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White Scottish</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White Welsh"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White Welsh")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White Welsh</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White Other"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White Other")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White Other</FormLabel>
-                            </FormItem>
-                          </>
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input {...field} placeholder="Please specify" className="max-w-md" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                     </div>
+                  )}
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White English"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White English")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White English</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                     
-                    {watchEthnicity === "White Other" && (
-                      <div className="flex items-center mb-4">
-                        <span className="mr-2">Please state</span>
-                        <FormField
-                          control={form.control}
-                          name="ethnicityCustomWhite"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormControl>
-                                <Input {...field} placeholder="Please specify" className="max-w-md" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White Irish"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White Irish")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White Irish</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White Northern Irish"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White Northern Irish")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White Northern Irish</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   
-                  {/* Mixed parentage */}
-                  <div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-2">
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White Scottish"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White Scottish")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White Scottish</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White Welsh"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White Welsh")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White Welsh</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White Other"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White Other")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White Other</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  {watchEthnicity === "White Other" && (
+                    <div className="flex items-center ml-4 mb-2">
+                      <span className="mr-2">Please state</span>
                       <FormField
                         control={form.control}
-                        name="ethnicity"
+                        name="ethnicityCustomWhite"
                         render={({ field }) => (
-                          <>
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Mixed Parentage"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Mixed Parentage")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Mixed Parentage</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White & Black African"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White & Black African")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White & Black African</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White & Black Caribbean"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White & Black Caribbean")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White & Black Caribbean</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "White & Asian"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "White & Asian")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">White & Asian</FormLabel>
-                            </FormItem>
-                            
-                            <FormItem className="flex items-center space-x-2">
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value === "Other ethnic group"}
-                                  onCheckedChange={() => form.setValue("ethnicity", "Other ethnic group")}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal cursor-pointer">Other ethnic group</FormLabel>
-                            </FormItem>
-                          </>
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input {...field} placeholder="Please specify" className="max-w-md" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
                         )}
                       />
                     </div>
+                  )}
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Mixed Parentage"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Mixed Parentage")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Mixed Parentage</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                     
-                    {watchEthnicity === "Other ethnic group" && (
-                      <div className="flex items-center mb-4">
-                        <span className="mr-2">Please state</span>
-                        <FormField
-                          control={form.control}
-                          name="ethnicityCustomOther"
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormControl>
-                                <Input {...field} placeholder="Please specify" className="max-w-md" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White & Black African"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White & Black African")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White & Black African</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White & Black Caribbean"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White & Black Caribbean")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White & Black Caribbean</FormLabel>
+                        </FormItem>
+                      )}
+                    />
                   </div>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "White & Asian"}
+                              onCheckedChange={() => form.setValue("ethnicity", "White & Asian")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">White & Asian</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="ethnicity"
+                      render={({ field }) => (
+                        <FormItem className="flex items-start space-x-2">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value === "Other ethnic group"}
+                              onCheckedChange={() => form.setValue("ethnicity", "Other ethnic group")}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal cursor-pointer">Other ethnic group</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  {watchEthnicity === "Other ethnic group" && (
+                    <div className="flex items-center mb-2">
+                      <span className="mr-2">Please state</span>
+                      <FormField
+                        control={form.control}
+                        name="ethnicityCustomOther"
+                        render={({ field }) => (
+                          <FormItem className="flex-1">
+                            <FormControl>
+                              <Input {...field} placeholder="Please specify" className="max-w-md" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               

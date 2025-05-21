@@ -164,6 +164,14 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
             <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-6">
               <CheckCircle className="h-10 w-10 text-green-600" />
             </div>
+            <div className="flex flex-col items-center gap-4">
+              <Button 
+                type="button"
+                onClick={() => window.open(`/api/applicants/${applicantId}/pdf`, '_blank')}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Download Application PDF
+              </Button>
             <h2 className="text-2xl font-medium text-center mb-4">Application Submitted</h2>
             <p className="text-neutral-700 text-center mb-8 max-w-md">
               Your fostering application has been successfully submitted. We'll review your information and be in touch soon.

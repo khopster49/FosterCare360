@@ -8,7 +8,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <div className="flex items-center">
           <img src="/src/assets/swiis-logo.svg" alt="Swiis Foster Care" className="h-10 mr-4" />
-          <h1 className="text-xl font-medium">Swiis Foster Care Application</h1>
+          <h1 className="text-xl font-medium text-[#FF5722]">Swiis Foster Care Application</h1>
         </div>
         <div>
           <TooltipProvider>

@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Upload } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -78,6 +78,12 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   
+  // Fetch current user if logged in
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ['/api/auth/me'],
+    retry: false,
+  });
+  
   // Set up the form
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
@@ -108,6 +114,16 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
     },
   });
   
+  // Pre-fill form with user data when available
+  useEffect(() => {
+    if (user && typeof user === 'object') {
+      form.setValue('firstName', user.firstName || '');
+      form.setValue('lastName', user.lastName || '');
+      form.setValue('email', user.email || '');
+      form.setValue('mobilePhone', user.phoneNumber || '');
+    }
+  }, [user, form]);
+  
   // Create applicant mutation
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: PersonalInfoFormValues) => {
@@ -123,10 +139,16 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
+        // Associate with user account if logged in
+        ...(user?.user ? { userId: user.user.id } : {}),
+        // Add fields for save & return functionality
+        status: 'in-progress',
+        lastCompletedStep: 0,
+        saveDate: new Date().toISOString()
       };
       
-      const res = await apiRequest("POST", "/api/applicants", apiValues);
-      return res.json();
+      const response = await apiRequest("/api/applicants", "POST", apiValues);
+      return response;
     },
     onSuccess: (data) => {
       toast({

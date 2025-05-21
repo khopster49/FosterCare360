@@ -161,7 +161,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4 mb-4">
               <img 
-                src="https://www.swiisfostercare.com/wp-content/themes/swiis/assets/img/swiis-logo.svg" 
+                src="/src/assets/swiis-logo.svg" 
                 alt="SWIIS Foster Care Logo" 
                 className="h-12"
               />

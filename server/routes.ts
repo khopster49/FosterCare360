@@ -603,9 +603,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { ApplicationPDF } = require('../client/src/components/application-pdf');
       const { renderToStream } = require('@react-pdf/renderer');
       
-      const stream = await renderToStream(<ApplicationPDF {...data} />);
+      const stream = await renderToStream(React.createElement(ApplicationPDF, data));
       stream.pipe(res);
     } catch (error) {
+      console.error('PDF generation error:', error);
       return res.status(500).json({ 
         message: "Failed to generate PDF" 
       });

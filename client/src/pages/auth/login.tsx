@@ -44,7 +44,7 @@ export default function LoginPage() {
         title: "Login Successful",
         description: "You have been logged in successfully.",
       });
-      setLocation("/dashboard");
+      setLocation("/dashboard?welcome=true");
     },
     onError: (error: any) => {
       toast({
@@ -98,8 +98,10 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:underline">
-                    Forgot password?
+                  <Link href="/auth/forgot-password">
+                    <span className="text-sm text-blue-600 hover:underline cursor-pointer">
+                      Forgot password?
+                    </span>
                   </Link>
                 </div>
                 <Input
@@ -115,7 +117,7 @@ export default function LoginPage() {
               
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-blue-600 hover:bg-blue-700" 
                 disabled={mutation.isPending}
               >
                 {mutation.isPending ? "Logging in..." : "Log in"}
@@ -126,8 +128,10 @@ export default function LoginPage() {
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-600">
               Don't have an account? {" "}
-              <Link href="/auth/register" className="text-blue-600 hover:underline">
-                Register
+              <Link href="/auth/register">
+                <span className="text-blue-600 hover:underline cursor-pointer">
+                  Register
+                </span>
               </Link>
             </p>
           </CardFooter>

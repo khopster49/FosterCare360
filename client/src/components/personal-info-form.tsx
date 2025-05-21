@@ -141,8 +141,8 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
-        // Make userId optional since we're not requiring login for now
-        userId: null,
+        // Associate with user account if user is logged in
+        userId: isAuthenticated && user ? user.id : null,
         // Add fields for save & return functionality
         status: 'in-progress',
         lastCompletedStep: 0

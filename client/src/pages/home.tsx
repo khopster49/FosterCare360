@@ -7,6 +7,7 @@ import { EducationForm } from "@/components/education-form";
 import { EmploymentForm } from "@/components/employment-form";
 import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
+import { DisciplinaryForm } from "@/components/disciplinary-form";
 import { VerificationForm } from "@/components/verification-form";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
@@ -18,7 +19,8 @@ const steps = [
   { id: 3, label: "Employment" },
   { id: 4, label: "Skills" },
   { id: 5, label: "References" },
-  { id: 6, label: "Checks" },
+  { id: 6, label: "Disciplinary" },
+  { id: 7, label: "Checks" },
 ];
 
 export default function Home() {
@@ -128,6 +130,20 @@ export default function Home() {
             )}
             
             {currentStep === 5 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Disciplinary & Criminal Issues</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please provide information about any disciplinary or criminal issues as required by fostering regulations.
+                </p>
+                <DisciplinaryForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 6 && applicantId && (
               <>
                 <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
                 <p className="text-neutral-700 text-sm mb-6">

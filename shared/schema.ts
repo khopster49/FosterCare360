@@ -32,6 +32,19 @@ export const applicants = pgTable("applicants", {
   rightToWork: boolean("right_to_work").notNull(),
   workDocumentType: text("work_document_type").notNull(),
   skillsAndExperience: text("skills_and_experience"),
+  
+  // Disciplinary and criminal record fields
+  hasDisciplinary: boolean("has_disciplinary"),
+  disciplinaryDetails: text("disciplinary_details"),
+  hasPoliceWarning: boolean("has_police_warning"),
+  hasUnresolvedCharges: boolean("has_unresolved_charges"),
+  hasPoliceInvestigation: boolean("has_police_investigation"),
+  hasDismissedForMisconduct: boolean("has_dismissed_for_misconduct"),
+  hasProfessionalDisqualification: boolean("has_professional_disqualification"),
+  hasOngoingInvestigation: boolean("has_ongoing_investigation"),
+  hasProhibition: boolean("has_prohibition"),
+  criminalDetails: text("criminal_details"),
+  
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
   status: text("status").notNull().default("in_progress"),

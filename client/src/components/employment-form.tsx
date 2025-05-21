@@ -456,10 +456,13 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       name={`employmentEntries.${index}.employerMobile`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Employer Mobile (Optional)</FormLabel>
+                          <FormLabel>Employer Mobile</FormLabel>
                           <FormControl>
                             <Input placeholder="Mobile phone number (if available)" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            This field is optional and can be left blank if not available.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}

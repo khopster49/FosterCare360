@@ -51,6 +51,9 @@ const declarationSchema = z.object({
   consentToChecks: z.boolean().refine(value => value === true, {
     message: "You must consent to reference and DBS checks",
   }),
+  consentToOnlineDbsCheck: z.boolean().refine(value => value === true, {
+    message: "You must consent to online DBS check verification",
+  }),
   dataProtection: z.boolean().refine(value => value === true, {
     message: "You must consent to data processing",
   }),

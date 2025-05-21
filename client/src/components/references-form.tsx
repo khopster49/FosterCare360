@@ -75,6 +75,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
         email: employmentEntry.referenceEmail,
         phone: employmentEntry.referencePhone,
         employer: employmentEntry.employer,
+        employerAddress: employmentEntry.employerAddress || '',
         position: employmentEntry.position
       };
       
@@ -176,6 +177,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                         <p><span className="font-medium">Name:</span> {reference.referenceName}</p>
                         <p><span className="font-medium">Email:</span> {reference.referenceEmail}</p>
                         <p><span className="font-medium">Phone:</span> {reference.referencePhone}</p>
+                        <p><span className="font-medium">Employer Address:</span> {reference.employerAddress || 'Not provided'}</p>
                       </div>
                     </div>
                     <div>

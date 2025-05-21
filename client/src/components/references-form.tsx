@@ -270,7 +270,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                 Processing
               </>
             ) : (
-              "Next: Verification Checks"
+              "Next: Disciplinary & Criminal Issues"
             )}
           </Button>
         </div>

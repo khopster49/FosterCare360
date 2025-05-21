@@ -269,7 +269,7 @@ export function DataProtectionForm({ applicantId, onSuccess, onBack }: DataProte
                 Submitting
               </>
             ) : (
-              "Submit Application"
+              "Next: Equal Opportunities"
             )}
           </Button>
         </div>

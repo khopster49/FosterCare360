@@ -49,6 +49,10 @@ export const applicants = pgTable("applicants", {
   dataProtectionAgreed: boolean("data_protection_agreed"),
   dataProtectionSignedDate: timestamp("data_protection_signed_date"),
   
+  // Equal opportunities data
+  equalOpportunitiesCompleted: boolean("equal_opportunities_completed"),
+  equalOpportunitiesDate: timestamp("equal_opportunities_date"),
+  
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
   status: text("status").notNull().default("in_progress"),

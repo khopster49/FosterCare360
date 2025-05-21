@@ -159,9 +159,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <div className="mb-4">
-              <h3 className="text-lg font-medium text-primary">SWIIS Foster Care Application Form</h3>
-            </div>
+            {/* Title removed as requested */}
             <p className="text-sm text-neutral-600 mb-4">
               We are committed to Equal Opportunities in all areas of our operations and welcome all applicants irrespective of age,
               disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & maternity, sex, sexual orientation. 

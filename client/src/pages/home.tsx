@@ -12,7 +12,9 @@ import { DataProtectionForm } from "@/components/data-protection-form";
 import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
 import { VerificationForm } from "@/components/verification-form";
 import { PrivacyNotice } from "@/components/privacy-notice";
+import { ApplicationPDFDownload } from "@/components/application-pdf-generator";
 import { useFormStepper } from "@/hooks/use-form-stepper";
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 
 // Define the steps for the application process
@@ -27,6 +29,7 @@ const steps = [
   { id: 8, label: "Equal Opps" },
   { id: 9, label: "Checks" },
   { id: 10, label: "Privacy Notice" },
+  { id: 11, label: "Complete" },
 ];
 
 export default function Home() {
@@ -41,6 +44,36 @@ export default function Home() {
   } = useFormStepper({
     initialStep: 0,
     totalSteps: steps.length,
+  });
+
+  // Fetch applicant data for completion page
+  const { data: applicant } = useQuery({
+    queryKey: ['/api/applicants', applicantId],
+    enabled: !!applicantId && currentStep === 10,
+  });
+  
+  // Fetch education data for completion page
+  const { data: education } = useQuery({
+    queryKey: ['/api/applicants', applicantId, 'education'],
+    enabled: !!applicantId && currentStep === 10,
+  });
+  
+  // Fetch employment data for completion page
+  const { data: employment } = useQuery({
+    queryKey: ['/api/applicants', applicantId, 'employment'],
+    enabled: !!applicantId && currentStep === 10,
+  });
+  
+  // Fetch references data for completion page
+  const { data: references } = useQuery({
+    queryKey: ['/api/applicants', applicantId, 'references'],
+    enabled: !!applicantId && currentStep === 10,
+  });
+  
+  // Fetch verification data for completion page
+  const { data: verification } = useQuery({
+    queryKey: ['/api/applicants', applicantId, 'dbs'],
+    enabled: !!applicantId && currentStep === 10,
   });
 
   // Handler when personal info form is completed
@@ -202,6 +235,70 @@ export default function Home() {
                   onSuccess={() => nextStep()} 
                   onBack={() => previousStep()} 
                 />
+              </>
+            )}
+            
+            {currentStep === 10 && applicantId && (
+              <>
+                <div className="text-center space-y-6 py-8">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-lg mx-auto mb-8">
+                    <div className="flex justify-center mb-4">
+                      <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    <h2 className="text-2xl font-bold text-green-700 mb-2">Application Submitted!</h2>
+                    <p className="text-green-600 mb-4">
+                      Thank you for completing your application to become a foster carer with Swiis Foster Care.
+                    </p>
+                    <p className="text-slate-700 mb-6">
+                      Your application has been received and will be reviewed by our team. You can download a copy of your completed application for your records using the button below.
+                    </p>
+                    
+                    {/* Show PDF download button */}
+                    <div className="flex justify-center">
+                      {applicant && employment && education && references && verification && (
+                        <ApplicationPDFDownload
+                          applicant={applicant}
+                          education={education}
+                          employment={employment}
+                          references={references}
+                          verification={verification}
+                          equal={applicant}
+                          discipline={applicant}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-6">
+                    <h3 className="text-lg font-medium mb-4">What happens next?</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <div className="font-medium mb-2">1. Application Review</div>
+                        <p className="text-sm text-gray-600">Our team will review your application and contact you within 5 working days.</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <div className="font-medium mb-2">2. Initial Interview</div>
+                        <p className="text-sm text-gray-600">We'll schedule an initial interview to discuss your application in more detail.</p>
+                      </div>
+                      <div className="bg-white p-4 rounded-lg border border-gray-200">
+                        <div className="font-medium mb-2">3. Assessment Process</div>
+                        <p className="text-sm text-gray-600">If successful, you'll begin the formal assessment process to become a foster carer.</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8">
+                    <p className="text-sm text-gray-500">
+                      If you have any questions, please contact our team at <a href="mailto:HRTeam@swiis.com" className="text-primary font-medium">HRTeam@swiis.com</a> or call <a href="tel:02032192865" className="text-primary font-medium">0203 219 2865</a>
+                    </p>
+                  </div>
+                </div>
               </>
             )}
           </div>

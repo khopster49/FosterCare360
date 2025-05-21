@@ -106,7 +106,18 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
             `${entry.details}\n\nBreak explanation: ${values.breakExplanation}` : 
             `Break explanation: ${values.breakExplanation}`;
         }
-        await createEducationEntry.mutateAsync(entry);
+        
+        // Ensure we pass a properly formatted entry
+        const formattedEntry = {
+          applicantId: applicantId,
+          institution: entry.institution,
+          qualification: entry.qualification,
+          startDate: entry.startDate,
+          endDate: entry.endDate,
+          details: entry.details || null
+        };
+        
+        await createEducationEntry.mutateAsync(formattedEntry);
       }
       
       toast({

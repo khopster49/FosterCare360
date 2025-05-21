@@ -446,9 +446,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Applicant not found" });
       }
       
+      // Make sure to capture employer address data properly
       const data = insertReferenceSchema.parse({
         ...req.body,
-        applicantId
+        applicantId,
+        employerAddress: req.body.employerAddress || ''
       });
       
       // Verify the employment entry exists

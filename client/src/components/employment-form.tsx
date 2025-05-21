@@ -105,11 +105,15 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       employmentEntries: [
         {
           employer: "",
+          employerAddress: "",
+          employerPhone: "",
+          employerMobile: "",
           position: "",
           startDate: "",
           endDate: "",
           isCurrent: false,
           duties: "",
+          reasonForLeaving: "",
           referenceName: "",
           referenceEmail: "",
           referencePhone: "",
@@ -312,7 +316,17 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
     try {
       // Submit each employment entry
       for (const entry of values.employmentEntries) {
-        const entryData = { ...entry, applicantId };
+        // Ensure all required fields are present
+        const entryData = { 
+          ...entry, 
+          applicantId,
+          // Make sure these fields always have at least an empty string
+          employerAddress: entry.employerAddress || '',
+          employerPhone: entry.employerPhone || '',
+          employerMobile: entry.employerMobile || '',
+          reasonForLeaving: entry.reasonForLeaving || ''
+        };
+        
         // If current job, set endDate to null
         if (entryData.isCurrent) {
           entryData.endDate = undefined;
@@ -772,11 +786,15 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             onClick={() =>
               append({
                 employer: "",
+                employerAddress: "",
+                employerPhone: "",
+                employerMobile: "",
                 position: "",
                 startDate: "",
                 endDate: "",
                 isCurrent: false,
                 duties: "",
+                reasonForLeaving: "",
                 referenceName: "",
                 referenceEmail: "",
                 referencePhone: "",

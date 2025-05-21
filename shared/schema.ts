@@ -111,6 +111,8 @@ export const insertApplicantSchema = createInsertSchema(applicants).omit({
   createdAt: true,
   completedAt: true,
   status: true,
+}).extend({
+  userId: z.number().nullable().optional(),
 });
 
 export type InsertApplicant = z.infer<typeof insertApplicantSchema>;

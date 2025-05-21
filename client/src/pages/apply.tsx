@@ -55,41 +55,35 @@ export default function ApplyPage() {
             </p>
           </div>
           
-          {/* Progress tracker */}
-          <div className="mb-8 overflow-x-auto">
-            <div className="min-w-max">
-              <TabsList className="grid grid-cols-8 w-full">
-                {steps.map((step, index) => (
-                  <TabsTrigger
-                    key={step.key}
-                    value={step.key}
-                    className={`px-4 py-2 ${
-                      activeStep === step.key
-                        ? "bg-blue-500 text-white"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      // Only allow navigation if we have an applicant ID (except for the first step)
-                      if (step.key === "personal" || applicantId) {
-                        setActiveStep(step.key);
-                      }
-                    }}
-                    disabled={step.key !== "personal" && !applicantId}
-                  >
-                    <div className="flex flex-col items-center">
-                      <span className="rounded-full bg-gray-200 text-gray-700 w-6 h-6 flex items-center justify-center mb-1">
-                        {index + 1}
-                      </span>
-                      <span className="text-xs hidden md:block">{step.label}</span>
-                    </div>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-          </div>
-          
           {/* Application form content */}
           <Tabs value={activeStep} onValueChange={setActiveStep}>
+            {/* Progress tracker */}
+            <div className="mb-8 overflow-x-auto">
+              <div className="min-w-max">
+                <TabsList className="grid grid-cols-8 w-full">
+                  {steps.map((step, index) => (
+                    <TabsTrigger
+                      key={step.key}
+                      value={step.key}
+                      onClick={() => {
+                        // Only allow navigation if we have an applicant ID (except for the first step)
+                        if (step.key === "personal" || applicantId) {
+                          setActiveStep(step.key);
+                        }
+                      }}
+                      disabled={step.key !== "personal" && !applicantId}
+                    >
+                      <div className="flex flex-col items-center">
+                        <span className="rounded-full bg-gray-200 text-gray-700 w-6 h-6 flex items-center justify-center mb-1">
+                          {index + 1}
+                        </span>
+                        <span className="text-xs hidden md:block">{step.label}</span>
+                      </div>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
+            </div>
             <TabsContent value="personal">
               <Card>
                 <CardHeader>

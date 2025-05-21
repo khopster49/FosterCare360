@@ -73,18 +73,18 @@ export function PersonalInfoForm({ onSuccess, initialData }: PersonalInfoFormPro
   // Mutation to submit the form
   const mutation = useMutation({
     mutationFn: async (values: PersonalInfoFormValues) => {
-      const response = await apiRequest<{ id: number }>('/api/applicants', {
+      const response = await apiRequest('/api/applicants', {
         method: 'POST',
         body: JSON.stringify(values),
       });
-      return response;
+      return response as { id: number };
     },
     onSuccess: (data) => {
       toast({
         title: "Success",
         description: "Personal information saved successfully",
       });
-      if (data.id) {
+      if (data && data.id) {
         onSuccess(data.id);
       }
     },

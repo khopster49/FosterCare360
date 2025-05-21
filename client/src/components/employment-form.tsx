@@ -29,6 +29,9 @@ import { formatDate } from "@/lib/utils";
 // Create schema for an employment entry
 const employmentEntrySchema = z.object({
   employer: z.string().min(1, { message: "Employer name is required" }),
+  employerAddress: z.string().min(1, { message: "Employer address is required" }),
+  employerPhone: z.string().min(5, { message: "Employer phone number is required" }),
+  employerMobile: z.string().optional(),
   position: z.string().min(1, { message: "Position is required" }),
   startDate: z.string().min(1, { message: "Start date is required" }),
   endDate: z.string().optional(),
@@ -410,6 +413,52 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                           <FormLabel>Position</FormLabel>
                           <FormControl>
                             <Input placeholder="Social Worker" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employerAddress`}
+                      render={({ field }) => (
+                        <FormItem className="col-span-2">
+                          <FormLabel>Employer Address</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Full employer address including postcode..."
+                              rows={2}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employerPhone`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employer Phone (Work)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Work phone number" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employerMobile`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employer Mobile (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Mobile phone number (if available)" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

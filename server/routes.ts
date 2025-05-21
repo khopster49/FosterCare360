@@ -599,10 +599,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename=application-${id}.pdf`);
       
+      const React = require('react');
       const { ApplicationPDF } = require('../client/src/components/application-pdf');
       const { renderToStream } = require('@react-pdf/renderer');
       
-      const stream = await renderToStream(React.createElement(ApplicationPDF, data));
+      const stream = await renderToStream(<ApplicationPDF {...data} />);
       stream.pipe(res);
     } catch (error) {
       return res.status(500).json({ 

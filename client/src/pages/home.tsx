@@ -52,29 +52,32 @@ export default function Home() {
     enabled: !!applicantId && currentStep === 10,
   });
   
-  // Fetch education data for completion page
+  // Fetch education history for the PDF
   const { data: education } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'education'],
     enabled: !!applicantId && currentStep === 10,
   });
   
-  // Fetch employment data for completion page
+  // Fetch employment history for the PDF
   const { data: employment } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'employment'],
     enabled: !!applicantId && currentStep === 10,
   });
   
-  // Fetch references data for completion page
+  // Fetch references for the PDF
   const { data: references } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'references'],
     enabled: !!applicantId && currentStep === 10,
   });
   
-  // Fetch verification data for completion page
+  // Fetch DBS check data for the PDF
   const { data: verification } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'dbs'],
     enabled: !!applicantId && currentStep === 10,
   });
+  
+  // Check if all data is loaded for PDF generation
+  const isDataReady = !!applicant && !!education && !!employment && !!references;
 
   // Handler when personal info form is completed
   const handlePersonalInfoComplete = (data: any) => {
@@ -261,7 +264,7 @@ export default function Home() {
                     
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
-                      {applicant && employment && education && references && verification && (
+                      {isDataReady && (
                         <ApplicationPDFDownload
                           applicant={applicant}
                           education={education}
@@ -271,6 +274,20 @@ export default function Home() {
                           equal={applicant}
                           discipline={applicant}
                         />
+                      )}
+                      {!isDataReady && (
+                        <button 
+                          className="inline-flex items-center px-4 py-2 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground" 
+                          disabled
+                        >
+                          <span className="mr-2">
+                            <svg className="animate-spin h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          </span>
+                          Preparing your application...
+                        </button>
                       )}
                     </div>
                   </div>

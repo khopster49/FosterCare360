@@ -589,6 +589,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+  
+  // API route for generating application PDF
+  app.get("/api/applicants/:id/application-pdf", async (req: Request, res: Response) => {
+    try {
+      const applicantId = parseInt(req.params.id);
+      if (isNaN(applicantId)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      // Get the applicant
+      const applicant = await storage.getApplicant(applicantId);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      // Get related data for PDF generation
+      const educationEntries = await storage.getEducationEntries(applicantId);
+      const employmentEntries = await storage.getEmploymentEntries(applicantId);
+      const references = await storage.getReferences(applicantId);
+      const dbsCheck = await storage.getDbsCheck(applicantId);
+      
+      // Compile all data needed for the PDF
+      const pdfData = {
+        applicant,
+        education: educationEntries,
+        employment: employmentEntries,
+        references,
+        verification: dbsCheck,
+      };
+      
+      return res.json(pdfData);
+    } catch (error) {
+      console.error("Error generating application PDF data:", error);
+      return res.status(500).json({ 
+        message: "Failed to generate application PDF data" 
+      });
+    }
+  });
 
   // Submit complete application
   app.post("/api/applicants/:id/submit", async (req: Request, res: Response) => {

@@ -75,6 +75,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   const [dbsFile, setDbsFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   
   // Fetch applicant data
   const { data: applicant } = useQuery({
@@ -137,6 +138,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
       });
       
       setIsComplete(true);
+      setIsSuccess(true);
       onSuccess();
     } catch (error: any) {
       toast({

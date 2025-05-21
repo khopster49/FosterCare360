@@ -117,10 +117,12 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
   // Pre-fill form with user data when available
   useEffect(() => {
     if (user && typeof user === 'object') {
-      form.setValue('firstName', user.firstName || '');
-      form.setValue('lastName', user.lastName || '');
-      form.setValue('email', user.email || '');
-      form.setValue('mobilePhone', user.phoneNumber || '');
+      // Type guard for user properties
+      const userData = user as any;
+      form.setValue('firstName', userData.firstName || '');
+      form.setValue('lastName', userData.lastName || '');
+      form.setValue('email', userData.email || '');
+      form.setValue('mobilePhone', userData.phoneNumber || '');
     }
   }, [user, form]);
   
@@ -140,7 +142,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
         // Associate with user account if logged in
-        ...(user?.user ? { userId: user.user.id } : {}),
+        ...(user && typeof user === 'object' && 'id' in user ? { userId: user.id as number } : {}),
         // Add fields for save & return functionality
         status: 'in-progress',
         lastCompletedStep: 0,

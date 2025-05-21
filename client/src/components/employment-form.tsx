@@ -329,9 +329,29 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
         
         // If current job, set endDate to null
         if (entryData.isCurrent) {
-          entryData.endDate = undefined;
+          entryData.endDate = null;
         }
-        await createEmploymentEntry.mutateAsync(entryData);
+        
+        // Fix the data format
+        const formattedEntry = {
+          applicantId: applicantId,
+          employer: entryData.employer,
+          employerAddress: entryData.employerAddress || '',
+          employerPhone: entryData.employerPhone || '',
+          employerMobile: entryData.employerMobile || '',
+          position: entryData.position,
+          startDate: entryData.startDate,
+          endDate: entryData.isCurrent ? null : entryData.endDate,
+          isCurrent: Boolean(entryData.isCurrent),
+          duties: entryData.duties || '',
+          reasonForLeaving: entryData.reasonForLeaving || '',
+          referenceName: entryData.referenceName || '',
+          referenceEmail: entryData.referenceEmail || '',
+          referencePhone: entryData.referencePhone || '',
+          workedWithVulnerable: Boolean(entryData.workedWithVulnerable)
+        };
+        
+        await createEmploymentEntry.mutateAsync(formattedEntry);
       }
       
       // Submit each employment gap

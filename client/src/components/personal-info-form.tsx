@@ -271,19 +271,15 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
             />
 
             {/* Middle Name */}
-            <FormField
-              control={form.control}
-              name="middleName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Middle Name(s)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Optional" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="space-y-2">
+              <label htmlFor="middleName" className="text-sm font-medium">Middle Name(s)</label>
+              <Input 
+                id="middleName"
+                placeholder="Optional" 
+                value={form.watch("otherNames") || ""}
+                onChange={(e) => form.setValue("otherNames", e.target.value)}
+              />
+            </div>
             
             {/* Last Name */}
             <FormField

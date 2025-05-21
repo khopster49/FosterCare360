@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
+import Apply from "@/pages/apply";
 
 function Router() {
   return (
@@ -16,6 +17,8 @@ function Router() {
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/apply" component={Apply} />
+      <Route path="/apply/:id" component={Apply} />
       <Route component={NotFound} />
     </Switch>
   );

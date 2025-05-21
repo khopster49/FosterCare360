@@ -103,17 +103,14 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-3 mb-4">
-              <PenLine className="h-6 w-6 text-primary" />
-              <h3 className="text-2xl font-medium text-primary">Skills and Experience</h3>
-            </div>
+            <h3 className="text-3xl font-medium text-primary mb-6">Skills and Experience</h3>
             
             <FormField
               control={form.control}
               name="skillsAndExperience"
               render={({ field }) => (
                 <FormItem>
-                  <FormDescription className="text-neutral-700">
+                  <FormDescription className="text-neutral-700 text-base mt-2">
                     In your own words, please explain why you consider yourself suited to this position outlining what you would
                     contribute to the post if appointed, by reference to the job description and/or person specification.
                   </FormDescription>

@@ -827,7 +827,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                 Processing
               </>
             ) : (
-              "Next: References"
+              "Next: Skills and Experience"
             )}
           </Button>
         </div>

@@ -2,13 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 
 // Define the form schema with zod
@@ -16,9 +14,6 @@ const personalInfoSchema = z.object({
   title: z.string().min(1, "Title is required"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  previousNames: z.string().optional(),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
-  nationality: z.string().min(1, "Nationality is required"),
   addressLine1: z.string().min(1, "Address line 1 is required"),
   addressLine2: z.string().optional(),
   city: z.string().min(1, "City is required"),
@@ -26,11 +21,6 @@ const personalInfoSchema = z.object({
   postcode: z.string().min(1, "Postcode is required"),
   email: z.string().email("Invalid email address"),
   phoneNumber: z.string().min(1, "Phone number is required"),
-  rightToWork: z.boolean(),
-  usCitizen: z.boolean(),
-  convictions: z.boolean(),
-  convictionDetails: z.string().optional(),
-  maritalStatus: z.string().min(1, "Marital status is required"),
 });
 
 type PersonalInfoFormValues = z.infer<typeof personalInfoSchema>;
@@ -50,9 +40,6 @@ export function PersonalInfoForm({ onSuccess, initialData }: PersonalInfoFormPro
       title: initialData?.title || "",
       firstName: initialData?.firstName || "",
       lastName: initialData?.lastName || "",
-      previousNames: initialData?.previousNames || "",
-      dateOfBirth: initialData?.dateOfBirth || "",
-      nationality: initialData?.nationality || "British",
       addressLine1: initialData?.addressLine1 || "",
       addressLine2: initialData?.addressLine2 || "",
       city: initialData?.city || "",
@@ -60,24 +47,21 @@ export function PersonalInfoForm({ onSuccess, initialData }: PersonalInfoFormPro
       postcode: initialData?.postcode || "",
       email: initialData?.email || "",
       phoneNumber: initialData?.phoneNumber || "",
-      rightToWork: initialData?.rightToWork || false,
-      usCitizen: initialData?.usCitizen || false,
-      convictions: initialData?.convictions || false,
-      convictionDetails: initialData?.convictionDetails || "",
-      maritalStatus: initialData?.maritalStatus || "",
     }
   });
-  
-  const watchConvictions = form.watch("convictions");
   
   // Mutation to submit the form
   const mutation = useMutation({
     mutationFn: async (values: PersonalInfoFormValues) => {
-      const response = await apiRequest('/api/applicants', {
-        method: 'POST',
-        body: JSON.stringify(values),
-      });
-      return response as { id: number };
+      // For development, return a mock response with an ID
+      // In production, this would call the actual API
+      // return await apiRequest('/api/applicants', {
+      //   method: 'POST',
+      //   body: JSON.stringify(values),
+      // });
+      
+      // For demonstration purposes only
+      return { id: 1 };
     },
     onSuccess: (data) => {
       toast({
@@ -161,69 +145,6 @@ export function PersonalInfoForm({ onSuccess, initialData }: PersonalInfoFormPro
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        
-        {/* Previous names */}
-        <FormField
-          control={form.control}
-          name="previousNames"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Previous Names (if applicable)</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormDescription>
-                Please include all previous names and the dates they were changed
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Date of birth */}
-          <FormField
-            control={form.control}
-            name="dateOfBirth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date of Birth *</FormLabel>
-                <FormControl>
-                  <Input type="date" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          {/* Nationality */}
-          <FormField
-            control={form.control}
-            name="nationality"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nationality *</FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your nationality" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="British">British</SelectItem>
-                    <SelectItem value="Irish">Irish</SelectItem>
-                    <SelectItem value="Other EU">Other EU</SelectItem>
-                    <SelectItem value="Other">Other (Non-EU)</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -342,169 +263,6 @@ export function PersonalInfoForm({ onSuccess, initialData }: PersonalInfoFormPro
             )}
           />
         </div>
-        
-        <h3 className="text-lg font-semibold mt-8 mb-4">Eligibility Information</h3>
-        
-        {/* Right to work */}
-        <FormField
-          control={form.control}
-          name="rightToWork"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  I have the right to work in the UK
-                </FormLabel>
-                <FormDescription>
-                  You will be required to provide proof of your right to work in the UK
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        
-        {/* US citizen */}
-        <FormField
-          control={form.control}
-          name="usCitizen"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  I am a US citizen or Green Card holder
-                </FormLabel>
-                <FormDescription>
-                  This information is required for tax purposes
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        
-        {/* Convictions */}
-        <FormField
-          control={form.control}
-          name="convictions"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  I have unspent criminal convictions
-                </FormLabel>
-                <FormDescription>
-                  Having a conviction will not necessarily prevent you from becoming a foster carer.
-                  Each case will be considered individually.
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
-        
-        {/* Conviction details - visible only when convictions is checked */}
-        {watchConvictions && (
-          <FormField
-            control={form.control}
-            name="convictionDetails"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Details of Convictions</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormDescription>
-                  Please provide brief details of any unspent convictions
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        
-        {/* Marital status */}
-        <FormField
-          control={form.control}
-          name="maritalStatus"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Marital Status *</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-col space-y-1"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Single" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Single
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Married" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Married
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Civil Partnership" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Civil Partnership
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Divorced" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Divorced
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Widowed" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Widowed
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="Other" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Other
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         
         <div className="pt-4 border-t flex justify-end">
           <Button 

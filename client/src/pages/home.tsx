@@ -1,116 +1,315 @@
-import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { FormStepper } from "@/components/form-stepper";
+import { PersonalInfoForm } from "@/components/personal-info-form";
+import { EducationForm } from "@/components/education-form";
+import { EmploymentForm } from "@/components/employment-form";
+import { SkillsExperienceForm } from "@/components/skills-experience-form";
+import { ReferencesForm } from "@/components/references-form";
+import { DisciplinaryForm } from "@/components/disciplinary-form";
+import { DataProtectionForm } from "@/components/data-protection-form";
+import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
+import { VerificationForm } from "@/components/verification-form";
+import { PrivacyNotice } from "@/components/privacy-notice";
+import { SaveExitButton } from "@/components/save-exit-button";
+import { useFormStepper } from "@/hooks/use-form-stepper";
+import { Helmet } from "react-helmet";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
-export default function HomePage() {
+// Define the steps for the application process
+const steps = [
+  { id: 1, label: "Personal Info" },
+  { id: 2, label: "Education" },
+  { id: 3, label: "Employment" },
+  { id: 4, label: "Skills" },
+  { id: 5, label: "References" },
+  { id: 6, label: "Disciplinary" },
+  { id: 7, label: "Declaration" },
+  { id: 8, label: "Equal Opps" },
+  { id: 9, label: "Checks" },
+  { id: 10, label: "Privacy Notice" },
+];
+
+export default function Home() {
+  const [applicantId, setApplicantId] = useState<number | null>(null);
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  
+  // Check if user is logged in
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: ['/api/auth/me'],
+    retry: false,
+  });
+  
+  // Initialize form stepper (check URL for step param)
+  const urlParams = new URLSearchParams(window.location.search);
+  const stepParam = urlParams.get('step');
+  const initialStepIndex = stepParam ? parseInt(stepParam) : 0;
+  
+  const {
+    currentStep,
+    nextStep,
+    previousStep,
+    completedSteps,
+    setCurrentStep
+  } = useFormStepper({
+    initialStep: initialStepIndex,
+    totalSteps: steps.length,
+  });
+  
+  // Save progress mutation
+  const saveProgressMutation = useMutation({
+    mutationFn: async () => {
+      if (!applicantId) return null;
+      return await apiRequest(`/api/applicants/${applicantId}/progress`, "PATCH", {
+        step: currentStep
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Progress Saved",
+        description: "Your application progress has been saved successfully. You can return later to continue.",
+      });
+      setLocation("/dashboard");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Save Progress",
+        description: error.message || "There was an error saving your progress. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+  
+  // Handle save and exit
+  const handleSaveAndExit = () => {
+    if (!user) {
+      // If not logged in, prompt to log in or register
+      toast({
+        title: "Authentication Required",
+        description: "Please log in or register to save your progress.",
+      });
+      setLocation("/auth/login");
+      return;
+    }
+    
+    // If no applicant ID yet, inform user they need to complete personal info first
+    if (!applicantId) {
+      toast({
+        title: "Complete Personal Information",
+        description: "Please complete the Personal Information section before saving your progress.",
+      });
+      return;
+    }
+    
+    // Save progress and redirect to dashboard
+    saveProgressMutation.mutate();
+  };
+
+  // Handler when personal info form is completed
+  const handlePersonalInfoComplete = (data: any) => {
+    setApplicantId(data.id);
+    nextStep();
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <>
+      <Helmet>
+        <title>UK Fostering Onboarding Programme - Application</title>
+        <meta name="description" content="Complete your UK fostering application to become a foster carer. Our online application process meets all Schedule 1 regulations." />
+        <meta property="og:title" content="UK Fostering Onboarding Programme - Application" />
+        <meta property="og:description" content="Complete your UK fostering application to become a foster carer. Our online application process meets all Schedule 1 regulations." />
+      </Helmet>
       
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-b from-blue-50 to-white py-16 px-4">
-          <div className="container mx-auto max-w-6xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-                  Begin Your Fostering Journey Today
-                </h1>
-                <p className="text-lg text-gray-700">
-                  Help change children's lives by becoming a foster carer.
-                  Our comprehensive application process ensures the best
-                  match for both carers and children.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link href="/apply">
-                    <Button size="lg" className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700">
-                      Start Application
-                    </Button>
-                  </Link>
-                  <Link href="/auth/login">
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                      Continue Application
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-xl">Application Process</CardTitle>
-                    <CardDescription>A simple guided approach</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-4">
-                      <li className="flex gap-3">
-                        <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold flex-shrink-0">1</div>
-                        <div>
-                          <h3 className="font-medium">Register Account</h3>
-                          <p className="text-sm text-gray-600">Create your account to start the application</p>
-                        </div>
-                      </li>
-                      <li className="flex gap-3">
-                        <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold flex-shrink-0">2</div>
-                        <div>
-                          <h3 className="font-medium">Complete Application</h3>
-                          <p className="text-sm text-gray-600">Fill out required information at your own pace</p>
-                        </div>
-                      </li>
-                      <li className="flex gap-3">
-                        <div className="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center font-semibold flex-shrink-0">3</div>
-                        <div>
-                          <h3 className="font-medium">Submit & Review</h3>
-                          <p className="text-sm text-gray-600">We'll review your application and contact you</p>
-                        </div>
-                      </li>
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
-                    <p className="text-sm text-gray-500">You can save your progress and return at any time</p>
-                  </CardFooter>
-                </Card>
-              </div>
-            </div>
-          </div>
-        </section>
+      <div className="flex flex-col min-h-screen bg-neutral-50">
+        <Header />
         
-        {/* Features Section */}
-        <section className="py-16 px-4 bg-white">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Why Become a Foster Carer?</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Change Lives</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Make a real difference in children's lives by providing a safe, supportive home environment when they need it most.</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Comprehensive Support</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Receive ongoing training, 24/7 support, regular visits from social workers, and peer support from other foster carers.</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Financial Assistance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>Fostering allowances help cover the costs of caring for a child, ensuring you have the resources you need.</p>
-                </CardContent>
-              </Card>
-            </div>
+        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-2xl font-bold text-primary">Fostering Application</h1>
+            
+            {/* Save and Exit button - only shown when form has an ID */}
+            {applicantId && (
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={handleSaveAndExit}
+                disabled={saveProgressMutation.isPending}
+              >
+                {saveProgressMutation.isPending ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                      <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save & Exit
+                  </>
+                )}
+              </Button>
+            )}
           </div>
-        </section>
-      </main>
-      
-      <Footer />
-    </div>
+          
+          <FormStepper 
+            steps={steps} 
+            currentStep={currentStep} 
+            completedSteps={completedSteps}
+          />
+          
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            {currentStep === 0 && (
+              <>
+                <h2 className="text-xl font-medium mb-2">Personal Information</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please provide your basic personal details as required by UK fostering regulations.
+                </p>
+                <PersonalInfoForm onSuccess={handlePersonalInfoComplete} />
+              </>
+            )}
+            
+            {currentStep === 1 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2">Education History</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please provide details of your educational background, starting with the most recent.
+                </p>
+                <EducationForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 2 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2">Employment History</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please provide your complete employment history, including any gaps. All gaps over 31 days must be explained.
+                </p>
+                <EmploymentForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 3 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Skills and Experience</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please explain why you consider yourself suited to fostering and what you would contribute to the role.
+                </p>
+                <SkillsExperienceForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 4 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2">References</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  We will seek references from your last two employers and all previous positions where you worked with children or vulnerable adults.
+                </p>
+                <ReferencesForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 5 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Disciplinary & Criminal Issues</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please provide information about any disciplinary or criminal issues as required by fostering regulations.
+                </p>
+                <DisciplinaryForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 6 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection/Declaration & Confidentiality Agreement</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please review and agree to the declaration and confidentiality agreement to complete your application.
+                </p>
+                <DataProtectionForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 7 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Equal Opportunities Questionnaire</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please complete this optional questionnaire to help us monitor our equal opportunities policy and performance.
+                </p>
+                <EqualOpportunitiesForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 8 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  As part of the fostering application process, we need to conduct mandatory verification checks to ensure compliance with UK regulations.
+                </p>
+                <VerificationForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 9 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection Privacy Notice</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please carefully review this important privacy notice regarding how we process your personal information.
+                </p>
+                <PrivacyNotice 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
+    </>
   );
 }

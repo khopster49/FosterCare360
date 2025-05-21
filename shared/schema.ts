@@ -65,7 +65,7 @@ export type User = typeof users.$inferSelect;
 // Applicant Schema
 export const applicants = pgTable("applicants", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id).notNull(),
   firstName: text("first_name").notNull(),
   middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
@@ -111,8 +111,6 @@ export const insertApplicantSchema = createInsertSchema(applicants).omit({
   createdAt: true,
   completedAt: true,
   status: true,
-}).extend({
-  userId: z.number().nullable().optional(),
 });
 
 export type InsertApplicant = z.infer<typeof insertApplicantSchema>;

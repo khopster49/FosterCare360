@@ -3,68 +3,109 @@ import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { Save } from "lucide-react";
 
 interface SaveExitButtonProps {
-  applicantId: number;
+  applicantId?: number;
   currentStep: number;
+  onSave?: () => void;
 }
 
-export function SaveExitButton({ applicantId, currentStep }: SaveExitButtonProps) {
-  const [, setLocation] = useLocation();
+export function SaveExitButton({ applicantId, currentStep, onSave }: SaveExitButtonProps) {
   const { toast } = useToast();
-  const [isSaving, setIsSaving] = useState(false);
-
-  // Mutation for saving progress
-  const mutation = useMutation({
+  const [, setLocation] = useLocation();
+  const [showDialog, setShowDialog] = useState(false);
+  
+  const { mutate, isPending } = useMutation({
     mutationFn: async () => {
-      setIsSaving(true);
-      return await apiRequest(`/api/applicants/${applicantId}/progress`, "PATCH", {
-        lastCompletedStep: currentStep,
-        saveDate: new Date().toISOString()
-      });
+      if (!applicantId) return;
+      
+      const response = await apiRequest(
+        `/api/applicants/${applicantId}/progress`, 
+        "PATCH", 
+        { 
+          lastCompletedStep: currentStep,
+          saveDate: new Date().toISOString(),
+        }
+      );
+      return response;
     },
     onSuccess: () => {
+      // Call the onSave callback if provided
+      if (onSave) onSave();
+      
       toast({
         title: "Progress saved",
-        description: "Your application progress has been saved. You can return to complete it later.",
+        description: "Your application progress has been saved. You can return to continue later.",
       });
+      
       // Redirect to dashboard after saving
       setLocation("/dashboard");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error saving progress",
         description: error.message || "There was a problem saving your progress. Please try again.",
         variant: "destructive",
       });
-      setIsSaving(false);
-    }
+      setShowDialog(false);
+    },
   });
-
-  const handleSaveAndExit = () => {
-    mutation.mutate();
-  };
-
+  
+  function handleSaveAndExit() {
+    if (applicantId) {
+      mutate();
+    } else {
+      toast({
+        title: "Cannot save progress",
+        description: "You need to complete at least the Personal Information section first.",
+        variant: "destructive",
+      });
+      setShowDialog(false);
+    }
+  }
+  
   return (
-    <Button 
-      variant="outline" 
-      className="gap-2"
-      onClick={handleSaveAndExit}
-      disabled={isSaving}
-    >
-      {isSaving ? (
-        <>
-          <span className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-          Saving...
-        </>
-      ) : (
-        <>
-          <Save className="h-4 w-4" />
-          Save & Exit
-        </>
-      )}
-    </Button>
+    <>
+      <Button 
+        variant="outline" 
+        className="flex items-center gap-2" 
+        onClick={() => setShowDialog(true)}
+      >
+        <Save className="h-4 w-4" />
+        Save & Exit
+      </Button>
+      
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Save your progress and exit?</DialogTitle>
+            <DialogDescription>
+              Your application progress will be saved. You can return to continue from where you left off later.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveAndExit} 
+              disabled={isPending}
+            >
+              {isPending ? "Saving..." : "Save & Exit"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

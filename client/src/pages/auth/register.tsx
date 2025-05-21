@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@shared/schema";
@@ -14,22 +13,20 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 
-// We need to extend this type to match our form structure and omit confirmPassword
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const [, setLocation] = useLocation();
-  const [agreed, setAgreed] = useState(false);
-  
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<RegisterFormValues>({
+
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
-      phoneNumber: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: ""
     }
   });
 
@@ -42,7 +39,7 @@ export default function RegisterPage() {
         title: "Registration Successful",
         description: "Please check your email to verify your account.",
       });
-      setLocation("/auth/login");
+      setLocation("/auth/verification-sent");
     },
     onError: (error: any) => {
       toast({
@@ -54,15 +51,6 @@ export default function RegisterPage() {
   });
 
   const onSubmit = (data: RegisterFormValues) => {
-    if (!agreed) {
-      toast({
-        title: "Terms Agreement Required",
-        description: "Please agree to the terms and conditions to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     mutation.mutate(data);
   };
 
@@ -75,7 +63,7 @@ export default function RegisterPage() {
           <CardHeader>
             <CardTitle className="text-2xl text-center">Create an Account</CardTitle>
             <CardDescription className="text-center">
-              Register to start your fostering application
+              Register to save your fostering application
             </CardDescription>
           </CardHeader>
           
@@ -124,7 +112,6 @@ export default function RegisterPage() {
                 <Label htmlFor="phoneNumber">Phone Number (Optional)</Label>
                 <Input
                   id="phoneNumber"
-                  type="tel"
                   placeholder="Enter your phone number"
                   {...register("phoneNumber")}
                 />
@@ -138,7 +125,7 @@ export default function RegisterPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Create a password (min. 8 characters)"
+                  placeholder="Create a password (8+ characters)"
                   {...register("password")}
                 />
                 {errors.password && (
@@ -159,25 +146,12 @@ export default function RegisterPage() {
                 )}
               </div>
               
-              <div className="flex items-start space-x-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mt-1"
-                  checked={agreed}
-                  onChange={() => setAgreed(!agreed)}
-                />
-                <label htmlFor="terms" className="text-sm text-gray-600">
-                  I agree to the <Link href="/terms"><span className="text-blue-600 hover:underline">Terms of Service</span></Link> and <Link href="/privacy-policy"><span className="text-blue-600 hover:underline">Privacy Policy</span></Link>
-                </label>
-              </div>
-              
               <Button 
                 type="submit" 
-                className="w-full bg-orange-600 hover:bg-orange-700" 
+                className="w-full" 
                 disabled={mutation.isPending}
               >
-                {mutation.isPending ? "Creating Account..." : "Create Account"}
+                {mutation.isPending ? "Creating account..." : "Register"}
               </Button>
             </form>
           </CardContent>
@@ -185,8 +159,8 @@ export default function RegisterPage() {
           <CardFooter className="flex justify-center">
             <p className="text-sm text-gray-600">
               Already have an account? {" "}
-              <Link href="/auth/login">
-                <span className="text-blue-600 hover:underline">Log in</span>
+              <Link href="/auth/login" className="text-blue-600 hover:underline">
+                Log in
               </Link>
             </p>
           </CardFooter>

@@ -41,22 +41,21 @@ class AuthService {
       const verificationExpiry = new Date();
       verificationExpiry.setHours(verificationExpiry.getHours() + 24); // Token valid for 24 hours
       
-      // For development, let's make users verified by default
-      // so they don't need email verification
+      // Insert new user
       const [user] = await db.insert(users).values({
         email,
         password: hashedPassword,
         firstName,
         lastName,
         phoneNumber,
-        verificationToken: null,
-        verificationTokenExpiry: null,
-        verified: true, // Make users verified by default
+        verificationToken,
+        verificationTokenExpiry: verificationExpiry,
+        verified: false,
         createdAt: new Date(),
       }).returning();
       
-      // Skip email verification for development
-      console.log('User registered successfully:', email);
+      // Send verification email
+      await this.sendVerificationEmail(email, verificationToken);
       
       return user;
     } catch (error) {
@@ -111,8 +110,10 @@ class AuthService {
         throw new Error('Invalid email or password');
       }
       
-      // Skip verification check for development
-      // We're auto-verifying users on registration
+      // Check if user is verified
+      if (!user.verified) {
+        throw new Error('Please verify your email before logging in');
+      }
       
       // Compare passwords
       const passwordMatch = await bcrypt.compare(password, user.password);

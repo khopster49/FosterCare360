@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Upload } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -79,11 +80,8 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   
-  // Fetch current user if logged in
-  const { data: user, isLoading: isUserLoading } = useQuery({
-    queryKey: ['/api/auth/me'],
-    retry: false,
-  });
+  // Fetch current user if logged in using our auth hook
+  const { user, isLoading: isUserLoading, isAuthenticated } = useAuth();
   
   // Set up the form
   const form = useForm<PersonalInfoFormValues>({

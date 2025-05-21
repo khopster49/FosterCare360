@@ -19,7 +19,7 @@ export default function Header() {
   const [currentLocation] = useLocation();
 
   // Fetch user data using our auth hook
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth() || { user: undefined, isLoading: false, isAuthenticated: false };
 
   const handleLogout = async () => {
     try {
@@ -75,9 +75,9 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src="" alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarImage src="" alt={user ? `${user.firstName || ''} ${user.lastName || ''}` : 'User'} />
                       <AvatarFallback className="bg-orange-100 text-orange-800">
-                        {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
+                        {user?.firstName?.charAt(0) || ""}{user?.lastName?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -85,8 +85,8 @@ export default function Header() {
                 <DropdownMenuContent align="end">
                   <div className="flex items-center justify-start gap-2 p-2">
                     <div className="flex flex-col space-y-1 leading-none">
-                      <p className="font-medium">{user.firstName} {user.lastName}</p>
-                      <p className="w-[200px] truncate text-sm text-gray-500">{user.email}</p>
+                      <p className="font-medium">{user?.firstName || ''} {user?.lastName || ''}</p>
+                      <p className="w-[200px] truncate text-sm text-gray-500">{user?.email || ''}</p>
                     </div>
                   </div>
                   <DropdownMenuSeparator />

@@ -43,7 +43,7 @@ export default function DashboardPage() {
   const { user, isLoading: userLoading, error: userError, isAuthenticated } = useAuth();
 
   // Fetch applications for the current user
-  const { data: applications, isLoading: applicationsLoading, error: applicationsError } = useQuery({
+  const { data: applications = [], isLoading: applicationsLoading, error: applicationsError } = useQuery<Application[]>({
     queryKey: ["/api/applications/user"],
     retry: false,
     enabled: !!user,

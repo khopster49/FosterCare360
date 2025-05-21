@@ -1,48 +1,199 @@
-import { HelpCircle } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { apiRequest } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [, setLocation] = useLocation();
+  const [currentLocation] = useLocation();
+
+  // Fetch user data
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["/api/auth/me"],
+    retry: false,
+  });
+
+  const isAuthenticated = !!user;
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest("/api/auth/logout", "POST");
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      setLocation("/");
+    } catch (error) {
+      console.error("Failed to logout:", error);
+    }
+  };
+
   return (
-    <header className="bg-white shadow">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-primary mr-4"
+    <header className="bg-white border-b border-gray-200">
+      <div className="container mx-auto max-w-6xl px-4 py-4">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <Link href="/">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <span className="text-xl font-bold text-orange-600">UK Fostering</span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/">
+              <span className={`text-sm font-medium cursor-pointer ${
+                currentLocation === "/" ? "text-orange-600" : "text-gray-600 hover:text-gray-900"
+              }`}>Home</span>
+            </Link>
+            <Link href="/apply">
+              <span className={`text-sm font-medium cursor-pointer ${
+                currentLocation === "/apply" ? "text-orange-600" : "text-gray-600 hover:text-gray-900"
+              }`}>Apply</span>
+            </Link>
+            <Link href="/faq">
+              <span className={`text-sm font-medium cursor-pointer ${
+                currentLocation === "/faq" ? "text-orange-600" : "text-gray-600 hover:text-gray-900"
+              }`}>FAQ</span>
+            </Link>
+            <Link href="/contact">
+              <span className={`text-sm font-medium cursor-pointer ${
+                currentLocation === "/contact" ? "text-orange-600" : "text-gray-600 hover:text-gray-900"
+              }`}>Contact</span>
+            </Link>
+          </nav>
+
+          {/* User Menu or Login/Register */}
+          <div className="hidden md:block">
+            {isLoading ? (
+              <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse"></div>
+            ) : isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="" alt={`${user.firstName} ${user.lastName}`} />
+                      <AvatarFallback className="bg-orange-100 text-orange-800">
+                        {user.firstName?.charAt(0) || ""}{user.lastName?.charAt(0) || ""}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium">{user.firstName} {user.lastName}</p>
+                      <p className="w-[200px] truncate text-sm text-gray-500">{user.email}</p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard">
+                      <div className="w-full cursor-pointer">Dashboard</div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">
+                      <div className="w-full cursor-pointer">Profile Settings</div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-red-500 cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex gap-3">
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm">Log in</Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm" className="bg-orange-600 hover:bg-orange-700">Register</Button>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Toggle menu"
           >
-            <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" />
-            <path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" />
-            <path d="M13 13h4" />
-            <path d="M13 17h4" />
-            <path d="M9 13h.01" />
-            <path d="M9 17h.01" />
-          </svg>
-          <h1 className="text-xl font-medium">UK Fostering Onboarding Programme</h1>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              {isMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              )}
+            </svg>
+          </button>
         </div>
-        <div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" className="text-primary hover:text-blue-700 flex items-center">
-                  <HelpCircle className="h-4 w-4 mr-1" />
-                  <span className="text-sm">Help</span>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Need assistance? Contact support@ukfostering.org</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 mt-3 border-t">
+            <nav className="flex flex-col space-y-4">
+              <Link href="/">
+                <a className="text-gray-600 hover:text-gray-900 py-1">Home</a>
+              </Link>
+              <Link href="/apply">
+                <a className="text-gray-600 hover:text-gray-900 py-1">Apply</a>
+              </Link>
+              <Link href="/faq">
+                <a className="text-gray-600 hover:text-gray-900 py-1">FAQ</a>
+              </Link>
+              <Link href="/contact">
+                <a className="text-gray-600 hover:text-gray-900 py-1">Contact</a>
+              </Link>
+              
+              {isAuthenticated ? (
+                <>
+                  <Link href="/dashboard">
+                    <a className="text-gray-600 hover:text-gray-900 py-1">Dashboard</a>
+                  </Link>
+                  <Link href="/profile">
+                    <a className="text-gray-600 hover:text-gray-900 py-1">Profile Settings</a>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="text-left text-red-500 hover:text-red-700 py-1"
+                  >
+                    Log out
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col gap-2 mt-2">
+                  <Link href="/auth/login">
+                    <Button variant="outline" className="w-full">Log in</Button>
+                  </Link>
+                  <Link href="/auth/register">
+                    <Button className="w-full bg-orange-600 hover:bg-orange-700">Register</Button>
+                  </Link>
+                </div>
+              )}
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );

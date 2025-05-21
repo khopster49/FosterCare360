@@ -36,6 +36,7 @@ const personalInfoSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   firstName: z.string().min(1, { message: "First name is required" }),
   lastName: z.string().min(1, { message: "Last name is required" }),
+  middleName: z.string().optional(),
   pronouns: z.string().optional(),
   otherNames: z.string().optional(),
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -91,6 +92,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       title: "",
       firstName: "",
       lastName: "",
+      middleName: "",
       pronouns: "",
       otherNames: "",
       email: "",
@@ -141,8 +143,8 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
-        // Associate with user account if logged in
-        userId: user && typeof user === 'object' && 'id' in user ? Number(user.id) : null,
+        // Make userId optional since we're not requiring login for now
+        userId: null,
         // Add fields for save & return functionality
         status: 'in-progress',
         lastCompletedStep: 0

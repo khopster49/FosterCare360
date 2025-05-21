@@ -497,30 +497,27 @@ export function DisciplinaryForm({ applicantId, onSuccess, onBack }: Disciplinar
               </div>
             </div>
             
-            {showCriminalDetails && (
-              <div className="p-4 border-[1px] border-gray-300 mb-6">
-                <FormField
-                  control={form.control}
-                  name="criminalDetails"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-normal">
-                        If you have answered yes to any of the questions above, please give full details on a separate sheet and attach it in a
-                        sealed envelope marked 'Confidential Disclosure'.
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Provide details about any 'Yes' answers above"
-                          className="mt-2 min-h-[150px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            )}
+            <div className="p-4 border-[1px] border-gray-300 mb-6">
+              <FormField
+                control={form.control}
+                name="criminalDetails"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-normal">
+                      If you have answered yes to any of the questions above, please give full details here.
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Provide details about any 'Yes' answers above"
+                        className="mt-2 min-h-[150px]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </CardContent>
         </Card>
         
@@ -544,7 +541,7 @@ export function DisciplinaryForm({ applicantId, onSuccess, onBack }: Disciplinar
                 Saving
               </>
             ) : (
-              "Next: Verification"
+              "Next: Declaration & Confidentiality"
             )}
           </Button>
         </div>

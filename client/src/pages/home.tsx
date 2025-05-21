@@ -8,6 +8,7 @@ import { EmploymentForm } from "@/components/employment-form";
 import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
 import { DisciplinaryForm } from "@/components/disciplinary-form";
+import { DataProtectionForm } from "@/components/data-protection-form";
 import { VerificationForm } from "@/components/verification-form";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
@@ -20,7 +21,8 @@ const steps = [
   { id: 4, label: "Skills" },
   { id: 5, label: "References" },
   { id: 6, label: "Disciplinary" },
-  { id: 7, label: "Checks" },
+  { id: 7, label: "Declaration" },
+  { id: 8, label: "Checks" },
 ];
 
 export default function Home() {
@@ -144,6 +146,20 @@ export default function Home() {
             )}
             
             {currentStep === 6 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection/Declaration & Confidentiality Agreement</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please review and agree to the declaration and confidentiality agreement to complete your application.
+                </p>
+                <DataProtectionForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 7 && applicantId && (
               <>
                 <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
                 <p className="text-neutral-700 text-sm mb-6">

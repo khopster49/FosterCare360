@@ -45,6 +45,10 @@ export const applicants = pgTable("applicants", {
   hasProhibition: boolean("has_prohibition"),
   criminalDetails: text("criminal_details"),
   
+  // Data protection and declaration fields
+  dataProtectionAgreed: boolean("data_protection_agreed"),
+  dataProtectionSignedDate: timestamp("data_protection_signed_date"),
+  
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
   status: text("status").notNull().default("in_progress"),

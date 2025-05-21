@@ -602,7 +602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { ApplicationPDF } = require('../client/src/components/application-pdf');
       const { renderToStream } = require('@react-pdf/renderer');
       
-      const stream = await renderToStream(<ApplicationPDF {...data} />);
+      const stream = await renderToStream(React.createElement(ApplicationPDF, data));
       stream.pipe(res);
     } catch (error) {
       return res.status(500).json({ 

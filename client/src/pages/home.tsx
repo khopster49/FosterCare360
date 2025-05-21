@@ -11,6 +11,7 @@ import { DisciplinaryForm } from "@/components/disciplinary-form";
 import { DataProtectionForm } from "@/components/data-protection-form";
 import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
 import { VerificationForm } from "@/components/verification-form";
+import { PrivacyNotice } from "@/components/privacy-notice";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
 
@@ -25,6 +26,7 @@ const steps = [
   { id: 7, label: "Declaration" },
   { id: 8, label: "Equal Opps" },
   { id: 9, label: "Checks" },
+  { id: 10, label: "Privacy Notice" },
 ];
 
 export default function Home() {
@@ -182,6 +184,20 @@ export default function Home() {
                   As part of the fostering application process, we need to conduct mandatory verification checks to ensure compliance with UK regulations.
                 </p>
                 <VerificationForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 9 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection Privacy Notice</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please carefully review this important privacy notice regarding how we process your personal information.
+                </p>
+                <PrivacyNotice 
                   applicantId={applicantId} 
                   onSuccess={() => nextStep()} 
                   onBack={() => previousStep()} 

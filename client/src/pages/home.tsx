@@ -4,7 +4,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FormStepper } from "@/components/form-stepper";
 import { PersonalInfoForm } from "@/components/personal-info-form";
-import { EducationForm } from "@/components/education-form-new";
+import { EducationForm } from "@/components/simple-education-form";
 import { EmploymentForm } from "@/components/employment-form";
 import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
@@ -181,17 +181,11 @@ export default function Home() {
             )}
             
             {currentStep === 1 && applicantId && (
-              <>
-                <h2 className="text-xl font-medium mb-2">Education History</h2>
-                <p className="text-neutral-700 text-sm mb-6">
-                  Please provide details of your educational background, starting with the most recent.
-                </p>
-                <EducationForm 
-                  applicantId={applicantId} 
-                  onSuccess={() => nextStep()} 
-                  onBack={() => previousStep()} 
-                />
-              </>
+              <EducationForm 
+                applicantId={applicantId} 
+                onSuccess={() => nextStep()} 
+                onBack={() => previousStep()} 
+              />
             )}
             
             {currentStep === 2 && applicantId && (

@@ -34,6 +34,7 @@ const employmentEntrySchema = z.object({
   endDate: z.string().optional(),
   isCurrent: z.boolean().default(false),
   duties: z.string().min(1, { message: "Duties and responsibilities are required" }),
+  reasonForLeaving: z.string().optional(),
   referenceName: z.string().min(1, { message: "Reference name is required" }),
   referenceEmail: z.string().email({ message: "Please enter a valid email address" }),
   referencePhone: z.string().min(5, { message: "Reference phone number is required" }),
@@ -575,6 +576,29 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                         </FormItem>
                       )}
                     />
+                    
+                    {!form.watch(`employmentEntries.${index}.isCurrent`) && (
+                      <FormField
+                        control={form.control}
+                        name={`employmentEntries.${index}.reasonForLeaving`}
+                        render={({ field }) => (
+                          <FormItem className="col-span-2">
+                            <FormLabel>Reason for Leaving</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Please explain your reason for leaving this position..."
+                                rows={2}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Please provide details about why you left this position. This information helps us understand your employment history.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                     
                     <FormField
                       control={form.control}

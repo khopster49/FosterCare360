@@ -570,6 +570,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // PDF generation endpoint
+  app.get("/api/applicants/:id/pdf", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      const applicant = await storage.getApplicant(id);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      const education = await storage.getEducationEntries(id);
+      const employment = await storage.getEmploymentEntries(id);
+      const references = await storage.getReferences(id);
+      const verification = await storage.getDbsCheck(id);
+      
+      const data = {
+        applicant,
+        education,
+        employment,
+        references,
+        verification
+      };
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=application-${id}.pdf`);
+      
+      const { ApplicationPDF } = require('../client/src/components/application-pdf');
+      const { renderToStream } = require('@react-pdf/renderer');
+      
+      const stream = await renderToStream(<ApplicationPDF {...data} />);
+      stream.pipe(res);
+    } catch (error) {
+      return res.status(500).json({ 
+        message: "Failed to generate PDF" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

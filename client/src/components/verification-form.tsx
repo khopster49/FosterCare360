@@ -511,6 +511,15 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
               "Submit Application"
             )}
           </Button>
+          {isSuccess && (
+            <Button 
+              type="button"
+              onClick={() => window.open(`/api/applicants/${applicantId}/pdf`, '_blank')}
+              variant="outline"
+            >
+              Download Application PDF
+            </Button>
+          )}
         </div>
       </form>
     </Form>

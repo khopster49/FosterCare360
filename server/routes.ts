@@ -577,13 +577,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Update the applicant with privacy notice acknowledgment
+      // Use data protected field instead since we don't have privacyNoticeAcknowledged in schema
       const updatedApplicant = await storage.updateApplicant(applicantId, {
-        privacyNoticeAcknowledged: true,
-        privacyNoticeDate: new Date()
+        dataProtectionCompleted: true,
+        dataProtectionDate: new Date(),
+        status: 'completed'
       });
+      
+      // When the privacy notice is acknowledged, we consider the application complete
       
       return res.status(201).json(updatedApplicant);
     } catch (error) {
+      console.error("Privacy notice acknowledgment error:", error);
       return res.status(500).json({ 
         message: "Failed to save privacy notice acknowledgment" 
       });

@@ -373,8 +373,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
               <h3 className="text-lg font-medium text-primary">Employment History</h3>
             </div>
             <p className="text-sm text-neutral-600 mb-4">
-              Please provide details of your employment history for the past 5 years, including any periods of unemployment. 
-              This information is required to comply with fostering regulations.
+              Please provide details of your employment history since leaving school, including any periods of unemployment.
             </p>
           </CardContent>
         </Card>

@@ -220,7 +220,7 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
     
     {/* Employment History */}
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>Swiis Foster Care Application - Employment History</Text>
+      <Text style={styles.header}>Swiis Application - Employment History</Text>
       <Text style={styles.subtitle}>Employment History</Text>
       <View style={styles.fullSection}>
         {employment && employment.length > 0 ? (
@@ -306,7 +306,7 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
     
     {/* References */}
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>Swiis Foster Care Application - References & Checks</Text>
+      <Text style={styles.header}>Swiis Application - References & Checks</Text>
       <Text style={styles.subtitle}>References</Text>
       <View style={styles.fullSection}>
         {references && references.length > 0 ? (
@@ -470,7 +470,7 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
         </View>
       </View>
       
-      <Text style={styles.footer}>Swiis Foster Care Application Form - Confidential</Text>
+      <Text style={styles.footer}>Swiis Application Form - Confidential</Text>
       <Text style={styles.pageNumber}>Page 4</Text>
     </Page>
   </Document>

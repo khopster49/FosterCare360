@@ -24,8 +24,7 @@ const steps = [
   { id: 5, label: "References" },
   { id: 6, label: "Disciplinary" },
   { id: 7, label: "Declaration" },
-  { id: 8, label: "Checks" },
-  { id: 9, label: "Privacy Notice" },
+  { id: 8, label: "Privacy Notice" },
 ];
 
 export default function Home() {
@@ -227,23 +226,9 @@ export default function Home() {
             
 
             
-            {currentStep === 8 && (
+            {currentStep === 7 && (
               <>
-                <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
-                <p className="text-neutral-700 text-sm mb-6">
-                  As part of the application process, we need to conduct mandatory verification checks to ensure compliance with regulations.
-                </p>
-                <VerificationForm 
-                  applicantId={applicantId || 1} // Allow preview with temporary ID
-                  onSuccess={() => nextStep()} 
-                  onBack={() => previousStep()} 
-                />
-              </>
-            )}
-            
-            {currentStep === 9 && (
-              <>
-                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection Privacy Notice</h2>
+                <h2 className="text-xl font-medium mb-2 text-primary">Privacy Notice</h2>
                 <p className="text-neutral-700 text-sm mb-6">
                   Please carefully review this important privacy notice regarding how we process your personal information.
                 </p>

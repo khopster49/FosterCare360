@@ -369,8 +369,8 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
         <Card className="border-primary/20">
           <CardContent className="pt-6">
             <div className="flex items-center gap-3 mb-4">
-              <Briefcase className="h-6 w-6 text-primary" />
-              <h3 className="text-lg font-medium text-primary">Employment History</h3>
+              <Briefcase className="h-6 w-6 text-[#D16E3D]" />
+              <h3 className="text-lg font-medium text-[#D16E3D]">Employment History</h3>
             </div>
             <p className="text-sm text-neutral-600 mb-4">
               Please provide details of your employment history since leaving school, including any periods of unemployment.

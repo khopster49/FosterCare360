@@ -366,17 +366,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="mb-6">
-          <div className="flex items-start gap-3">
-            <Briefcase className="h-6 w-6 text-[#D16E3D] mt-1" />
-            <div>
-              <h3 className="text-lg font-medium text-[#D16E3D] mb-2">Employment History</h3>
-              <p className="text-sm text-neutral-600">
-                Please provide details of your employment history since leaving school, including any periods of unemployment.
-              </p>
-            </div>
-          </div>
-        </div>
+
         
         {fields.map((field, index) => {
           // Find if there's a gap after this employment

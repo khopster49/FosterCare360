@@ -78,6 +78,10 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
           <Text style={styles.value}>{applicant?.title || ''} {applicant?.firstName || ''} {applicant?.middleName || ''} {applicant?.lastName || ''}</Text>
         </View>
         <View style={styles.row}>
+          <Text style={styles.label}>Position Applied For:</Text>
+          <Text style={styles.value}>{applicant?.positionAppliedFor || 'Not provided'}</Text>
+        </View>
+        <View style={styles.row}>
           <Text style={styles.label}>Date of Birth:</Text>
           <Text style={styles.value}>{applicant?.dateOfBirth || 'Not provided'}</Text>
         </View>
@@ -94,16 +98,12 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
           <Text style={styles.value}>{applicant?.address || 'Not provided'}</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>City:</Text>
-          <Text style={styles.value}>{applicant?.city || 'Not provided'}</Text>
-        </View>
-        <View style={styles.row}>
           <Text style={styles.label}>Postcode:</Text>
           <Text style={styles.value}>{applicant?.postcode || 'Not provided'}</Text>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>National Insurance:</Text>
-          <Text style={styles.value}>{applicant?.nationalInsurance || 'Not provided'}</Text>
+          <Text style={styles.value}>{applicant?.niNumber || 'Not provided'}</Text>
         </View>
       </View>
 
@@ -277,27 +277,7 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.heading}>6. Equal Opportunities Information</Text>
-        <View style={styles.row}>
-          <Text style={styles.label}>Gender:</Text>
-          <Text style={styles.value}>{applicant?.gender || 'Not provided'}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Ethnicity:</Text>
-          <Text style={styles.value}>{applicant?.ethnicity || 'Not provided'}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Disability:</Text>
-          <Text style={styles.value}>{applicant?.disability ? 'Yes' : 'No'}</Text>
-        </View>
-        {applicant?.disability && (
-          <View style={styles.row}>
-            <Text style={styles.label}>Disability Details:</Text>
-            <Text style={styles.value}>{applicant?.disabilityDetails || 'No details provided'}</Text>
-          </View>
-        )}
-      </View>
+      {/* Equal Opportunities section has been removed as requested */}
 
       <View style={styles.section}>
         <Text style={styles.heading}>7. Disciplinary & Criminal Issues</Text>
@@ -324,7 +304,7 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
       </View>
 
       <View style={styles.footer}>
-        <Text>Swiis Foster Care - Application Form</Text>
+        <Text>Swiis - Application Form</Text>
         <Text>Confidential document - Generated on {new Date().toLocaleDateString()}</Text>
       </View>
       

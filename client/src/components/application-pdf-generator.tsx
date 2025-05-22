@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
 const ApplicationPDF = ({ applicant, education, employment, references, verification, equal, discipline }) => (
   <Document>
     <Page size="A4" style={styles.page}>
-      <Text style={styles.title}>Swiis Foster Care Application</Text>
+      <Text style={styles.title}>Swiis Application</Text>
       
       {/* Personal Information */}
       <Text style={styles.subtitle}>Personal Information</Text>
@@ -399,7 +399,7 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
     
     {/* Verification Checks */}
     <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>Swiis Foster Care Application - Verification & Equal Opportunities</Text>
+      <Text style={styles.header}>Swiis Application - Verification</Text>
       <Text style={styles.subtitle}>Verification Checks</Text>
       <View style={styles.fullSection}>
         {verification ? (

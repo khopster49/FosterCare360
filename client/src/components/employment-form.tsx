@@ -366,7 +366,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <div className="mb-6">
           <div className="flex items-start gap-3">
             <Briefcase className="h-6 w-6 text-[#D16E3D] mt-1" />
             <div>

@@ -641,7 +641,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
               name="professionalRegNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>HCPC/SSSC/NMC Number</FormLabel>
+                  <FormLabel>HCPC/SSSC/NMC/SWE Number</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter registration number if applicable" {...field} />
                   </FormControl>
@@ -658,7 +658,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
               name="professionalRegExpiry"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>HCPC/SSSC/NMC Number Expiry Date</FormLabel>
+                  <FormLabel>HCPC/SSSC/NMC/SWE Number Expiry Date</FormLabel>
                   <FormControl>
                     <Input type="date" {...field} />
                   </FormControl>

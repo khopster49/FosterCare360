@@ -50,31 +50,31 @@ export default function Home() {
   // Fetch applicant data for completion page
   const { data: applicant } = useQuery({
     queryKey: ['/api/applicants', applicantId],
-    enabled: !!applicantId && currentStep === 10,
+    enabled: !!applicantId,
   });
   
   // Fetch education history for the PDF
   const { data: education } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'education'],
-    enabled: !!applicantId && currentStep === 10,
+    enabled: !!applicantId,
   });
   
   // Fetch employment history for the PDF
   const { data: employment } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'employment'],
-    enabled: !!applicantId && currentStep === 10,
+    enabled: !!applicantId,
   });
   
   // Fetch references for the PDF
   const { data: references } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'references'],
-    enabled: !!applicantId && currentStep === 10,
+    enabled: !!applicantId,
   });
   
   // Fetch DBS check data for the PDF
   const { data: verification } = useQuery({
     queryKey: ['/api/applicants', applicantId, 'dbs'],
-    enabled: !!applicantId && currentStep === 10,
+    enabled: !!applicantId,
   });
   
   // Check if all data is loaded for PDF generation

@@ -47,6 +47,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 10,
   },
+  col100: {
+    width: '100%',
+  },
   col50: {
     width: '50%',
   },
@@ -505,6 +508,11 @@ export const ApplicationPDFDownload = ({ applicant, education, employment, refer
   const safeReferences = Array.isArray(references) ? references : [];
   const safeVerification = verification || {};
   const safeEqual = equal || {};
+  
+  // Additional debugging for PDF data
+  console.log("Raw PDF Application Data:", applicant);
+  console.log("Raw PDF Education Data:", education);
+  console.log("Raw PDF Employment Data:", employment);
   const safeDiscipline = discipline || {};
   return (
     <PDFDownloadLink

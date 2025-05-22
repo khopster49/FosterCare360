@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-medium mb-4">Swiis Foster Care</h3>
+            <h3 className="text-lg font-medium mb-4">UK Fostering</h3>
             <p className="text-sm text-neutral-300">
               Our mission is to provide safe, supportive homes for children in need through our network of dedicated foster carers.
             </p>
@@ -17,11 +17,11 @@ export default function Footer() {
             <ul className="text-sm text-neutral-300 space-y-2">
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2" />
-                <span>HRTeam@swiis.com</span>
+                <span>support@ukfostering.org</span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-2" />
-                <span>0203 219 2865</span>
+                <span>0800 123 4567</span>
               </li>
             </ul>
           </div>
@@ -37,7 +37,7 @@ export default function Footer() {
         </div>
         
         <div className="mt-8 pt-8 border-t border-neutral-700 text-sm text-neutral-400 text-center">
-          <p>&copy; {new Date().getFullYear()} Swiis Foster Care. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} UK Fostering Onboarding Programme. All rights reserved.</p>
         </div>
       </div>
     </footer>

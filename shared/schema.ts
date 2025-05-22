@@ -28,7 +28,6 @@ export const applicants = pgTable("applicants", {
   address: text("address").notNull(),
   city: text("city").notNull(),
   postcode: text("postcode").notNull(),
-  positionAppliedFor: text("position_applied_for"),
   nationality: text("nationality").notNull(),
   rightToWork: boolean("right_to_work").notNull(),
   workDocumentType: text("work_document_type").notNull(),
@@ -49,10 +48,6 @@ export const applicants = pgTable("applicants", {
   // Data protection and declaration fields
   dataProtectionAgreed: boolean("data_protection_agreed"),
   dataProtectionSignedDate: timestamp("data_protection_signed_date"),
-  
-  // Equal opportunities data
-  equalOpportunitiesCompleted: boolean("equal_opportunities_completed"),
-  equalOpportunitiesDate: timestamp("equal_opportunities_date"),
   
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
@@ -93,7 +88,6 @@ export const employmentEntries = pgTable("employment_entries", {
   applicantId: integer("applicant_id").notNull(),
   employer: text("employer").notNull(),
   employerAddress: text("employer_address").notNull(),
-  employerPostcode: text("employer_postcode"),
   employerPhone: text("employer_phone").notNull(),
   employerMobile: text("employer_mobile"),
   position: text("position").notNull(),

@@ -536,99 +536,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API route for equal opportunities data
-  app.post("/api/applicants/:id/equal-opportunities", async (req: Request, res: Response) => {
-    try {
-      const applicantId = parseInt(req.params.id);
-      if (isNaN(applicantId)) {
-        return res.status(400).json({ message: "Invalid applicant ID" });
-      }
-      
-      const applicant = await storage.getApplicant(applicantId);
-      if (!applicant) {
-        return res.status(404).json({ message: "Applicant not found" });
-      }
-      
-      // Update the applicant with equal opportunities info
-      const updatedApplicant = await storage.updateApplicant(applicantId, {
-        equalOpportunitiesCompleted: true,
-        equalOpportunitiesDate: new Date()
-      });
-      
-      return res.status(201).json(updatedApplicant);
-    } catch (error) {
-      return res.status(500).json({ 
-        message: "Failed to save equal opportunities data" 
-      });
-    }
-  });
-
-  // API route for privacy notice acknowledgment
-  app.post("/api/applicants/:id/privacy-notice", async (req: Request, res: Response) => {
-    try {
-      const applicantId = parseInt(req.params.id);
-      if (isNaN(applicantId)) {
-        return res.status(400).json({ message: "Invalid applicant ID" });
-      }
-      
-      const applicant = await storage.getApplicant(applicantId);
-      if (!applicant) {
-        return res.status(404).json({ message: "Applicant not found" });
-      }
-      
-      // Update the applicant with privacy notice acknowledgment using the correct schema fields
-      const updatedApplicant = await storage.updateApplicant(applicantId, {
-        dataProtectionAgreed: true,
-        dataProtectionSignedDate: new Date()
-      });
-      
-      return res.status(201).json(updatedApplicant);
-    } catch (error) {
-      console.error("Privacy notice acknowledgment error:", error);
-      return res.status(500).json({ 
-        message: "Failed to save privacy notice acknowledgment" 
-      });
-    }
-  });
-  
-  // API route for generating application PDF
-  app.get("/api/applicants/:id/application-pdf", async (req: Request, res: Response) => {
-    try {
-      const applicantId = parseInt(req.params.id);
-      if (isNaN(applicantId)) {
-        return res.status(400).json({ message: "Invalid applicant ID" });
-      }
-      
-      // Get the applicant
-      const applicant = await storage.getApplicant(applicantId);
-      if (!applicant) {
-        return res.status(404).json({ message: "Applicant not found" });
-      }
-      
-      // Get related data for PDF generation
-      const educationEntries = await storage.getEducationEntries(applicantId);
-      const employmentEntries = await storage.getEmploymentEntries(applicantId);
-      const references = await storage.getReferences(applicantId);
-      const dbsCheck = await storage.getDbsCheck(applicantId);
-      
-      // Compile all data needed for the PDF
-      const pdfData = {
-        applicant,
-        education: educationEntries,
-        employment: employmentEntries,
-        references,
-        verification: dbsCheck,
-      };
-      
-      return res.json(pdfData);
-    } catch (error) {
-      console.error("Error generating application PDF data:", error);
-      return res.status(500).json({ 
-        message: "Failed to generate application PDF data" 
-      });
-    }
-  });
-
   // Submit complete application
   app.post("/api/applicants/:id/submit", async (req: Request, res: Response) => {
     try {
@@ -665,8 +572,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PDF data endpoint - provides application data for client-side PDF generation
-  app.get("/api/applicants/:id/pdf-data", async (req: Request, res: Response) => {
+  // PDF generation endpoint
+  app.get("/api/applicants/:id/pdf", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -683,18 +590,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const references = await storage.getReferences(id);
       const verification = await storage.getDbsCheck(id);
       
-      // Return all the data needed for PDF generation
-      return res.json({
+      const data = {
         applicant,
         education,
         employment,
         references,
         verification
-      });
+      };
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=application-${id}.pdf`);
+      
+      const React = require('react');
+      const { ApplicationPDF } = require('../client/src/components/application-pdf');
+      const { renderToStream } = require('@react-pdf/renderer');
+      
+      const stream = await renderToStream(React.createElement(ApplicationPDF, data));
+      stream.pipe(res);
     } catch (error) {
-      console.error('PDF data error:', error);
+      console.error('PDF generation error:', error);
       return res.status(500).json({ 
-        message: "Failed to get PDF data" 
+        message: "Failed to generate PDF" 
       });
     }
   });

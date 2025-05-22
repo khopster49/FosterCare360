@@ -30,7 +30,6 @@ import { formatDate } from "@/lib/utils";
 const employmentEntrySchema = z.object({
   employer: z.string().min(1, { message: "Employer name is required" }),
   employerAddress: z.string().min(1, { message: "Employer address is required" }),
-  employerPostcode: z.string().min(1, { message: "Employer postcode is required" }),
   employerPhone: z.string().min(5, { message: "Employer phone number is required" }),
   employerMobile: z.string().optional(),
   position: z.string().min(1, { message: "Position is required" }),
@@ -442,28 +441,11 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                           <FormLabel>Employer Address</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Full employer address..."
+                              placeholder="Full employer address including postcode..."
                               rows={2}
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name={`employmentEntries.${index}.employerPostcode`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Employer Postcode <span className="text-red-500">*</span></FormLabel>
-                          <FormControl>
-                            <Input placeholder="Postcode (required)" {...field} />
-                          </FormControl>
-                          <FormDescription>
-                            Please enter a valid UK postcode
-                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -805,7 +787,6 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
               append({
                 employer: "",
                 employerAddress: "",
-                employerPostcode: "",
                 employerPhone: "",
                 employerMobile: "",
                 position: "",

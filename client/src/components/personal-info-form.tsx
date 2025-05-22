@@ -43,7 +43,6 @@ const personalInfoSchema = z.object({
   postcode: z.string().min(1, { message: "Postcode is required" }),
   homePhone: z.string().optional(),
   mobilePhone: z.string().min(5, { message: "Mobile phone number is required" }),
-  positionAppliedFor: z.string().min(1, { message: "Please enter the position you are applying for" }),
   drivingLicence: z.boolean().default(false),
   
   // Right to work details
@@ -93,7 +92,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       postcode: "",
       homePhone: "",
       mobilePhone: "",
-      positionAppliedFor: "",
       drivingLicence: false,
       nationality: "",
       visaType: "",
@@ -122,7 +120,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         address: values.address,
         city: "", // We're not collecting this separately now, can be part of address
         postcode: values.postcode,
-        positionAppliedFor: values.positionAppliedFor,
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
@@ -162,7 +159,9 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            {/* Title removed as requested */}
+            <div className="mb-4">
+              <h3 className="text-lg font-medium text-primary">SWIIS Foster Care Application Form</h3>
+            </div>
             <p className="text-sm text-neutral-600 mb-4">
               We are committed to Equal Opportunities in all areas of our operations and welcome all applicants irrespective of age,
               disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & maternity, sex, sexual orientation. 
@@ -349,21 +348,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
                   <FormLabel>Mobile Telephone Number</FormLabel>
                   <FormControl>
                     <Input type="tel" placeholder="07XX XXX XXXX" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Position Applied For */}
-            <FormField
-              control={form.control}
-              name="positionAppliedFor"
-              render={({ field }) => (
-                <FormItem className="col-span-2">
-                  <FormLabel>Position Applied For <span className="text-red-500">*</span></FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter the position you are applying for" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

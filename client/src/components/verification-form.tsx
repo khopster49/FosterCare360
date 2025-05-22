@@ -154,7 +154,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
       
       toast({
         title: "Application submitted successfully!",
-        description: "Your fostering application has been submitted. You will receive confirmation by email shortly.",
+        description: "Your application has been submitted. You will receive confirmation by email shortly.",
       });
       
       setIsComplete(true);

@@ -516,20 +516,28 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
 
 // Export PDF Download Component
 export const ApplicationPDFDownload = ({ applicant, education, employment, references, verification, equal, discipline }) => {
+  // Make sure we have all the necessary data and handle null/undefined values
+  const safeApplicant = applicant || {};
+  const safeEducation = Array.isArray(education) ? education : [];
+  const safeEmployment = Array.isArray(employment) ? employment : [];
+  const safeReferences = Array.isArray(references) ? references : [];
+  const safeVerification = verification || {};
+  const safeEqual = equal || {};
+  const safeDiscipline = discipline || {};
   return (
     <PDFDownloadLink
       document={
         <ApplicationPDF 
-          applicant={applicant} 
-          education={education} 
-          employment={employment}
-          references={references}
-          verification={verification}
-          equal={equal}
-          discipline={discipline}
+          applicant={safeApplicant} 
+          education={safeEducation} 
+          employment={safeEmployment}
+          references={safeReferences}
+          verification={safeVerification}
+          equal={safeEqual}
+          discipline={safeDiscipline}
         />
       }
-      fileName={`${applicant.firstName}_${applicant.lastName}_Application.pdf`}
+      fileName={`Swiis_Application_${safeApplicant.firstName || 'Form'}_${safeApplicant.lastName || ''}.pdf`}
     >
       {({ blob, url, loading, error }) => (
         <Button 

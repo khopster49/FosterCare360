@@ -386,7 +386,9 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             <div key={field.id}>
               <Card className="mb-5 border-primary/10 overflow-hidden">
                 <div className="bg-primary/5 px-6 py-3 flex justify-between items-center">
-                  <h4 className="text-md font-medium text-primary">Employment {index + 1}</h4>
+                  <h4 className="text-md font-medium text-primary">
+                    {index === 0 ? "Current Employer" : `Employment ${index + 1}`}
+                  </h4>
                   
                   {fields.length > 1 && (
                     <Button

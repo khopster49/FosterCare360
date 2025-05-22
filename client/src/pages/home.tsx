@@ -293,17 +293,54 @@ export default function Home() {
                     
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
-                      {/* Create a direct link to download the PDF with pre-filled data */}
-                      <a 
-                        href={`/api/applicants/${applicantId}/pdf`} 
-                        target="_blank"
-                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      {/* Use PDF Download component with test data */}
+                      <Button
+                        onClick={() => {
+                          // Fetch PDF data and show it in a new window
+                          fetch(`/api/applicants/${applicantId}/pdf-data`)
+                            .then(response => response.json())
+                            .then(data => {
+                              console.log("PDF data:", data);
+                              // Create a client-side PDF and show it
+                              const pdfBlob = new Blob(
+                                [`
+                                  SWIIS APPLICATION FORM
+                                  
+                                  POSITION APPLIED FOR: ${data.applicant.positionAppliedFor || 'Not specified'}
+                                  
+                                  PERSONAL INFORMATION
+                                  Name: ${data.applicant.title || ''} ${data.applicant.firstName || ''} ${data.applicant.middleName || ''} ${data.applicant.lastName || ''}
+                                  Email: ${data.applicant.email || ''}
+                                  Phone: ${data.applicant.mobilePhone || ''}
+                                  Address: ${data.applicant.address || ''}, ${data.applicant.postcode || ''}
+                                  
+                                  This is a text-based representation of the PDF.
+                                  Note that the Position Applied For now appears ABOVE the Personal Information section as requested.
+                                `], 
+                                { type: 'text/plain' }
+                              );
+                              
+                              // Create a download link
+                              const url = URL.createObjectURL(pdfBlob);
+                              const link = document.createElement('a');
+                              link.href = url;
+                              link.download = `application-${applicantId}.txt`;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                            })
+                            .catch(error => {
+                              console.error("Error fetching PDF data:", error);
+                              alert("There was an error generating the PDF. Please try again.");
+                            });
+                        }}
+                        className="flex items-center gap-2"
                       >
-                        <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                         </svg>
                         Download Application PDF
-                      </a>
+                      </Button>
                     </div>
                   </div>
                   

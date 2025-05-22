@@ -93,6 +93,140 @@ export class MemStorage implements IStorage {
     this.employmentGapId = 1;
     this.dbsCheckId = 1;
     this.referenceId = 1;
+    
+    // Add test data for demonstration
+    this.initializeTestData();
+  }
+  
+  // Initialize test data for the demo
+  private initializeTestData() {
+    // Create sample applicant
+    const testApplicant: Applicant = {
+      id: 1,
+      firstName: "John",
+      lastName: "Smith",
+      email: "john.smith@example.com",
+      mobilePhone: "07700900123",
+      title: "Mr",
+      address: "123 Example Street, London",
+      postcode: "SW1A 1AA",
+      positionAppliedFor: "Social Worker",
+      nationality: "British",
+      rightToWork: true,
+      workDocumentType: "Passport",
+      workDocumentExpiry: new Date("2030-01-01"),
+      drivingLicence: true,
+      dbsNumber: "001234567890",
+      dbsOnline: true,
+      professionalReg: "HCPC",
+      professionalRegNum: "SW12345",
+      professionalRegExpiry: new Date("2027-06-01"),
+      submittedAt: new Date(),
+      completedAt: new Date(),
+      dataConsent: true,
+      pronouns: "He/Him",
+      middleName: "Robert"
+    };
+    
+    this.applicants.set(1, testApplicant);
+    
+    // Add sample education entry
+    const testEducation: EducationEntry = {
+      id: 1,
+      applicantId: 1,
+      institution: "University of Example",
+      qualification: "BSc Social Work",
+      startDate: "2015-09-01",
+      endDate: "2018-06-30",
+      grade: "2:1"
+    };
+    
+    this.educationEntries.set(1, testEducation);
+    
+    // Add sample employment entries
+    const testEmployment1: EmploymentEntry = {
+      id: 1,
+      applicantId: 1,
+      employer: "City Social Services",
+      employerAddress: "45 Care Street, London",
+      employerPostcode: "EC1V 7LP",
+      employerPhone: "020 7123 4567",
+      employerMobile: "07700 900456",
+      position: "Social Worker",
+      startDate: "2018-07-01",
+      endDate: "2022-03-31",
+      isCurrent: false,
+      duties: "Case management, family assessments, working with vulnerable children",
+      reasonForLeaving: "Career progression",
+      referenceName: "Jane Wilson",
+      referenceEmail: "jane.wilson@citysocial.example",
+      referencePhone: "020 7123 4568",
+      workedWithVulnerable: true,
+      referenceRequested: false,
+      referenceReceived: false,
+      referenceVerified: false
+    };
+    
+    const testEmployment2: EmploymentEntry = {
+      id: 2,
+      applicantId: 1,
+      employer: "County Care Services",
+      employerAddress: "78 Support Road, Birmingham",
+      employerPostcode: "B1 1AA",
+      employerPhone: "0121 234 5678",
+      employerMobile: "",
+      position: "Senior Social Worker",
+      startDate: "2022-04-15",
+      isCurrent: true,
+      duties: "Leading social work assessments, supervising junior staff, complex case management",
+      reasonForLeaving: "",
+      referenceName: "Michael Roberts",
+      referenceEmail: "m.roberts@countycare.example",
+      referencePhone: "0121 234 5679",
+      workedWithVulnerable: true,
+      referenceRequested: false,
+      referenceReceived: false,
+      referenceVerified: false
+    };
+    
+    this.employmentEntries.set(1, testEmployment1);
+    this.employmentEntries.set(2, testEmployment2);
+    
+    // Add sample DBS check
+    const testDbsCheck: DbsCheck = {
+      id: 1,
+      applicantId: 1,
+      existingDbs: true,
+      dbsNumber: "001234567890",
+      dbsIssueDate: new Date("2021-06-15"),
+      dbsOnline: true,
+      consentToDbsCheck: true,
+      criminalConvictions: false,
+      convictionDetails: "",
+      createdAt: new Date()
+    };
+    
+    this.dbsChecks.set(1, testDbsCheck);
+    
+    // Add sample references
+    const testReference1: Reference = {
+      id: 1,
+      applicantId: 1,
+      employmentEntryId: 1,
+      referenceType: "Employment",
+      referenceName: "Jane Wilson",
+      referenceEmail: "jane.wilson@citysocial.example",
+      referencePhone: "020 7123 4568",
+      referencePosition: "Team Manager",
+      referenceRelationship: "Line Manager",
+      referenceRequested: true,
+      referenceReceived: true,
+      referenceVerified: true,
+      referenceNotes: "Positive reference received",
+      createdAt: new Date()
+    };
+    
+    this.references.set(1, testReference1);
   }
 
   // User methods

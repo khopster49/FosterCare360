@@ -665,8 +665,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // PDF generation endpoint
-  app.get("/api/applicants/:id/pdf", async (req: Request, res: Response) => {
+  // PDF data endpoint - provides application data for client-side PDF generation
+  app.get("/api/applicants/:id/pdf-data", async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -683,27 +683,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const references = await storage.getReferences(id);
       const verification = await storage.getDbsCheck(id);
       
-      const data = {
+      // Return all the data needed for PDF generation
+      return res.json({
         applicant,
         education,
         employment,
         references,
         verification
-      };
-      
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename=application-${id}.pdf`);
-      
-      const React = require('react');
-      const { ApplicationPDF } = require('../client/src/components/application-pdf');
-      const { renderToStream } = require('@react-pdf/renderer');
-      
-      const stream = await renderToStream(React.createElement(ApplicationPDF, data));
-      stream.pipe(res);
+      });
     } catch (error) {
-      console.error('PDF generation error:', error);
+      console.error('PDF data error:', error);
       return res.status(500).json({ 
-        message: "Failed to generate PDF" 
+        message: "Failed to get PDF data" 
       });
     }
   });

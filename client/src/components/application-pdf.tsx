@@ -65,7 +65,7 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
   <Document>
     <Page size="A4" style={styles.page}>
       <View style={styles.section}>
-        <Text style={styles.heading}>SWIIS Foster Care Application Form</Text>
+        <Text style={styles.heading}>SWIIS Application Form</Text>
         <Text style={styles.text}>Application Reference Number: {applicant?.id || 'N/A'}</Text>
         <Text style={styles.text}>Date Generated: {new Date().toLocaleDateString()}</Text>
       </View>

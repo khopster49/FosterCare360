@@ -122,6 +122,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
         address: values.address,
         city: "", // We're not collecting this separately now, can be part of address
         postcode: values.postcode,
+        positionAppliedFor: values.positionAppliedFor,
         nationality: values.nationality,
         rightToWork: values.rightToWork,
         workDocumentType: values.workDocumentType || "",
@@ -348,6 +349,21 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
                   <FormLabel>Mobile Telephone Number</FormLabel>
                   <FormControl>
                     <Input type="tel" placeholder="07XX XXX XXXX" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Position Applied For */}
+            <FormField
+              control={form.control}
+              name="positionAppliedFor"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Position Applied For <span className="text-red-500">*</span></FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter the position you are applying for" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

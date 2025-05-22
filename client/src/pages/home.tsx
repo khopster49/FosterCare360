@@ -348,14 +348,19 @@ export default function Home() {
                                   const splitInstruct = doc.splitTextToSize(instructText, 170);
                                   doc.text(splitInstruct, 20, 70);
                                   
-                                  // Position Applied For section
+                                  // Position Applied For section with table format as shown in screenshot
+                                  // Draw the table
+                                  doc.rect(20, 80, 170, 20); // Outer rectangle
+                                  doc.line(110, 80, 110, 100); // Vertical line dividing the table
+                                  
+                                  // Add the table title
                                   doc.setFontSize(11);
                                   doc.setTextColor(242, 101, 34); // Swiis orange for position field
-                                  doc.text("Position Applied For:", 20, 85);
-                                  doc.line(20, 86, 190, 86); // Line below the title
+                                  doc.text("Position Applied For:", 25, 90);
                                   
+                                  // Add the position value
                                   doc.setTextColor(0, 0, 0); // Reset to black
-                                  doc.text(data.applicant.positionAppliedFor || "Not specified", 105, 85);
+                                  doc.text(data.applicant.positionAppliedFor || "Not specified", 115, 90);
                                   
                                   // Personal Information section
                                   doc.setFontSize(12);

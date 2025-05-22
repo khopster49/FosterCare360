@@ -9,7 +9,9 @@ import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
 import { DisciplinaryForm } from "@/components/disciplinary-form";
 import { DataProtectionForm } from "@/components/data-protection-form";
+import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
 import { VerificationForm } from "@/components/verification-form";
+import { PrivacyNotice } from "@/components/privacy-notice";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
 
@@ -22,7 +24,9 @@ const steps = [
   { id: 5, label: "References" },
   { id: 6, label: "Disciplinary" },
   { id: 7, label: "Declaration" },
-  { id: 8, label: "Checks" },
+  { id: 8, label: "Equal Opps" },
+  { id: 9, label: "Checks" },
+  { id: 10, label: "Privacy Notice" },
 ];
 
 export default function Home() {
@@ -69,7 +73,7 @@ export default function Home() {
               <>
                 <h2 className="text-xl font-medium mb-2">Personal Information</h2>
                 <p className="text-neutral-700 text-sm mb-6">
-                  Please provide your basic personal details as required by UK fostering regulations.
+                  Please provide your basic personal details as required by fostering regulations.
                 </p>
                 <PersonalInfoForm onSuccess={handlePersonalInfoComplete} />
               </>
@@ -161,11 +165,39 @@ export default function Home() {
             
             {currentStep === 7 && applicantId && (
               <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Equal Opportunities Questionnaire</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please complete this optional questionnaire to help us monitor our equal opportunities policy and performance.
+                </p>
+                <EqualOpportunitiesForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 8 && applicantId && (
+              <>
                 <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
                 <p className="text-neutral-700 text-sm mb-6">
                   As part of the fostering application process, we need to conduct mandatory verification checks to ensure compliance with UK regulations.
                 </p>
                 <VerificationForm 
+                  applicantId={applicantId} 
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 9 && applicantId && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection Privacy Notice</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please carefully review this important privacy notice regarding how we process your personal information.
+                </p>
+                <PrivacyNotice 
                   applicantId={applicantId} 
                   onSuccess={() => nextStep()} 
                   onBack={() => previousStep()} 

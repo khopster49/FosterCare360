@@ -536,6 +536,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API route for equal opportunities data
+  app.post("/api/applicants/:id/equal-opportunities", async (req: Request, res: Response) => {
+    try {
+      const applicantId = parseInt(req.params.id);
+      if (isNaN(applicantId)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      const applicant = await storage.getApplicant(applicantId);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      // Update the applicant with equal opportunities info
+      const updatedApplicant = await storage.updateApplicant(applicantId, {
+        equalOpportunitiesCompleted: true,
+        equalOpportunitiesDate: new Date()
+      });
+      
+      return res.status(201).json(updatedApplicant);
+    } catch (error) {
+      return res.status(500).json({ 
+        message: "Failed to save equal opportunities data" 
+      });
+    }
+  });
+
+  // API route for privacy notice acknowledgment
+  app.post("/api/applicants/:id/privacy-notice", async (req: Request, res: Response) => {
+    try {
+      const applicantId = parseInt(req.params.id);
+      if (isNaN(applicantId)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      const applicant = await storage.getApplicant(applicantId);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      // Update the applicant with privacy notice acknowledgment
+      const updatedApplicant = await storage.updateApplicant(applicantId, {
+        privacyNoticeAcknowledged: true,
+        privacyNoticeDate: new Date()
+      });
+      
+      return res.status(201).json(updatedApplicant);
+    } catch (error) {
+      return res.status(500).json({ 
+        message: "Failed to save privacy notice acknowledgment" 
+      });
+    }
+  });
+
   // Submit complete application
   app.post("/api/applicants/:id/submit", async (req: Request, res: Response) => {
     try {

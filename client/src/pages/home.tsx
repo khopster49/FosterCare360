@@ -85,18 +85,25 @@ export default function Home() {
   // Check if all data is loaded for PDF generation
   const isDataReady = !!applicant && !!education && !!employment && !!references;
   
-  // Debug PDF data availability and structure
+  // Log application data for PDF when on final step
   useEffect(() => {
-    if (currentStep === 10 && applicant) {
-      console.log("Application data ready for PDF:", {
-        applicant: applicant || "No applicant data", 
-        education: education && education.length > 0 ? `${education.length} education entries` : "No education data",
-        employment: employment && employment.length > 0 ? `${employment.length} employment entries` : "No employment data",
-        references: references && references.length > 0 ? `${references.length} references` : "No references data",
-        verification: verification || "No verification data"
-      });
+    if (currentStep === 10) {
+      console.log("Current step for PDF:", currentStep);
+      console.log("Raw applicant data:", applicant);
+      console.log("Raw education data:", education);
+      console.log("Raw employment data:", employment);
+      
+      // Get applicant data directly if not available through the query
+      if (!applicant && applicantId) {
+        fetch(`/api/applicants/${applicantId}`)
+          .then(res => res.json())
+          .then(data => {
+            console.log("Direct fetch applicant data:", data);
+          })
+          .catch(err => console.error("Error fetching applicant data:", err));
+      }
     }
-  }, [currentStep, applicant, education, employment, references, verification]);
+  }, [currentStep, applicantId, applicant, education, employment]);
 
   // Handler when personal info form is completed
   const handlePersonalInfoComplete = (data: any) => {
@@ -286,15 +293,17 @@ export default function Home() {
                     
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
-                      <ApplicationPDFDownload
-                        applicant={applicant}
-                        education={education}
-                        employment={employment}
-                        references={references}
-                        verification={verification}
-                        equal={applicant}
-                        discipline={applicant}
-                      />
+                      {/* Create a direct link to download the PDF with pre-filled data */}
+                      <a 
+                        href={`/api/applicants/${applicantId}/pdf`} 
+                        target="_blank"
+                        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                      >
+                        <svg className="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                        Download Application PDF
+                      </a>
                     </div>
                   </div>
                   

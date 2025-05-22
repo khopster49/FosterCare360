@@ -70,6 +70,14 @@ export const ApplicationPDF = ({ applicant, education, employment, references, v
         <Text style={styles.text}>Date Generated: {new Date().toLocaleDateString()}</Text>
       </View>
 
+      {/* POSITION APPLIED FOR */}
+      <View style={styles.section}>
+        <View style={styles.row}>
+          <Text style={styles.label}>Position Applied For:</Text>
+          <Text style={styles.value}>{applicant?.positionAppliedFor || 'Not specified'}</Text>
+        </View>
+      </View>
+
       {/* PERSONAL INFORMATION */}
       <View style={styles.section}>
         <Text style={styles.heading}>1. Personal Information</Text>

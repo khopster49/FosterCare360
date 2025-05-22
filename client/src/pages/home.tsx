@@ -96,7 +96,38 @@ export default function Home() {
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             {currentStep === 0 && (
               <>
-                <h2 className="text-xl font-medium mb-2">Personal Information</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-primary">Confidential Application Form</h2>
+                
+                <div className="text-neutral-700 text-sm mb-4 space-y-4">
+                  <p>
+                    Swiis is committed to Equal Opportunities in all areas of our operations and welcome all applicants 
+                    irrespective of age, disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & 
+                    maternity, sex, and sexual orientation. The information which you provide on this application form 
+                    (excluding the Equal Opportunities Questionnaire below which will be processed separately) will be used 
+                    solely to assess your ability to carry out the role that you are applying for.
+                  </p>
+                  <p>
+                    If you are disabled or have a health condition and would like us to consider making any reasonable 
+                    adjustments to the application process and/or the role that you are applying for, then please let the HR Team 
+                    know via email: HRTeam@swiis.com and we will be happy to help.
+                  </p>
+                  <p>
+                    Please ensure the application form is completed fully and that you demonstrate your skills/experience 
+                    clearly against the job description for the role.
+                  </p>
+                </div>
+                
+                <div className="border border-gray-300 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2">
+                    <div className="p-3 border-b md:border-b-0 md:border-r border-gray-300 bg-gray-50">
+                      <span className="text-primary font-medium">Position Applied For:</span>
+                    </div>
+                    <div className="p-3 min-h-[50px]">
+                    </div>
+                  </div>
+                </div>
+                
+                <h3 className="text-xl font-medium mb-2 text-primary">Personal Information</h3>
                 <p className="text-neutral-700 text-sm mb-6">
                   Please provide your basic personal details as required by fostering regulations.
                 </p>
@@ -120,7 +151,7 @@ export default function Home() {
             
             {currentStep === 2 && (
               <>
-                <h2 className="text-xl font-medium mb-2">Employment History</h2>
+                <h2 className="text-xl font-medium mb-2 text-primary">Employment History</h2>
                 <div className="text-neutral-700 text-sm mb-6 space-y-4">
                   <p>
                     Please give us details of every job or voluntary position you have held since leaving school, including the names, addresses and dates for leaving (continue on additionally sheet if necessary). Please indicate which of these positions involved direct work with children or vulnerable adults and explain any gaps in your employment history.

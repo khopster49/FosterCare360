@@ -257,7 +257,7 @@ export default function Home() {
                     
                     <h2 className="text-2xl font-bold text-green-700 mb-2">Application Submitted!</h2>
                     <p className="text-green-600 mb-4">
-                      Thank you for completing your application to become a foster carer with Swiis Foster Care.
+                      Thank you for submitting your application.
                     </p>
                     <p className="text-slate-700 mb-6">
                       Your application has been received and will be reviewed by our team. You can download a copy of your completed application for your records using the button below.
@@ -265,27 +265,15 @@ export default function Home() {
                     
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
-                      {isDataReady ? (
-                        <ApplicationPDFDownload
-                          applicant={applicant}
-                          education={education}
-                          employment={employment}
-                          references={references}
-                          verification={verification}
-                          equal={applicant}
-                          discipline={applicant}
-                        />
-                      ) : (
-                        <Button variant="outline" disabled>
-                          <span className="mr-2">
-                            <svg className="animate-spin h-4 w-4 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                          </span>
-                          Preparing your application...
-                        </Button>
-                      )}
+                      <ApplicationPDFDownload
+                        applicant={applicant || {}}
+                        education={education || []}
+                        employment={employment || []}
+                        references={references || []}
+                        verification={verification || {}}
+                        equal={applicant || {}}
+                        discipline={applicant || {}}
+                      />
                     </div>
                   </div>
                   
@@ -297,12 +285,12 @@ export default function Home() {
                         <p className="text-sm text-gray-600">Our team will review your application and contact you within 5 working days.</p>
                       </div>
                       <div className="bg-white p-4 rounded-lg border border-gray-200">
-                        <div className="font-medium mb-2">2. Initial Interview</div>
-                        <p className="text-sm text-gray-600">We'll schedule an initial interview to discuss your application in more detail.</p>
+                        <div className="font-medium mb-2">2. Shortlisting</div>
+                        <p className="text-sm text-gray-600">Applications will be shortlisted for interview based on application information provided.</p>
                       </div>
                       <div className="bg-white p-4 rounded-lg border border-gray-200">
-                        <div className="font-medium mb-2">3. Assessment Process</div>
-                        <p className="text-sm text-gray-600">If successful, you'll begin the formal assessment process to become a foster carer.</p>
+                        <div className="font-medium mb-2">3. Interview</div>
+                        <p className="text-sm text-gray-600">If the application is successfully shortlisted, you will be invited to an interview.</p>
                       </div>
                     </div>
                   </div>

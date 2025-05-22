@@ -154,10 +154,17 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
         </View>
         
         <View style={styles.row}>
-          <View style={styles.col33}>
+          <View style={styles.col50}>
+            <Text style={styles.label}>Position Applied For:</Text>
+            <Text style={styles.value}>{applicant.positionAppliedFor || 'Not specified'}</Text>
+          </View>
+          <View style={styles.col50}>
             <Text style={styles.label}>Nationality:</Text>
             <Text style={styles.value}>{applicant.nationality}</Text>
           </View>
+        </View>
+        
+        <View style={styles.row}>
           <View style={styles.col33}>
             <Text style={styles.label}>Right to Work:</Text>
             <Text style={styles.value}>{applicant.rightToWork ? 'Yes' : 'No'}</Text>
@@ -438,52 +445,7 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
         )}
       </View>
       
-      {/* Equal Opportunities */}
-      <Text style={styles.subtitle}>Equal Opportunities</Text>
-      <View style={styles.fullSection}>
-        {equal ? (
-          <View>
-            <View style={styles.row}>
-              <View style={styles.col33}>
-                <Text style={styles.label}>Gender:</Text>
-                <Text style={styles.value}>{equal.gender || 'Prefer not to say'}</Text>
-              </View>
-              <View style={styles.col33}>
-                <Text style={styles.label}>Age Range:</Text>
-                <Text style={styles.value}>{equal.ageRange || 'Prefer not to say'}</Text>
-              </View>
-              <View style={styles.col33}>
-                <Text style={styles.label}>Marital Status:</Text>
-                <Text style={styles.value}>{equal.maritalStatus || 'Prefer not to say'}</Text>
-              </View>
-            </View>
-            
-            <View style={styles.row}>
-              <View style={styles.col50}>
-                <Text style={styles.label}>Ethnicity:</Text>
-                <Text style={styles.value}>{equal.ethnicity || 'Prefer not to say'}</Text>
-              </View>
-              <View style={styles.col50}>
-                <Text style={styles.label}>Religion:</Text>
-                <Text style={styles.value}>{equal.religion || 'Prefer not to say'}</Text>
-              </View>
-            </View>
-            
-            <View style={styles.row}>
-              <View style={styles.col50}>
-                <Text style={styles.label}>Sexual Orientation:</Text>
-                <Text style={styles.value}>{equal.sexualOrientation || 'Prefer not to say'}</Text>
-              </View>
-              <View style={styles.col50}>
-                <Text style={styles.label}>Disability:</Text>
-                <Text style={styles.value}>{equal.disability || 'None'}</Text>
-              </View>
-            </View>
-          </View>
-        ) : (
-          <Text style={styles.value}>Equal opportunities information not provided</Text>
-        )}
-      </View>
+      {/* Equal Opportunities section has been removed as requested */}
       
       {/* Certification */}
       <Text style={styles.subtitle}>Declaration</Text>

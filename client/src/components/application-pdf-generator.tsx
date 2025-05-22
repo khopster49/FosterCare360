@@ -231,13 +231,24 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
               </View>
               
               <View style={styles.row}>
-                <View style={styles.col66}>
+                <View style={styles.col50}>
                   <Text style={styles.label}>Address:</Text>
                   <Text style={styles.value}>{job.employerAddress}</Text>
                 </View>
-                <View style={styles.col33}>
-                  <Text style={styles.label}>Phone:</Text>
+                <View style={styles.col50}>
+                  <Text style={styles.label}>Postcode:</Text>
+                  <Text style={styles.value}>{job.employerPostcode || 'Not provided'}</Text>
+                </View>
+              </View>
+              
+              <View style={styles.row}>
+                <View style={styles.col50}>
+                  <Text style={styles.label}>Phone (Work):</Text>
                   <Text style={styles.value}>{job.employerPhone}</Text>
+                </View>
+                <View style={styles.col50}>
+                  <Text style={styles.label}>Mobile:</Text>
+                  <Text style={styles.value}>{job.employerMobile || 'Not provided'}</Text>
                 </View>
               </View>
               

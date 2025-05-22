@@ -437,14 +437,28 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       control={form.control}
                       name={`employmentEntries.${index}.employerAddress`}
                       render={({ field }) => (
-                        <FormItem className="col-span-2">
+                        <FormItem>
                           <FormLabel>Employer Address</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Full employer address including postcode..."
+                              placeholder="Full employer address..."
                               rows={2}
                               {...field}
                             />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employerPostcode`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Employer Postcode</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Postcode" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

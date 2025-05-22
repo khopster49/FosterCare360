@@ -296,48 +296,94 @@ export default function Home() {
                       {/* Use PDF Download component with test data */}
                       <Button
                         onClick={() => {
-                          // Fetch PDF data and show it in a new window
+                          // Fetch PDF data and generate a proper PDF using jsPDF
                           fetch(`/api/applicants/${applicantId}/pdf-data`)
                             .then(response => response.json())
                             .then(data => {
                               console.log("PDF data:", data);
-                              // Create a client-side PDF and show it
-                              const pdfBlob = new Blob(
-                                [`
-Confidential Application Form
-
-Swiis is committed to Equal Opportunities in all areas of our operations and welcome all applicants 
-irrespective of age, disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & 
-maternity, sex, and sexual orientation. The information which you provide on this application form 
-(excluding the Equal Opportunities Questionnaire below which will be processed separately) will be used 
-solely to assess your ability to carry out the role that you are applying for.
-
-If you are disabled or have a health condition and would like us to consider making any reasonable 
-adjustments to the application process and/or the role that you are applying for, then please let the HR Team 
-know via email: HRTeam@swiis.com and we will be happy to help.
-
-Please ensure the application form is completed fully and that you demonstrate your skills/experience 
-clearly against the job description for the role.
-
-Position Applied For: ${data.applicant.positionAppliedFor || 'Not specified'}
-
-PERSONAL INFORMATION
-Name: ${data.applicant.title || ''} ${data.applicant.firstName || ''} ${data.applicant.middleName || ''} ${data.applicant.lastName || ''}
-Email: ${data.applicant.email || ''}
-Phone: ${data.applicant.mobilePhone || ''}
-Address: ${data.applicant.address || ''}, ${data.applicant.postcode || ''}
-                                `], 
-                                { type: 'text/plain' }
-                              );
                               
-                              // Create a download link
-                              const url = URL.createObjectURL(pdfBlob);
-                              const link = document.createElement('a');
-                              link.href = url;
-                              link.download = `application-${applicantId}.txt`;
-                              document.body.appendChild(link);
-                              link.click();
-                              document.body.removeChild(link);
+                              // Create PDF using jsPDF
+                              import('jspdf').then(({ jsPDF }) => {
+                                try {
+                                  // Create a new document
+                                  const doc = new jsPDF();
+                                  
+                                  // Set font size and style
+                                  doc.setFontSize(22);
+                                  doc.setTextColor(242, 101, 34); // Swiis orange color
+                                  
+                                  // Title
+                                  doc.text("Confidential Application Form", 20, 20);
+                                  
+                                  // Reset styles for normal text
+                                  doc.setFontSize(11);
+                                  doc.setTextColor(0, 0, 0);
+                                  
+                                  // Equal Opportunities Statement
+                                  const equalOpText = 
+                                    "Swiis is committed to Equal Opportunities in all areas of our operations and welcome all applicants " +
+                                    "irrespective of age, disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & " +
+                                    "maternity, sex, and sexual orientation. The information which you provide on this application form " +
+                                    "(excluding the Equal Opportunities Questionnaire below which will be processed separately) will be used " +
+                                    "solely to assess your ability to carry out the role that you are applying for.";
+                                  
+                                  doc.setFontSize(10);
+                                  const splitEqualOp = doc.splitTextToSize(equalOpText, 170);
+                                  doc.text(splitEqualOp, 20, 30);
+                                  
+                                  // Reasonable adjustments text
+                                  const adjustText = 
+                                    "If you are disabled or have a health condition and would like us to consider making any reasonable " +
+                                    "adjustments to the application process and/or the role that you are applying for, then please let the HR Team " +
+                                    "know via email: HRTeam@swiis.com and we will be happy to help.";
+                                  
+                                  const splitAdjust = doc.splitTextToSize(adjustText, 170);
+                                  doc.text(splitAdjust, 20, 55);
+                                  
+                                  // Instructions text
+                                  const instructText = 
+                                    "Please ensure the application form is completed fully and that you demonstrate your skills/experience " +
+                                    "clearly against the job description for the role.";
+                                  
+                                  const splitInstruct = doc.splitTextToSize(instructText, 170);
+                                  doc.text(splitInstruct, 20, 70);
+                                  
+                                  // Position Applied For section
+                                  doc.setFontSize(11);
+                                  doc.setTextColor(242, 101, 34); // Swiis orange for position field
+                                  doc.text("Position Applied For:", 20, 85);
+                                  doc.line(20, 86, 190, 86); // Line below the title
+                                  
+                                  doc.setTextColor(0, 0, 0); // Reset to black
+                                  doc.text(data.applicant.positionAppliedFor || "Not specified", 105, 85);
+                                  
+                                  // Personal Information section
+                                  doc.setFontSize(12);
+                                  doc.setTextColor(0, 0, 0);
+                                  doc.text("PERSONAL INFORMATION", 20, 100);
+                                  
+                                  doc.setFontSize(10);
+                                  doc.text(`Name: ${data.applicant.title || ''} ${data.applicant.firstName || ''} ${data.applicant.middleName || ''} ${data.applicant.lastName || ''}`, 20, 110);
+                                  doc.text(`Email: ${data.applicant.email || ''}`, 20, 115);
+                                  doc.text(`Phone: ${data.applicant.mobilePhone || data.applicant.phone || ''}`, 20, 120);
+                                  doc.text(`Address: ${data.applicant.address || ''}, ${data.applicant.city || ''}, ${data.applicant.postcode || ''}`, 20, 125);
+                                  doc.text(`Nationality: ${data.applicant.nationality || 'Not specified'}`, 20, 130);
+                                  doc.text(`Right to Work in UK: ${data.applicant.rightToWork ? 'Yes' : 'No'}`, 20, 135);
+                                  
+                                  // Add more sections as needed for education, employment, etc.
+                                  
+                                  // Add footer
+                                  doc.setFontSize(8);
+                                  doc.setTextColor(100, 100, 100); // Gray color
+                                  doc.text("Swiis Foster Care Application - Confidential", 105, 290, { align: "center" });
+                                  
+                                  // Save the PDF
+                                  doc.save(`application-${applicantId}.pdf`);
+                                } catch (error) {
+                                  console.error("Error generating PDF:", error);
+                                  alert("There was an error generating the PDF. Please try again.");
+                                }
+                              });
                             })
                             .catch(error => {
                               console.error("Error fetching PDF data:", error);

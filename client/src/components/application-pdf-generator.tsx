@@ -127,7 +127,6 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
     <Page size="A4" style={styles.page}>
       <Text style={styles.title}>Swiis Application</Text>
       
-      {/* Position Applied For */}
       <View style={styles.fullSection}>
         <View style={styles.row}>
           <View style={styles.col100}>
@@ -137,7 +136,6 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
         </View>
       </View>
       
-      {/* Personal Information */}
       <Text style={styles.subtitle}>Personal Information</Text>
       <View style={styles.fullSection}>
         <View style={styles.row}>
@@ -513,6 +511,14 @@ export const ApplicationPDFDownload = ({ applicant, education, employment, refer
   console.log("Raw PDF Application Data:", applicant);
   console.log("Raw PDF Education Data:", education);
   console.log("Raw PDF Employment Data:", employment);
+  
+  // Add more debugging information
+  console.log("Attempting to generate PDF with:", {
+    applicantPresent: !!applicant,
+    educationLength: Array.isArray(education) ? education.length : 'not an array',
+    employmentLength: Array.isArray(employment) ? employment.length : 'not an array',
+    referencesLength: Array.isArray(references) ? references.length : 'not an array'
+  });
   const safeDiscipline = discipline || {};
   return (
     <PDFDownloadLink

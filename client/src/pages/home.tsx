@@ -47,35 +47,40 @@ export default function Home() {
     totalSteps: steps.length,
   });
 
-  // Fetch applicant data for completion page
-  const { data: applicant } = useQuery({
+  // Fetch applicant data for the application
+  const applicantQuery = useQuery({
     queryKey: ['/api/applicants', applicantId],
     enabled: !!applicantId,
   });
+  const applicant = applicantQuery.data;
   
   // Fetch education history for the PDF
-  const { data: education } = useQuery({
+  const educationQuery = useQuery({
     queryKey: ['/api/applicants', applicantId, 'education'],
     enabled: !!applicantId,
   });
+  const education = educationQuery.data || [];
   
   // Fetch employment history for the PDF
-  const { data: employment } = useQuery({
+  const employmentQuery = useQuery({
     queryKey: ['/api/applicants', applicantId, 'employment'],
     enabled: !!applicantId,
   });
+  const employment = employmentQuery.data || [];
   
   // Fetch references for the PDF
-  const { data: references } = useQuery({
+  const referencesQuery = useQuery({
     queryKey: ['/api/applicants', applicantId, 'references'],
     enabled: !!applicantId,
   });
+  const references = referencesQuery.data || [];
   
   // Fetch DBS check data for the PDF
-  const { data: verification } = useQuery({
+  const verificationQuery = useQuery({
     queryKey: ['/api/applicants', applicantId, 'dbs'],
     enabled: !!applicantId,
   });
+  const verification = verificationQuery.data;
   
   // Check if all data is loaded for PDF generation
   const isDataReady = !!applicant && !!education && !!employment && !!references;

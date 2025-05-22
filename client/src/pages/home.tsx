@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FormStepper } from "@/components/form-stepper";
@@ -79,6 +79,19 @@ export default function Home() {
   
   // Check if all data is loaded for PDF generation
   const isDataReady = !!applicant && !!education && !!employment && !!references;
+  
+  // Log the data to check if it's loading correctly
+  useEffect(() => {
+    if (currentStep === 10 && applicant) {
+      console.log("Application data ready for PDF:", {
+        applicant, 
+        education, 
+        employment, 
+        references, 
+        verification
+      });
+    }
+  }, [currentStep, applicant, education, employment, references, verification]);
 
   // Handler when personal info form is completed
   const handlePersonalInfoComplete = (data: any) => {

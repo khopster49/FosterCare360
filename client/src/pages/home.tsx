@@ -304,18 +304,28 @@ export default function Home() {
                               // Create a client-side PDF and show it
                               const pdfBlob = new Blob(
                                 [`
-                                  SWIIS APPLICATION FORM
-                                  
-                                  POSITION APPLIED FOR: ${data.applicant.positionAppliedFor || 'Not specified'}
-                                  
-                                  PERSONAL INFORMATION
-                                  Name: ${data.applicant.title || ''} ${data.applicant.firstName || ''} ${data.applicant.middleName || ''} ${data.applicant.lastName || ''}
-                                  Email: ${data.applicant.email || ''}
-                                  Phone: ${data.applicant.mobilePhone || ''}
-                                  Address: ${data.applicant.address || ''}, ${data.applicant.postcode || ''}
-                                  
-                                  This is a text-based representation of the PDF.
-                                  Note that the Position Applied For now appears ABOVE the Personal Information section as requested.
+Confidential Application Form
+
+Swiis is committed to Equal Opportunities in all areas of our operations and welcome all applicants 
+irrespective of age, disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy & 
+maternity, sex, and sexual orientation. The information which you provide on this application form 
+(excluding the Equal Opportunities Questionnaire below which will be processed separately) will be used 
+solely to assess your ability to carry out the role that you are applying for.
+
+If you are disabled or have a health condition and would like us to consider making any reasonable 
+adjustments to the application process and/or the role that you are applying for, then please let the HR Team 
+know via email: HRTeam@swiis.com and we will be happy to help.
+
+Please ensure the application form is completed fully and that you demonstrate your skills/experience 
+clearly against the job description for the role.
+
+Position Applied For: ${data.applicant.positionAppliedFor || 'Not specified'}
+
+PERSONAL INFORMATION
+Name: ${data.applicant.title || ''} ${data.applicant.firstName || ''} ${data.applicant.middleName || ''} ${data.applicant.lastName || ''}
+Email: ${data.applicant.email || ''}
+Phone: ${data.applicant.mobilePhone || ''}
+Address: ${data.applicant.address || ''}, ${data.applicant.postcode || ''}
                                 `], 
                                 { type: 'text/plain' }
                               );

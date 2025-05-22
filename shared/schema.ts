@@ -28,6 +28,7 @@ export const applicants = pgTable("applicants", {
   address: text("address").notNull(),
   city: text("city").notNull(),
   postcode: text("postcode").notNull(),
+  positionAppliedFor: text("position_applied_for"),
   nationality: text("nationality").notNull(),
   rightToWork: boolean("right_to_work").notNull(),
   workDocumentType: text("work_document_type").notNull(),

@@ -43,6 +43,7 @@ const personalInfoSchema = z.object({
   postcode: z.string().min(1, { message: "Postcode is required" }),
   homePhone: z.string().optional(),
   mobilePhone: z.string().min(5, { message: "Mobile phone number is required" }),
+  positionAppliedFor: z.string().min(1, { message: "Please enter the position you are applying for" }),
   drivingLicence: z.boolean().default(false),
   
   // Right to work details
@@ -92,6 +93,7 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
       postcode: "",
       homePhone: "",
       mobilePhone: "",
+      positionAppliedFor: "",
       drivingLicence: false,
       nationality: "",
       visaType: "",

@@ -157,28 +157,6 @@ export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <Card className="border-primary/20">
-          <CardContent className="pt-6">
-            <h3 className="text-xl font-bold text-[#f26522] mb-4">Confidential Application Form</h3>
-            <p className="text-sm text-neutral-600 mb-4">
-              Swiis is committed to Equal Opportunities in all areas of our operations and welcome all applicants
-              irrespective of age, disability, gender reassignment, marriage & civil partnership, race, religion, pregnancy &
-              maternity, sex, and sexual orientation. The information which you provide on this application form
-              (excluding the Equal Opportunities Questionnaire below which will be processed separately) will be used
-              solely to assess your ability to carry out the role that you are applying for.
-            </p>
-            <p className="text-sm text-neutral-600 mb-4">
-              If you are disabled or have a health condition and would like us to consider making any reasonable
-              adjustments to the application process and/or the role that you are applying for, then please let the HR Team
-              know via email: HRTeam@swiis.com and we will be happy to help.
-            </p>
-            <p className="text-sm text-neutral-600 mb-4">
-              Please ensure the application form is completed fully and that you demonstrate your skills/experience
-              clearly against the job description for the role.
-            </p>
-          </CardContent>
-        </Card>
-
         {/* PERSONAL DETAILS SECTION */}
         <div>
           <div className="flex items-center gap-2 mb-6">

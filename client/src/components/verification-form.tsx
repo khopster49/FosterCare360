@@ -186,7 +186,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
             </div>
             <h2 className="text-2xl font-medium text-center mb-4">Application Submitted</h2>
             <p className="text-neutral-700 text-center mb-8 max-w-md">
-              Your fostering application has been successfully submitted. We'll review your information and be in touch soon.
+              Your application has been successfully submitted. We'll review your information and be in touch soon.
             </p>
             
             <div className="w-full max-w-md">
@@ -207,14 +207,14 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
                   <span className="bg-green-100 text-green-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">2</span>
                   <div>
                     <p className="font-medium">Background Checks</p>
-                    <p>We'll process your references and DBS checks as required by UK fostering regulations.</p>
+                    <p>We'll process your references and DBS checks as required by UK regulations.</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="bg-green-100 text-green-700 font-bold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">3</span>
                   <div>
                     <p className="font-medium">Initial Contact</p>
-                    <p>A fostering advisor will contact you to discuss next steps in the assessment process.</p>
+                    <p>A team member will contact you to discuss next steps in the assessment process.</p>
                   </div>
                 </li>
               </ol>
@@ -415,7 +415,7 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
             
             <p className="text-sm text-neutral-600 mb-6">
               Please read and confirm the following statements by checking each box. These declarations are required 
-              to complete your fostering application in compliance with UK fostering regulations.
+              to complete your application in compliance with UK regulations.
             </p>
             
             <div className="space-y-6">

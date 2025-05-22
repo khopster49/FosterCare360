@@ -266,13 +266,13 @@ export default function Home() {
                     {/* Show PDF download button */}
                     <div className="flex justify-center">
                       <ApplicationPDFDownload
-                        applicant={applicant || {}}
-                        education={education || []}
-                        employment={employment || []}
-                        references={references || []}
-                        verification={verification || {}}
-                        equal={applicant || {}}
-                        discipline={applicant || {}}
+                        applicant={applicant}
+                        education={education}
+                        employment={employment}
+                        references={references}
+                        verification={verification}
+                        equal={applicant}
+                        discipline={applicant}
                       />
                     </div>
                   </div>

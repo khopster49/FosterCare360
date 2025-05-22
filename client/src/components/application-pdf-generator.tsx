@@ -479,6 +479,9 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
 // Export PDF Download Component
 export const ApplicationPDFDownload = ({ applicant, education, employment, references, verification, equal, discipline }) => {
   // Make sure we have all the necessary data and handle null/undefined values
+  // Using console.log to debug the incoming data
+  console.log("PDF Data:", { applicant, education, employment, references, verification });
+  
   const safeApplicant = applicant || {};
   const safeEducation = Array.isArray(education) ? education : [];
   const safeEmployment = Array.isArray(employment) ? employment : [];

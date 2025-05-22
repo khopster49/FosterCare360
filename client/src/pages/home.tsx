@@ -231,7 +231,7 @@ export default function Home() {
               <>
                 <h2 className="text-xl font-medium mb-2">Verification Checks</h2>
                 <p className="text-neutral-700 text-sm mb-6">
-                  As part of the fostering application process, we need to conduct mandatory verification checks to ensure compliance with UK regulations.
+                  As part of the application process, we need to conduct mandatory verification checks to ensure compliance with regulations.
                 </p>
                 <VerificationForm 
                   applicantId={applicantId || 1} // Allow preview with temporary ID

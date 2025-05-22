@@ -80,10 +80,12 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   const [isComplete, setIsComplete] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
-  // Fetch applicant data
+  // Fetch applicant data - but don't block rendering if no data available
   const { data: applicant } = useQuery({
     queryKey: [`/api/applicants/${applicantId}`],
     enabled: !!applicantId,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
   
   // Set up the form
@@ -110,6 +112,13 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   // Create DBS check mutation
   const createDbsCheck = useMutation({
     mutationFn: async (values: any) => {
+      if (!applicantId) {
+        toast({
+          title: "Information Only",
+          description: "This is a preview. In the actual form, your DBS information would be saved.",
+        });
+        return { success: true };
+      }
       const res = await apiRequest("POST", `/api/applicants/${applicantId}/dbs`, values);
       return res.json();
     },
@@ -118,6 +127,13 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   // Submit application mutation
   const submitApplication = useMutation({
     mutationFn: async () => {
+      if (!applicantId) {
+        toast({
+          title: "Information Only",
+          description: "This is a preview. In the actual form, your application would be submitted.",
+        });
+        return { success: true };
+      }
       const res = await apiRequest("POST", `/api/applicants/${applicantId}/submit`, {});
       return res.json();
     },
@@ -220,8 +236,8 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
               <h3 className="text-lg font-medium text-primary">DBS (Disclosure and Barring Service) Check</h3>
             </div>
             <p className="text-sm text-neutral-600 mb-4">
-              An enhanced DBS check is required for all fostering applicants to ensure the safety of vulnerable children.
-              This is a mandatory requirement under UK fostering regulations.
+              An enhanced DBS check is required for all applicants to ensure the safety of vulnerable children and adults.
+              This is a mandatory requirement under UK regulations.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">

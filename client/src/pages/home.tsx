@@ -127,10 +127,7 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <h3 className="text-xl font-medium mb-2 text-primary">Personal Information</h3>
-                <p className="text-neutral-700 text-sm mb-6">
-                  Please provide your basic personal details as required by fostering regulations.
-                </p>
+
                 <PersonalInfoForm onSuccess={handlePersonalInfoComplete} />
               </>
             )}

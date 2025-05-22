@@ -123,6 +123,11 @@ export default function Home() {
                       <span className="text-primary font-medium">Position Applied For:</span>
                     </div>
                     <div className="p-3 min-h-[50px]">
+                      <input 
+                        type="text" 
+                        className="w-full px-2 py-1 border-0 focus:outline-none focus:ring-0"
+                        placeholder="Enter the position you are applying for"
+                      />
                     </div>
                   </div>
                 </div>

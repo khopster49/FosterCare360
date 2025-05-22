@@ -38,6 +38,7 @@ export default function Home() {
     nextStep,
     previousStep,
     completedSteps,
+    goToStep
   } = useFormStepper({
     initialStep: 0,
     totalSteps: steps.length,
@@ -48,14 +49,30 @@ export default function Home() {
     setApplicantId(data.id);
     nextStep();
   };
+  
+  // Function to handle direct navigation to steps when clicking on step numbers
+  const handleStepClick = (stepIndex: number) => {
+    // For first step, always allow navigation
+    if (stepIndex === 0) {
+      goToStep(stepIndex);
+      return;
+    }
+    
+    // For other steps, check if we have an applicant ID (personal info completed)
+    if (applicantId) {
+      goToStep(stepIndex);
+    } else {
+      alert("Please complete the Personal Information section first to navigate to other sections.");
+    }
+  };
 
   return (
     <>
       <Helmet>
-        <title>UK Fostering Onboarding Programme - Application</title>
-        <meta name="description" content="Complete your UK fostering application to become a foster carer. Our online application process meets all Schedule 1 regulations." />
-        <meta property="og:title" content="UK Fostering Onboarding Programme - Application" />
-        <meta property="og:description" content="Complete your UK fostering application to become a foster carer. Our online application process meets all Schedule 1 regulations." />
+        <title>Swiis Foster Care - Application</title>
+        <meta name="description" content="Complete your fostering application to become a Swiis foster carer. Our online application process meets all Schedule 1 regulations." />
+        <meta property="og:title" content="Swiis Foster Care - Application" />
+        <meta property="og:description" content="Complete your fostering application to become a Swiis foster carer. Our online application process meets all Schedule 1 regulations." />
       </Helmet>
       
       <div className="flex flex-col min-h-screen bg-neutral-50">
@@ -66,6 +83,7 @@ export default function Home() {
             steps={steps} 
             currentStep={currentStep} 
             completedSteps={completedSteps}
+            onStepClick={handleStepClick}
           />
           
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">

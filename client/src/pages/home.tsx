@@ -147,7 +147,10 @@ export default function Home() {
               <>
                 <h2 className="text-xl font-medium mb-2">Employment History</h2>
                 <p className="text-neutral-700 text-sm mb-6">
-                  Please provide your complete employment history, including any gaps. All gaps over 31 days must be explained.
+                  Please give us details of every job or voluntary position you have held since leaving school, including the names, addresses and dates for leaving (continue on additionally sheet if necessary). Please indicate which of these positions involved direct work with children or vulnerable adults and explain any gaps in your employment history.
+                </p>
+                <p className="text-neutral-700 text-sm mb-6">
+                  NB: We are required by the Fostering Services Regulations 2011: 'Where a person has previously worked in a position whose duties involved work with children or vulnerable adults, so far as reasonably practicable verification of the reason why the employment or position ended' is required. We reserve the right to contact any employer where you have worked with children or vulnerable adults.
                 </p>
                 <EmploymentForm 
                   applicantId={applicantId} 

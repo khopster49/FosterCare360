@@ -124,6 +124,16 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
     <Page size="A4" style={styles.page}>
       <Text style={styles.title}>Swiis Application</Text>
       
+      {/* Position Applied For */}
+      <View style={styles.fullSection}>
+        <View style={styles.row}>
+          <View style={styles.col100}>
+            <Text style={styles.label}>Position Applied For:</Text>
+            <Text style={styles.value}>{applicant.positionAppliedFor || 'Not specified'}</Text>
+          </View>
+        </View>
+      </View>
+      
       {/* Personal Information */}
       <Text style={styles.subtitle}>Personal Information</Text>
       <View style={styles.fullSection}>
@@ -155,12 +165,12 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
         
         <View style={styles.row}>
           <View style={styles.col50}>
-            <Text style={styles.label}>Position Applied For:</Text>
-            <Text style={styles.value}>{applicant.positionAppliedFor || 'Not specified'}</Text>
-          </View>
-          <View style={styles.col50}>
             <Text style={styles.label}>Nationality:</Text>
             <Text style={styles.value}>{applicant.nationality}</Text>
+          </View>
+          <View style={styles.col50}>
+            <Text style={styles.label}>Driving License:</Text>
+            <Text style={styles.value}>{applicant.drivingLicence ? 'Yes' : 'No'}</Text>
           </View>
         </View>
         

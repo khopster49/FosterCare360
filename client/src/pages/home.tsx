@@ -80,15 +80,15 @@ export default function Home() {
   // Check if all data is loaded for PDF generation
   const isDataReady = !!applicant && !!education && !!employment && !!references;
   
-  // Log the data to check if it's loading correctly
+  // Debug PDF data availability and structure
   useEffect(() => {
     if (currentStep === 10 && applicant) {
       console.log("Application data ready for PDF:", {
-        applicant, 
-        education, 
-        employment, 
-        references, 
-        verification
+        applicant: applicant || "No applicant data", 
+        education: education && education.length > 0 ? `${education.length} education entries` : "No education data",
+        employment: employment && employment.length > 0 ? `${employment.length} employment entries` : "No employment data",
+        references: references && references.length > 0 ? `${references.length} references` : "No references data",
+        verification: verification || "No verification data"
       });
     }
   }, [currentStep, applicant, education, employment, references, verification]);

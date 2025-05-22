@@ -479,9 +479,16 @@ const ApplicationPDF = ({ applicant, education, employment, references, verifica
 // Export PDF Download Component
 export const ApplicationPDFDownload = ({ applicant, education, employment, references, verification, equal, discipline }) => {
   // Make sure we have all the necessary data and handle null/undefined values
-  // Using console.log to debug the incoming data
-  console.log("PDF Data:", { applicant, education, employment, references, verification });
+  // Log detailed information about what data is available for the PDF
+  console.log("PDF Data Details:", { 
+    applicant: applicant ? Object.keys(applicant).length + " fields" : "missing",
+    education: Array.isArray(education) ? education.length + " entries" : "missing",
+    employment: Array.isArray(employment) ? employment.length + " entries" : "missing",
+    references: Array.isArray(references) ? references.length + " entries" : "missing",
+    verification: verification ? "available" : "missing"
+  });
   
+  // Create safe objects with fallbacks for all data
   const safeApplicant = applicant || {};
   const safeEducation = Array.isArray(education) ? education : [];
   const safeEmployment = Array.isArray(employment) ? employment : [];

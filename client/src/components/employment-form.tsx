@@ -795,6 +795,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
               append({
                 employer: "",
                 employerAddress: "",
+                employerPostcode: "",
                 employerPhone: "",
                 employerMobile: "",
                 position: "",

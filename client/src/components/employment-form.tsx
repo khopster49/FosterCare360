@@ -30,6 +30,7 @@ import { formatDate } from "@/lib/utils";
 const employmentEntrySchema = z.object({
   employer: z.string().min(1, { message: "Employer name is required" }),
   employerAddress: z.string().min(1, { message: "Employer address is required" }),
+  employerPostcode: z.string().min(1, { message: "Employer postcode is required" }),
   employerPhone: z.string().min(5, { message: "Employer phone number is required" }),
   employerMobile: z.string().optional(),
   position: z.string().min(1, { message: "Position is required" }),
@@ -106,6 +107,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
         {
           employer: "",
           employerAddress: "",
+          employerPostcode: "",
           employerPhone: "",
           employerMobile: "",
           position: "",
@@ -322,6 +324,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           applicantId,
           // Make sure these fields always have at least an empty string
           employerAddress: entry.employerAddress || '',
+          employerPostcode: entry.employerPostcode || '',
           employerPhone: entry.employerPhone || '',
           employerMobile: entry.employerMobile || '',
           reasonForLeaving: entry.reasonForLeaving || ''
@@ -428,14 +431,28 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       control={form.control}
                       name={`employmentEntries.${index}.employerAddress`}
                       render={({ field }) => (
-                        <FormItem className="col-span-2">
+                        <FormItem>
                           <FormLabel>Employer Address</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Full employer address including postcode..."
+                              placeholder="Full employer address (excluding postcode)"
                               rows={2}
                               {...field}
                             />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`employmentEntries.${index}.employerPostcode`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Postcode</FormLabel>
+                          <FormControl>
+                            <Input placeholder="SW1A 1AA" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

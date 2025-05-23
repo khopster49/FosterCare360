@@ -92,6 +92,7 @@ export const employmentEntries = pgTable("employment_entries", {
   applicantId: integer("applicant_id").notNull(),
   employer: text("employer").notNull(),
   employerAddress: text("employer_address").notNull(),
+  employerPostcode: text("employer_postcode").notNull(),
   employerPhone: text("employer_phone").notNull(),
   employerMobile: text("employer_mobile"),
   position: text("position").notNull(),

@@ -1,7 +1,7 @@
 import { HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import swiisLogo from "@/assets/swiis-logo.jpg";
+import swiisLogo from "@/assets/swiis-foster-care-logo.png";
 
 export default function Header() {
   return (

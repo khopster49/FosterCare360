@@ -10,12 +10,12 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Foster Care Connect</h1>
+              <Heart className="h-8 w-8 text-orange-600 mr-2" />
+              <h1 className="text-2xl font-bold text-orange-900">Foster Care Connect</h1>
             </div>
             <Button 
               onClick={() => window.location.href = '/api/login'}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-orange-600 hover:bg-orange-700 text-white"
             >
               Sign In
             </Button>
@@ -26,7 +26,7 @@ export function Landing() {
       {/* Hero Section */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-orange-900 mb-4">
             Start Your Journey to Become a Foster Carer
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
@@ -36,7 +36,7 @@ export function Landing() {
           <Button 
             onClick={() => window.location.href = '/api/login'}
             size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
           >
             Begin Application
           </Button>
@@ -46,10 +46,10 @@ export function Landing() {
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           <Card className="text-center">
             <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-blue-600" />
+              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle>Comprehensive Support</CardTitle>
+              <CardTitle className="text-orange-900">Comprehensive Support</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
@@ -61,10 +61,10 @@ export function Landing() {
 
           <Card className="text-center">
             <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-green-600" />
+              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <Users className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle>Strong Community</CardTitle>
+              <CardTitle className="text-orange-900">Strong Community</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
@@ -76,10 +76,10 @@ export function Landing() {
 
           <Card className="text-center">
             <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
-                <CheckCircle className="h-6 w-6 text-purple-600" />
+              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                <CheckCircle className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle>Streamlined Process</CardTitle>
+              <CardTitle className="text-orange-900">Streamlined Process</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription>
@@ -92,36 +92,36 @@ export function Landing() {
 
         {/* Process Steps */}
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          <h3 className="text-2xl font-bold text-orange-900 mb-6 text-center">
             Your Application Journey
           </h3>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
+              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 1
               </div>
-              <h4 className="font-semibold mb-2">Personal Information</h4>
+              <h4 className="font-semibold mb-2 text-orange-900">Personal Information</h4>
               <p className="text-sm text-gray-600">Share your basic details and contact information</p>
             </div>
             <div className="text-center">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
+              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 2
               </div>
-              <h4 className="font-semibold mb-2">Background Checks</h4>
+              <h4 className="font-semibold mb-2 text-orange-900">Background Checks</h4>
               <p className="text-sm text-gray-600">Complete DBS checks and reference verifications</p>
             </div>
             <div className="text-center">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
+              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 3
               </div>
-              <h4 className="font-semibold mb-2">Assessment Process</h4>
+              <h4 className="font-semibold mb-2 text-orange-900">Assessment Process</h4>
               <p className="text-sm text-gray-600">Work with our team through the assessment stages</p>
             </div>
             <div className="text-center">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
+              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 4
               </div>
-              <h4 className="font-semibold mb-2">Approval & Matching</h4>
+              <h4 className="font-semibold mb-2 text-orange-900">Approval & Matching</h4>
               <p className="text-sm text-gray-600">Get approved and matched with children who need care</p>
             </div>
           </div>

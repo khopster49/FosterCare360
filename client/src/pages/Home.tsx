@@ -14,8 +14,8 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-blue-600 mr-2" />
-              <h1 className="text-2xl font-bold text-gray-900">Foster Care Connect</h1>
+              <Heart className="h-8 w-8 text-orange-600 mr-2" />
+              <h1 className="text-2xl font-bold text-orange-900">Foster Care Connect</h1>
             </div>
             <div className="flex items-center space-x-4">
               {user && (
@@ -42,7 +42,7 @@ export function Home() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-orange-900 mb-2">
             Welcome back, {user?.firstName}!
           </h2>
           <p className="text-lg text-gray-600">
@@ -66,7 +66,7 @@ export function Home() {
             </CardHeader>
             <CardContent>
               <Link href="/application">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full bg-orange-600 hover:bg-orange-700">
                   Start Application
                 </Button>
               </Link>

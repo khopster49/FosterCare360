@@ -129,7 +129,7 @@ export function Landing() {
 
         {/* Call to Action */}
         <div className="text-center mt-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+          <h3 className="text-2xl font-bold text-orange-900 mb-4">
             Ready to Make a Difference?
           </h3>
           <p className="text-lg text-gray-600 mb-6">
@@ -138,7 +138,7 @@ export function Landing() {
           <Button 
             onClick={() => window.location.href = '/api/login'}
             size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg"
+            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
           >
             Sign In to Continue
           </Button>
@@ -150,7 +150,7 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <Heart className="h-6 w-6 text-blue-400 mr-2" />
+              <Heart className="h-6 w-6 text-orange-400 mr-2" />
               <span className="font-semibold">Foster Care Connect</span>
             </div>
             <p className="text-gray-400">

@@ -11,7 +11,7 @@ export function Landing() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Heart className="h-8 w-8 text-orange-600 mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Foster Care Connect</h1>
+              <h1 className="text-2xl font-bold text-orange-900">Staff Application Portal</h1>
             </div>
             <Button 
               onClick={() => window.location.href = '/api/login'}
@@ -27,11 +27,11 @@ export function Landing() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-orange-900 mb-4">
-            Start Your Journey to Become a Foster Carer
+            Start Your Staff Application Process
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Join our comprehensive fostering program and make a meaningful difference in children's lives. 
-            Our streamlined application process makes it easier than ever to begin your fostering journey.
+            Join our team and make a meaningful difference in your career. 
+            Our streamlined application process makes it easy to apply for staff positions.
           </p>
           <Button 
             onClick={() => window.location.href = '/api/login'}
@@ -42,53 +42,7 @@ export function Landing() {
           </Button>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card className="text-center">
-            <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <Shield className="h-6 w-6 text-orange-600" />
-              </div>
-              <CardTitle className="text-orange-900">Comprehensive Support</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Receive full support throughout your fostering journey with dedicated social workers, 
-                training programs, and 24/7 helpline access.
-              </CardDescription>
-            </CardContent>
-          </Card>
 
-          <Card className="text-center">
-            <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <Users className="h-6 w-6 text-orange-600" />
-              </div>
-              <CardTitle className="text-orange-900">Strong Community</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Join a network of experienced foster carers who provide peer support, 
-                guidance, and friendship throughout your fostering experience.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <div className="mx-auto w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
-                <CheckCircle className="h-6 w-6 text-orange-600" />
-              </div>
-              <CardTitle className="text-orange-900">Streamlined Process</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Our digital application system guides you through each step, 
-                making the process clear, efficient, and stress-free.
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Process Steps */}
         <div className="bg-white rounded-lg shadow-lg p-8">
@@ -151,10 +105,10 @@ export function Landing() {
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Heart className="h-6 w-6 text-orange-400 mr-2" />
-              <span className="font-semibold">Foster Care Connect</span>
+              <span className="font-semibold">Staff Application Portal</span>
             </div>
             <p className="text-gray-400">
-              Supporting families and children through comprehensive foster care services
+              Building careers and connecting talent with opportunity
             </p>
           </div>
         </div>

@@ -15,7 +15,7 @@ export function Home() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Heart className="h-8 w-8 text-orange-600 mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Foster Care Connect</h1>
+              <h1 className="text-2xl font-bold text-orange-900">Staff Application Portal</h1>
             </div>
             <div className="flex items-center space-x-4">
               {user && (
@@ -46,7 +46,7 @@ export function Home() {
             Welcome back, {user?.firstName}!
           </h2>
           <p className="text-lg text-gray-600">
-            Continue your fostering application or start a new one.
+            Continue your staff application or start a new one.
           </p>
         </div>
 

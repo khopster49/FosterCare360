@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, FileText, User, LogOut } from "lucide-react";
 import { Link } from "wouter";
+import swiisLogo from "@assets/image_1748187833695.png";
 
 export function Home() {
   const { user } = useAuth();
@@ -14,8 +15,8 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-orange-600 mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Staff Application Portal</h1>
+              <img src={swiisLogo} alt="Swiis Foster Care" className="h-8 w-auto mr-2" />
+              <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
             <div className="flex items-center space-x-4">
               {user && (

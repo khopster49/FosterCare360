@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Shield, Users, CheckCircle } from "lucide-react";
-import swiisLogo from "@/assets/swiis-foster-care-logo.png";
+import swiisLogo from "@assets/image_1748187833695.png";
 
 export function Landing() {
   return (
@@ -11,7 +11,7 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <img src={swiisLogo} alt="Swiis Logo" className="h-8 mr-2" />
+              <img src={swiisLogo} alt="Swiis Foster Care" className="h-8 w-auto mr-2" />
               <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
             <Button 

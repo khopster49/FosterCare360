@@ -85,18 +85,31 @@ export function Landing() {
         {/* Call to Action */}
         <div className="text-center mt-16">
           <h3 className="text-2xl font-bold text-orange-900 mb-4">
-            Ready to Make a Difference?
+            Ready to Join Our Team?
           </h3>
           <p className="text-lg text-gray-600 mb-6">
-            Sign in to start your fostering application today
+            Sign in to start your staff application today
           </p>
-          <Button 
-            onClick={() => window.location.href = '/api/login'}
-            size="lg"
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
-          >
-            Sign In to Continue
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button 
+              onClick={() => window.location.href = '/api/login'}
+              size="lg"
+              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
+            >
+              Sign In to Continue
+            </Button>
+            <div className="text-center">
+              <p className="text-sm text-gray-500 mb-2">Don't have login credentials?</p>
+              <Button 
+                variant="outline"
+                size="lg"
+                className="border-orange-600 text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg"
+                onClick={() => window.location.href = 'mailto:hr@swiisfostercare.com?subject=Staff Application Access Request'}
+              >
+                Contact HR for Access
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
 

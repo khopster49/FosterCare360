@@ -12,17 +12,22 @@ import {
   type Reference,
   type InsertReference,
   type User, 
-  type InsertUser 
+  type UpsertUser,
+  users,
+  applicants,
+  educationEntries,
+  employmentEntries,
+  employmentGaps,
+  dbsChecks,
+  references
 } from "@shared/schema";
-
-// modify the interface with any CRUD methods
-// you might need
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  // User methods
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  // User methods (for Replit Auth)
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
 
   // Applicant methods
   getApplicant(id: number): Promise<Applicant | undefined>;
@@ -60,248 +65,167 @@ export interface IStorage {
   updateReference(id: number, reference: Partial<Reference>): Promise<Reference | undefined>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private applicants: Map<number, Applicant>;
-  private educationEntries: Map<number, EducationEntry>;
-  private employmentEntries: Map<number, EmploymentEntry>;
-  private employmentGaps: Map<number, EmploymentGap>;
-  private dbsChecks: Map<number, DbsCheck>;
-  private references: Map<number, Reference>;
-  
-  private userId: number;
-  private applicantId: number;
-  private educationEntryId: number;
-  private employmentEntryId: number;
-  private employmentGapId: number;
-  private dbsCheckId: number;
-  private referenceId: number;
-
-  constructor() {
-    this.users = new Map();
-    this.applicants = new Map();
-    this.educationEntries = new Map();
-    this.employmentEntries = new Map();
-    this.employmentGaps = new Map();
-    this.dbsChecks = new Map();
-    this.references = new Map();
-    
-    this.userId = 1;
-    this.applicantId = 1;
-    this.educationEntryId = 1;
-    this.employmentEntryId = 1;
-    this.employmentGapId = 1;
-    this.dbsCheckId = 1;
-    this.referenceId = 1;
+export class DatabaseStorage implements IStorage {
+  // User operations (required for Replit Auth)
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
     return user;
   }
 
   // Applicant methods
   async getApplicant(id: number): Promise<Applicant | undefined> {
-    return this.applicants.get(id);
+    const [applicant] = await db.select().from(applicants).where(eq(applicants.id, id));
+    return applicant;
   }
 
   async getApplicantByEmail(email: string): Promise<Applicant | undefined> {
-    return Array.from(this.applicants.values()).find(
-      (applicant) => applicant.email === email,
-    );
+    const [applicant] = await db.select().from(applicants).where(eq(applicants.email, email));
+    return applicant;
   }
 
   async createApplicant(insertApplicant: InsertApplicant): Promise<Applicant> {
-    const id = this.applicantId++;
-    const now = new Date();
-    const applicant: Applicant = { 
-      ...insertApplicant, 
-      id, 
-      createdAt: now, 
-      completedAt: null,
-      status: "in_progress" 
-    };
-    this.applicants.set(id, applicant);
+    const [applicant] = await db.insert(applicants).values(insertApplicant).returning();
     return applicant;
   }
 
   async updateApplicant(id: number, applicantData: Partial<Applicant>): Promise<Applicant | undefined> {
-    const applicant = await this.getApplicant(id);
-    if (!applicant) return undefined;
-    
-    const updatedApplicant = { ...applicant, ...applicantData };
-    this.applicants.set(id, updatedApplicant);
-    return updatedApplicant;
+    const [applicant] = await db
+      .update(applicants)
+      .set(applicantData)
+      .where(eq(applicants.id, id))
+      .returning();
+    return applicant;
   }
 
   // Education methods
   async getEducationEntries(applicantId: number): Promise<EducationEntry[]> {
-    return Array.from(this.educationEntries.values()).filter(
-      (entry) => entry.applicantId === applicantId
-    );
+    return await db.select().from(educationEntries).where(eq(educationEntries.applicantId, applicantId));
   }
 
   async createEducationEntry(insertEntry: InsertEducationEntry): Promise<EducationEntry> {
-    const id = this.educationEntryId++;
-    const entry: EducationEntry = { ...insertEntry, id };
-    this.educationEntries.set(id, entry);
+    const [entry] = await db.insert(educationEntries).values(insertEntry).returning();
     return entry;
   }
 
   async updateEducationEntry(id: number, entryData: Partial<EducationEntry>): Promise<EducationEntry | undefined> {
-    const entry = this.educationEntries.get(id);
-    if (!entry) return undefined;
-    
-    const updatedEntry = { ...entry, ...entryData };
-    this.educationEntries.set(id, updatedEntry);
-    return updatedEntry;
+    const [entry] = await db
+      .update(educationEntries)
+      .set(entryData)
+      .where(eq(educationEntries.id, id))
+      .returning();
+    return entry;
   }
 
   async deleteEducationEntry(id: number): Promise<boolean> {
-    return this.educationEntries.delete(id);
+    const result = await db.delete(educationEntries).where(eq(educationEntries.id, id));
+    return result.rowCount > 0;
   }
 
   // Employment methods
   async getEmploymentEntries(applicantId: number): Promise<EmploymentEntry[]> {
-    return Array.from(this.employmentEntries.values()).filter(
-      (entry) => entry.applicantId === applicantId
-    );
+    return await db.select().from(employmentEntries).where(eq(employmentEntries.applicantId, applicantId));
   }
 
   async createEmploymentEntry(insertEntry: InsertEmploymentEntry): Promise<EmploymentEntry> {
-    const id = this.employmentEntryId++;
-    const entry: EmploymentEntry = { 
-      ...insertEntry, 
-      id,
-      referenceRequested: false,
-      referenceReceived: false,
-      referenceVerified: false
-    };
-    this.employmentEntries.set(id, entry);
+    const [entry] = await db.insert(employmentEntries).values(insertEntry).returning();
     return entry;
   }
 
   async updateEmploymentEntry(id: number, entryData: Partial<EmploymentEntry>): Promise<EmploymentEntry | undefined> {
-    const entry = this.employmentEntries.get(id);
-    if (!entry) return undefined;
-    
-    const updatedEntry = { ...entry, ...entryData };
-    this.employmentEntries.set(id, updatedEntry);
-    return updatedEntry;
+    const [entry] = await db
+      .update(employmentEntries)
+      .set(entryData)
+      .where(eq(employmentEntries.id, id))
+      .returning();
+    return entry;
   }
 
   async deleteEmploymentEntry(id: number): Promise<boolean> {
-    // Also delete any references associated with this employment entry
-    const references = await this.getReferencesByEmploymentEntry(id);
-    references.forEach(ref => this.references.delete(ref.id));
-    
-    return this.employmentEntries.delete(id);
+    const result = await db.delete(employmentEntries).where(eq(employmentEntries.id, id));
+    return result.rowCount > 0;
   }
 
   // Employment Gap methods
   async getEmploymentGaps(applicantId: number): Promise<EmploymentGap[]> {
-    return Array.from(this.employmentGaps.values()).filter(
-      (gap) => gap.applicantId === applicantId
-    );
+    return await db.select().from(employmentGaps).where(eq(employmentGaps.applicantId, applicantId));
   }
 
   async createEmploymentGap(insertGap: InsertEmploymentGap): Promise<EmploymentGap> {
-    const id = this.employmentGapId++;
-    const gap: EmploymentGap = { ...insertGap, id };
-    this.employmentGaps.set(id, gap);
+    const [gap] = await db.insert(employmentGaps).values(insertGap).returning();
     return gap;
   }
 
   async updateEmploymentGap(id: number, gapData: Partial<EmploymentGap>): Promise<EmploymentGap | undefined> {
-    const gap = this.employmentGaps.get(id);
-    if (!gap) return undefined;
-    
-    const updatedGap = { ...gap, ...gapData };
-    this.employmentGaps.set(id, updatedGap);
-    return updatedGap;
+    const [gap] = await db
+      .update(employmentGaps)
+      .set(gapData)
+      .where(eq(employmentGaps.id, id))
+      .returning();
+    return gap;
   }
 
   async deleteEmploymentGap(id: number): Promise<boolean> {
-    return this.employmentGaps.delete(id);
+    const result = await db.delete(employmentGaps).where(eq(employmentGaps.id, id));
+    return result.rowCount > 0;
   }
 
   // DBS Check methods
   async getDbsCheck(applicantId: number): Promise<DbsCheck | undefined> {
-    return Array.from(this.dbsChecks.values()).find(
-      (check) => check.applicantId === applicantId
-    );
+    const [check] = await db.select().from(dbsChecks).where(eq(dbsChecks.applicantId, applicantId));
+    return check;
   }
 
   async createDbsCheck(insertCheck: InsertDbsCheck): Promise<DbsCheck> {
-    const id = this.dbsCheckId++;
-    const check: DbsCheck = { 
-      ...insertCheck, 
-      id,
-      status: "pending"
-    };
-    this.dbsChecks.set(id, check);
+    const [check] = await db.insert(dbsChecks).values(insertCheck).returning();
     return check;
   }
 
   async updateDbsCheck(id: number, checkData: Partial<DbsCheck>): Promise<DbsCheck | undefined> {
-    const check = this.dbsChecks.get(id);
-    if (!check) return undefined;
-    
-    const updatedCheck = { ...check, ...checkData };
-    this.dbsChecks.set(id, updatedCheck);
-    return updatedCheck;
+    const [check] = await db
+      .update(dbsChecks)
+      .set(checkData)
+      .where(eq(dbsChecks.id, id))
+      .returning();
+    return check;
   }
 
   // Reference methods
   async getReferences(applicantId: number): Promise<Reference[]> {
-    return Array.from(this.references.values()).filter(
-      (reference) => reference.applicantId === applicantId
-    );
+    return await db.select().from(references).where(eq(references.applicantId, applicantId));
   }
 
   async getReferencesByEmploymentEntry(employmentEntryId: number): Promise<Reference[]> {
-    return Array.from(this.references.values()).filter(
-      (reference) => reference.employmentEntryId === employmentEntryId
-    );
+    return await db.select().from(references).where(eq(references.employmentEntryId, employmentEntryId));
   }
 
   async createReference(insertReference: InsertReference): Promise<Reference> {
-    const id = this.referenceId++;
-    const reference: Reference = { 
-      ...insertReference, 
-      id,
-      requestedAt: null,
-      receivedAt: null,
-      verifiedAt: null,
-      verifiedBy: null,
-      notes: null,
-      status: "pending"
-    };
-    this.references.set(id, reference);
+    const [reference] = await db.insert(references).values(insertReference).returning();
     return reference;
   }
 
   async updateReference(id: number, referenceData: Partial<Reference>): Promise<Reference | undefined> {
-    const reference = this.references.get(id);
-    if (!reference) return undefined;
-    
-    const updatedReference = { ...reference, ...referenceData };
-    this.references.set(id, updatedReference);
-    return updatedReference;
+    const [reference] = await db
+      .update(references)
+      .set(referenceData)
+      .where(eq(references.id, id))
+      .returning();
+    return reference;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

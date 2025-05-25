@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Shield, Users, CheckCircle } from "lucide-react";
-import swiisLogo from "@assets/image_1748187833695.png";
+import swiisLogo from "@assets/Picture3.jpg";
 
 export function Landing() {
   return (

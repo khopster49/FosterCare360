@@ -11,7 +11,7 @@ export function Landing() {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <Heart className="h-8 w-8 text-orange-600 mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Staff Application Portal</h1>
+              <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
             <Button 
               onClick={() => window.location.href = '/api/login'}
@@ -27,7 +27,7 @@ export function Landing() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-orange-900 mb-4">
-            Start Your Staff Application Process
+            Start Your Application Process
           </h2>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             Join our team and make a meaningful difference in your career. 
@@ -105,7 +105,7 @@ export function Landing() {
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Heart className="h-6 w-6 text-orange-400 mr-2" />
-              <span className="font-semibold">Staff Application Portal</span>
+              <span className="font-semibold">Swiis Foster Care</span>
             </div>
             <p className="text-gray-400">
               Building careers and connecting talent with opportunity

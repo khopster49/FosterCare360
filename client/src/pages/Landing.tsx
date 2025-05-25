@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Shield, Users, CheckCircle } from "lucide-react";
+import swiisLogo from "@/assets/swiis-logo.svg";
 
 export function Landing() {
   return (
@@ -10,7 +11,7 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-orange-600 mr-2" />
+              <img src={swiisLogo} alt="Swiis Logo" className="h-8 mr-2" />
               <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
             <Button 
@@ -104,7 +105,7 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <Heart className="h-6 w-6 text-orange-400 mr-2" />
+              <img src={swiisLogo} alt="Swiis Logo" className="h-6 mr-2" />
               <span className="font-semibold">Swiis Foster Care</span>
             </div>
             <p className="text-gray-400">

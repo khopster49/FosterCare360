@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Shield } from "lucide-react";
+import { Shield, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 import {
@@ -56,16 +56,18 @@ export function DisciplinaryForm({ applicantId, onSuccess, onBack }: Disciplinar
   const [showDisciplinaryDetails, setShowDisciplinaryDetails] = useState(false);
   const [showCriminalDetails, setShowCriminalDetails] = useState(false);
   
-  // Fetch applicant data
-  const { data: applicant } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}`],
-    enabled: !!applicantId,
-  });
-  
-  // Set up the form
-  const form = useForm<DisciplinaryFormValues>({
-    resolver: zodResolver(disciplinaryFormSchema),
-    defaultValues: {
+  // Load data from localStorage
+  const loadFromLocalStorage = (): DisciplinaryFormValues => {
+    try {
+      const stored = localStorage.getItem(`disciplinary_${applicantId}`);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.warn('Failed to load disciplinary data:', error);
+    }
+    
+    return {
       applicantId,
       hasDisciplinary: false,
       disciplinaryDetails: "",
@@ -78,38 +80,30 @@ export function DisciplinaryForm({ applicantId, onSuccess, onBack }: Disciplinar
       hasProhibition: false,
       criminalDetails: "",
       acknowledgment: false,
-    },
-  });
+    };
+  };
+
+  // Save data to localStorage
+  const saveToLocalStorage = (values: DisciplinaryFormValues) => {
+    try {
+      localStorage.setItem(`disciplinary_${applicantId}`, JSON.stringify(values));
+    } catch (error) {
+      console.warn('Failed to save disciplinary data:', error);
+    }
+  };
   
-  // Create mutation for updating disciplinary information
-  const updateDisciplinary = useMutation({
-    mutationFn: async (values: DisciplinaryFormValues) => {
-      const res = await apiRequest("PATCH", `/api/applicants/${applicantId}`, {
-        hasDisciplinary: values.hasDisciplinary,
-        disciplinaryDetails: values.disciplinaryDetails,
-        hasPoliceWarning: values.hasPoliceWarning,
-        hasUnresolvedCharges: values.hasUnresolvedCharges,
-        hasPoliceInvestigation: values.hasPoliceInvestigation,
-        hasDismissedForMisconduct: values.hasDismissedForMisconduct,
-        hasProfessionalDisqualification: values.hasProfessionalDisqualification,
-        hasOngoingInvestigation: values.hasOngoingInvestigation,
-        hasProhibition: values.hasProhibition,
-        criminalDetails: values.criminalDetails,
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [`/api/applicants/${applicantId}`],
-      });
-    },
+  // Set up the form
+  const form = useForm<DisciplinaryFormValues>({
+    resolver: zodResolver(disciplinaryFormSchema),
+    defaultValues: loadFromLocalStorage(),
   });
   
   // Handle form submission
   async function onSubmit(values: DisciplinaryFormValues) {
     setIsSubmitting(true);
     try {
-      await updateDisciplinary.mutateAsync(values);
+      // Save to localStorage
+      saveToLocalStorage(values);
       
       toast({
         title: "Disciplinary & Criminal record saved",

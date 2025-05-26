@@ -3,9 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format, parse, differenceInDays, addDays, isAfter } from "date-fns";
-import { Loader2, Plus, Trash, AlertTriangle, Briefcase } from "lucide-react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { Plus, Trash, AlertTriangle, Briefcase } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 import {
@@ -82,26 +80,20 @@ interface GapWithIndex {
 
 export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFormProps) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [potentialGaps, setPotentialGaps] = useState<GapWithIndex[]>([]);
   
-  // Fetch existing employment entries if available
-  const { data: existingEntries = [] } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}/employment`],
-    enabled: !!applicantId,
-  });
-  
-  // Fetch existing employment gaps if available
-  const { data: existingGaps = [] } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}/gaps`],
-    enabled: !!applicantId,
-  });
-  
-  // Set up the form
-  const form = useForm<EmploymentFormValues>({
-    resolver: zodResolver(employmentFormSchema),
-    defaultValues: {
+  // Load existing data from localStorage
+  const loadFromLocalStorage = (): EmploymentFormValues => {
+    try {
+      const saved = localStorage.getItem(`employment_${applicantId}`);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.warn('Failed to load employment data from localStorage:', error);
+    }
+    return {
       applicantId,
       employmentEntries: [
         {
@@ -120,13 +112,52 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           referenceEmail: "",
           referencePhone: "",
           workedWithVulnerable: false,
-        },
+        }
       ],
-      employmentGaps: [],
-    },
+      employmentGaps: []
+    };
+  };
+
+  // Set up the form
+  const form = useForm<EmploymentFormValues>({
+    resolver: zodResolver(employmentFormSchema),
+    defaultValues: loadFromLocalStorage(),
   });
   
-  const { formState } = form;
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "employmentEntries",
+  });
+
+  // Save to localStorage function
+  const saveToLocalStorage = (values: EmploymentFormValues) => {
+    try {
+      localStorage.setItem(`employment_${applicantId}`, JSON.stringify(values));
+    } catch (error) {
+      console.warn('Failed to save employment data to localStorage:', error);
+    }
+  };
+
+  // Submit handler
+  const onSubmit = async (values: EmploymentFormValues) => {
+    setIsSubmitting(true);
+    try {
+      saveToLocalStorage(values);
+      toast({
+        title: "Employment History Saved",
+        description: "Your employment information has been saved successfully.",
+      });
+      onSuccess();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save employment information. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   
   // Set up field array for employment entries
   const { fields, append, remove } = useFieldArray({

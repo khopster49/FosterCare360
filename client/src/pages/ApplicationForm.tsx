@@ -4,7 +4,7 @@ import Footer from "@/components/layout/footer";
 import { FormStepper } from "@/components/form-stepper";
 import { PersonalInfoForm } from "@/components/personal-info-form";
 import { EducationForm } from "@/components/education-form";
-import { EmploymentForm } from "@/components/employment-form";
+import { EmploymentForm } from "@/components/employment-form-fixed";
 import { SkillsExperienceForm } from "@/components/skills-experience-form";
 import { ReferencesForm } from "@/components/references-form";
 import { DisciplinaryForm } from "@/components/disciplinary-form";

@@ -148,51 +148,83 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
           </Card>
         ) : (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="text-md font-medium text-primary">References to be Requested</h3>
+            <div className="flex items-center gap-2 mb-4">
+              <h3 className="text-lg font-medium text-primary">Employment History Timeline</h3>
               <Separator className="flex-1" />
             </div>
             
-            {requiredReferences.map((reference: any) => (
-              <Card key={reference.id} className="border-primary/10 overflow-hidden">
+            {/* Sort employment entries chronologically (most recent first) */}
+            {employmentEntries
+              .slice()
+              .sort((a, b) => {
+                const dateA = a.isCurrent ? new Date() : new Date(a.endDate || a.startDate);
+                const dateB = b.isCurrent ? new Date() : new Date(b.endDate || b.startDate);
+                return dateB.getTime() - dateA.getTime();
+              })
+              .map((employment: any, index: number) => (
+              <Card key={`employment-${index}`} className="border-primary/10 overflow-hidden">
                 <div className="bg-primary/5 px-6 py-3 flex justify-between items-center">
-                  <h4 className="text-md font-medium text-primary">
-                    {reference.employer}
-                  </h4>
+                  <div>
+                    <h4 className="text-lg font-medium text-primary">
+                      {employment.employer}
+                    </h4>
+                    <p className="text-sm text-primary/70">{employment.position}</p>
+                  </div>
                   <div className="flex gap-2">
-                    {reference.isCurrent && (
+                    {employment.isCurrent && (
                       <Badge className="bg-primary text-white">Current</Badge>
                     )}
-                    {reference.workedWithVulnerable && (
+                    {employment.workedWithVulnerable && (
                       <Badge variant="outline" className="border-amber-500 text-amber-700 bg-amber-50">
-                        Vulnerable
+                        Vulnerable Adults/Children
                       </Badge>
                     )}
                   </div>
                 </div>
                 
                 <CardContent className="pt-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Employment Dates */}
                     <div>
-                      <p className="text-sm font-medium text-neutral-700">Contact Information</p>
-                      <div className="mt-2 space-y-1 text-sm">
-                        <p><span className="font-medium">Name:</span> {reference.referenceName}</p>
-                        <p><span className="font-medium">Email:</span> {reference.referenceEmail}</p>
-                        <p><span className="font-medium">Phone:</span> {reference.referencePhone}</p>
-                        <p><span className="font-medium">Employer Address:</span> {reference.employerAddress || 'Not provided'}</p>
+                      <p className="text-sm font-medium text-neutral-700 mb-2">Employment Period</p>
+                      <div className="space-y-1 text-sm">
+                        <p><span className="font-medium">Start Date:</span> {employment.startDate ? new Date(employment.startDate).toLocaleDateString('en-GB') : 'Not provided'}</p>
+                        <p><span className="font-medium">End Date:</span> {employment.isCurrent ? 'Current Position' : (employment.endDate ? new Date(employment.endDate).toLocaleDateString('en-GB') : 'Not provided')}</p>
+                        {employment.reasonForLeaving && (
+                          <p><span className="font-medium">Reason for Leaving:</span> {employment.reasonForLeaving}</p>
+                        )}
                       </div>
                     </div>
+
+                    {/* Reference Contact Details */}
                     <div>
-                      <p className="text-sm font-medium text-neutral-700">Position Details</p>
-                      <div className="mt-2 space-y-1 text-sm">
-                        <p><span className="font-medium">Position:</span> {reference.position}</p>
-                        <p><span className="font-medium">Reference Type:</span> 
-                          {reference.isCurrent ? " Current Employer" : " Previous Employer"}
-                          {reference.workedWithVulnerable ? ", Vulnerable Sector" : ""}
-                        </p>
+                      <p className="text-sm font-medium text-neutral-700 mb-2">Reference Contact</p>
+                      <div className="space-y-1 text-sm">
+                        <p><span className="font-medium">Name:</span> {employment.referenceName || 'Not provided'}</p>
+                        <p><span className="font-medium">Email:</span> {employment.referenceEmail || 'Not provided'}</p>
+                        <p><span className="font-medium">Phone:</span> {employment.referencePhone || 'Not provided'}</p>
+                      </div>
+                    </div>
+
+                    {/* Employer Details */}
+                    <div>
+                      <p className="text-sm font-medium text-neutral-700 mb-2">Employer Details</p>
+                      <div className="space-y-1 text-sm">
+                        <p><span className="font-medium">Address:</span> {employment.employerAddress || 'Not provided'}</p>
+                        <p><span className="font-medium">Postcode:</span> {employment.employerPostcode || 'Not provided'}</p>
+                        <p><span className="font-medium">Phone:</span> {employment.employerPhone || 'Not provided'}</p>
+                        <p><span className="font-medium">Mobile:</span> {employment.employerMobile || 'Not provided'}</p>
                       </div>
                     </div>
                   </div>
+
+                  {/* Job Duties */}
+                  {employment.duties && (
+                    <div className="mt-4 pt-4 border-t">
+                      <p className="text-sm font-medium text-neutral-700 mb-2">Job Duties & Responsibilities</p>
+                      <p className="text-sm text-neutral-600">{employment.duties}</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

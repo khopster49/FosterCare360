@@ -11,8 +11,8 @@ export function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <img src={swiisLogo} alt="Swiis Foster Care" className="h-8 w-auto mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
+              <img src={swiisLogo} alt="Swiis" className="h-8 w-auto mr-2" />
+              <h1 className="text-2xl font-bold text-orange-900">Swiis</h1>
             </div>
             <Button 
               onClick={() => window.location.href = '/api/login'}

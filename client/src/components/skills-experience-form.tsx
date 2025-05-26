@@ -40,46 +40,42 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Fetch applicant data to see if we have existing skills and experience text
-  const { data: applicant } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}`],
-    enabled: !!applicantId,
-  });
+  // Load existing data from localStorage
+  const loadFromLocalStorage = () => {
+    try {
+      const saved = localStorage.getItem(`skills_${applicantId}`);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.warn('Failed to load skills data from localStorage:', error);
+    }
+    return {
+      applicantId,
+      skillsAndExperience: "",
+    };
+  };
   
   // Set up the form
   const form = useForm<SkillsExperienceFormValues>({
     resolver: zodResolver(skillsExperienceSchema),
-    defaultValues: {
-      applicantId,
-      skillsAndExperience: applicant?.skillsAndExperience || "",
-    },
+    defaultValues: loadFromLocalStorage(),
   });
-
-  // Update form when applicant data loads
-  if (applicant?.skillsAndExperience && !form.getValues("skillsAndExperience")) {
-    form.setValue("skillsAndExperience", applicant.skillsAndExperience);
-  }
   
-  // Create mutation for updating applicant
-  const updateApplicant = useMutation({
-    mutationFn: async (values: SkillsExperienceFormValues) => {
-      const res = await apiRequest("PATCH", `/api/applicants/${applicantId}`, {
-        skillsAndExperience: values.skillsAndExperience,
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [`/api/applicants/${applicantId}`],
-      });
-    },
-  });
+  // Save to localStorage function
+  const saveToLocalStorage = (values: SkillsExperienceFormValues) => {
+    try {
+      localStorage.setItem(`skills_${applicantId}`, JSON.stringify(values));
+    } catch (error) {
+      console.warn('Failed to save skills data to localStorage:', error);
+    }
+  };
   
   // Handle form submission
   async function onSubmit(values: SkillsExperienceFormValues) {
     setIsSubmitting(true);
     try {
-      await updateApplicant.mutateAsync(values);
+      saveToLocalStorage(values);
       
       toast({
         title: "Skills and experience saved",
@@ -90,7 +86,7 @@ export function SkillsExperienceForm({ applicantId, onSuccess, onBack }: SkillsE
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to save your skills and experience. Please try again.",
+        description: "Failed to save your skills and experience. Please try again.",
         variant: "destructive",
       });
     } finally {

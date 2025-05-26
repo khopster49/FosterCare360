@@ -124,20 +124,6 @@ export default function Home() {
                   </p>
                 </div>
                 
-                <div className="border border-gray-300 mb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2">
-                    <div className="p-3 border-b md:border-b-0 md:border-r border-gray-300 bg-gray-50">
-                      <span className="text-primary font-medium">Position Applied For:</span>
-                    </div>
-                    <div className="p-3 min-h-[50px]">
-                      <input 
-                        type="text" 
-                        className="w-full px-2 py-1 border-0 focus:outline-none focus:ring-0"
-                        placeholder="Enter the position you are applying for"
-                      />
-                    </div>
-                  </div>
-                </div>
                 
 
                 <PersonalInfoForm 

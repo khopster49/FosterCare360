@@ -15,8 +15,8 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <img src={swiisLogo} alt="Swiis Foster Care" className="h-8 w-auto mr-2" />
-              <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
+              <img src={swiisLogo} alt="Swiis" className="h-8 w-auto mr-2" />
+              <h1 className="text-2xl font-bold text-orange-900">Swiis</h1>
             </div>
             <div className="flex items-center space-x-4">
               {user && (
@@ -61,7 +61,7 @@ export function Home() {
                 </div>
                 <div>
                   <CardTitle className="text-lg">Start New Application</CardTitle>
-                  <CardDescription>Begin your foster care application</CardDescription>
+                  <CardDescription>Begin your staff application</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -113,56 +113,7 @@ export function Home() {
           </Card>
         </div>
 
-        {/* Information Section */}
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">
-            Your Fostering Journey
-          </h3>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-semibold text-lg mb-3">What to Expect</h4>
-              <ul className="space-y-2 text-gray-600">
-                <li>• Comprehensive application process</li>
-                <li>• Background checks and references</li>
-                <li>• Training and assessment sessions</li>
-                <li>• Ongoing support and guidance</li>
-                <li>• Matching with children in need</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-3">Next Steps</h4>
-              <div className="space-y-3">
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mr-3 mt-0.5">
-                    <span className="text-white text-xs font-bold">1</span>
-                  </div>
-                  <div>
-                    <p className="font-medium">Complete Your Application</p>
-                    <p className="text-sm text-gray-600">Fill out all required sections</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center mr-3 mt-0.5">
-                    <span className="text-white text-xs font-bold">2</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-500">Submit for Review</p>
-                    <p className="text-sm text-gray-500">Our team will review your application</p>
-                  </div>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center mr-3 mt-0.5">
-                    <span className="text-white text-xs font-bold">3</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-500">Begin Assessment</p>
-                    <p className="text-sm text-gray-500">Start the formal assessment process</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
       </main>
     </div>
   );

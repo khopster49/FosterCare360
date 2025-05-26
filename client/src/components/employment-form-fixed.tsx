@@ -200,6 +200,19 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
   const onSubmit = async (values: EmploymentFormValues) => {
     setIsSubmitting(true);
     try {
+      // Log form errors for debugging
+      const formErrors = form.formState.errors;
+      if (Object.keys(formErrors).length > 0) {
+        console.log('Form validation errors:', formErrors);
+        toast({
+          title: "Form Validation Error",
+          description: "Please check all required fields are filled correctly.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
       saveToLocalStorage(values);
       toast({
         title: "Employment History Saved",
@@ -207,6 +220,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       });
       onSuccess();
     } catch (error) {
+      console.error('Submit error:', error);
       toast({
         title: "Error",
         description: "Failed to save employment information. Please try again.",

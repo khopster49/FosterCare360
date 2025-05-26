@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Plus, Trash, GraduationCap } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { Plus, Trash, GraduationCap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 import {
@@ -56,7 +54,6 @@ interface EducationFormProps {
 
 export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormProps) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
   
   // Set up the form
@@ -84,47 +81,36 @@ export function EducationForm({ applicantId, onSuccess, onBack }: EducationFormP
     name: "educationEntries",
   });
   
-  // Create education entry mutation
-  const createEducationEntry = useMutation({
-    mutationFn: async (values: any) => {
-      const res = await apiRequest("POST", `/api/applicants/${applicantId}/education`, values);
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/applicants/${applicantId}/education`] });
-    },
-  });
-  
-  // Handle form submission
-  async function onSubmit(values: EducationFormValues) {
-    setSubmitting(true);
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem('educationInfo');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      form.reset(parsedData);
+    }
+  }, [form]);
+
+  // Save to localStorage instead of API
+  const saveToLocalStorage = (values: EducationFormValues) => {
     try {
-      // Submit each education entry separately
-      for (const entry of values.educationEntries) {
-        // Add the breakExplanation to the details if it exists
-        if (values.breakExplanation) {
-          entry.details = entry.details ? 
-            `${entry.details}\n\nBreak explanation: ${values.breakExplanation}` : 
-            `Break explanation: ${values.breakExplanation}`;
-        }
-        await createEducationEntry.mutateAsync(entry);
-      }
-      
+      localStorage.setItem('educationInfo', JSON.stringify(values));
       toast({
         title: "Education information saved",
         description: "Your education history has been saved successfully.",
       });
-      
       onSuccess();
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to save education information. Please try again.",
+        description: "Failed to save education information. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setSubmitting(false);
     }
+  };
+  
+  // Handle form submission
+  function onSubmit(values: EducationFormValues) {
+    saveToLocalStorage(values);
   }
 
   return (

@@ -190,110 +190,110 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
               <Separator className="flex-1" />
             </div>
             
-            {/* Sort employment entries chronologically (most recent first) */}
-            {employmentEntries
-              .slice()
-              .sort((a, b) => {
-                const dateA = a.isCurrent ? new Date() : new Date(a.endDate || a.startDate);
-                const dateB = b.isCurrent ? new Date() : new Date(b.endDate || b.startDate);
-                return dateB.getTime() - dateA.getTime();
-              })
-              .map((employment: any, index: number) => (
-              <Card key={`employment-${index}`} className="border-primary/10 overflow-hidden">
-                <div className="bg-primary/5 px-6 py-3 flex justify-between items-center">
-                  <div>
-                    <h4 className="text-lg font-medium text-primary">
-                      {employment.employer}
-                    </h4>
-                    <p className="text-sm text-primary/70">{employment.position}</p>
-                  </div>
-                  <div className="flex gap-2">
-                    {employment.isCurrent && (
-                      <Badge className="bg-primary text-white">Current</Badge>
-                    )}
-                    {employment.workedWithVulnerable && (
-                      <Badge variant="outline" className="border-amber-500 text-amber-700 bg-amber-50">
-                        Vulnerable Adults/Children
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-                
-                <CardContent className="pt-5">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Employment Dates */}
-                    <div>
-                      <p className="text-sm font-medium text-neutral-700 mb-2">Employment Period</p>
-                      <div className="space-y-1 text-sm">
-                        <p><span className="font-medium">Start Date:</span> {employment.startDate ? new Date(employment.startDate).toLocaleDateString('en-GB') : 'Not provided'}</p>
-                        <p><span className="font-medium">End Date:</span> {employment.isCurrent ? 'Current Position' : (employment.endDate ? new Date(employment.endDate).toLocaleDateString('en-GB') : 'Not provided')}</p>
-                        {employment.reasonForLeaving && (
-                          <p><span className="font-medium">Reason for Leaving:</span> {employment.reasonForLeaving}</p>
+            {/* Sort employment entries chronologically (oldest first) and intersperse gaps */}
+            {(() => {
+              const sortedEntries = employmentEntries
+                .slice()
+                .sort((a, b) => {
+                  const dateA = new Date(a.startDate || '1900-01-01');
+                  const dateB = new Date(b.startDate || '1900-01-01');
+                  return dateA.getTime() - dateB.getTime();
+                });
+
+              const timelineItems = [];
+              
+              sortedEntries.forEach((employment: any, index: number) => {
+                // Add employment entry
+                timelineItems.push(
+                  <Card key={`employment-${index}`} className="border-primary/10 overflow-hidden">
+                    <div className="bg-primary/5 px-6 py-3 flex justify-between items-center">
+                      <div>
+                        <h4 className="text-lg font-medium text-primary">
+                          {employment.employer}
+                        </h4>
+                        <p className="text-sm text-primary/70">{employment.position}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        {employment.isCurrent && (
+                          <Badge className="bg-primary text-white">Current</Badge>
+                        )}
+                        {employment.workedWithVulnerable && (
+                          <Badge variant="outline" className="border-amber-500 text-amber-700 bg-amber-50">
+                            Vulnerable Adults/Children
+                          </Badge>
                         )}
                       </div>
                     </div>
-
-                    {/* Reference Contact Details */}
-                    <div>
-                      <p className="text-sm font-medium text-neutral-700 mb-2">Reference Contact</p>
-                      <div className="space-y-1 text-sm">
-                        <p><span className="font-medium">Name:</span> {employment.referenceName || 'Not provided'}</p>
-                        <p><span className="font-medium">Email:</span> {employment.referenceEmail || 'Not provided'}</p>
-                        <p><span className="font-medium">Phone:</span> {employment.referencePhone || 'Not provided'}</p>
-                      </div>
-                    </div>
-
-                    {/* Employer Details */}
-                    <div>
-                      <p className="text-sm font-medium text-neutral-700 mb-2">Employer Details</p>
-                      <div className="space-y-1 text-sm">
-                        <p><span className="font-medium">Address:</span> {employment.employerAddress || 'Not provided'}</p>
-                        <p><span className="font-medium">Postcode:</span> {employment.employerPostcode || 'Not provided'}</p>
-                        <p><span className="font-medium">Phone:</span> {employment.employerPhone || 'Not provided'}</p>
-                        <p><span className="font-medium">Mobile:</span> {employment.employerMobile || 'Not provided'}</p>
-                      </div>
-                    </div>
-                  </div>
-
-
-                </CardContent>
-              </Card>
-            ))}
-
-            {/* Employment Gaps Section */}
-            {employmentGaps.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <h3 className="text-lg font-medium text-amber-700">Employment Gaps Identified</h3>
-                  <Separator className="flex-1" />
-                </div>
-                
-                {employmentGaps.map((gap: any, index: number) => (
-                  <Card key={`gap-${index}`} className="border-amber-200 bg-amber-50 mb-4">
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <AlertCircle className="h-5 w-5 text-amber-600" />
-                        <p className="font-medium text-amber-800">
-                          Gap of {gap.days} days between employment periods
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    
+                    <CardContent className="pt-5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Employment Dates */}
                         <div>
-                          <p><span className="font-medium">Gap Period:</span></p>
-                          <p>{gap.startDate.toLocaleDateString('en-GB')} - {gap.endDate.toLocaleDateString('en-GB')}</p>
+                          <p className="text-sm font-medium text-neutral-700 mb-2">Employment Period</p>
+                          <div className="space-y-1 text-sm">
+                            <p><span className="font-medium">Start Date:</span> {employment.startDate ? new Date(employment.startDate).toLocaleDateString('en-GB') : 'Not provided'}</p>
+                            <p><span className="font-medium">End Date:</span> {employment.isCurrent ? 'Current Position' : (employment.endDate ? new Date(employment.endDate).toLocaleDateString('en-GB') : 'Not provided')}</p>
+                            {employment.reasonForLeaving && (
+                              <p><span className="font-medium">Reason for Leaving:</span> {employment.reasonForLeaving}</p>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Reference Contact Details */}
                         <div>
-                          <p><span className="font-medium">After:</span> {gap.afterEmployer}</p>
+                          <p className="text-sm font-medium text-neutral-700 mb-2">Reference Contact (Line Manager/Manager)</p>
+                          <div className="space-y-1 text-sm">
+                            <p><span className="font-medium">Name:</span> {employment.referenceName || 'Not provided'}</p>
+                            <p><span className="font-medium">Email:</span> {employment.referenceEmail || 'Not provided'}</p>
+                            <p><span className="font-medium">Phone:</span> {employment.referencePhone || 'Not provided'}</p>
+                          </div>
                         </div>
+
+                        {/* Employer Details */}
                         <div>
-                          <p><span className="font-medium">Before:</span> {gap.beforeEmployer}</p>
+                          <p className="text-sm font-medium text-neutral-700 mb-2">Employer Details</p>
+                          <div className="space-y-1 text-sm">
+                            <p><span className="font-medium">Address:</span> {employment.employerAddress || 'Not provided'}</p>
+                            <p><span className="font-medium">Postcode:</span> {employment.employerPostcode || 'Not provided'}</p>
+                            <p><span className="font-medium">Phone:</span> {employment.employerPhone || 'Not provided'}</p>
+                            <p><span className="font-medium">Mobile:</span> {employment.employerMobile || 'Not provided'}</p>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
-            )}
+                );
+
+                // Check for gaps after this employment (but not after the last/current one)
+                if (index < sortedEntries.length - 1) {
+                  const currentEnd = employment.isCurrent ? new Date() : new Date(employment.endDate || employment.startDate);
+                  const nextStart = new Date(sortedEntries[index + 1].startDate);
+                  const gapDays = Math.floor((nextStart.getTime() - currentEnd.getTime()) / (1000 * 60 * 60 * 24)) - 1;
+                  
+                  if (gapDays > 0) {
+                    const gapStart = new Date(currentEnd.getTime() + 24 * 60 * 60 * 1000);
+                    const gapEnd = new Date(nextStart.getTime() - 24 * 60 * 60 * 1000);
+                    
+                    timelineItems.push(
+                      <Card key={`gap-after-${index}`} className="border-amber-200 bg-amber-50 my-2">
+                        <CardContent className="py-3">
+                          <div className="flex items-center gap-2">
+                            <AlertCircle className="h-4 w-4 text-amber-600" />
+                            <p className="text-sm font-medium text-amber-800">
+                              Employment Gap: {gapDays} days ({gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')})
+                            </p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  }
+                }
+              });
+
+              return timelineItems;
+            })()}
+
+
           </div>
         )}
         

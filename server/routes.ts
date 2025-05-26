@@ -89,7 +89,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       console.log("Updating applicant with data:", req.body);
-      const updatedApplicant = await storage.updateApplicant(id, req.body);
+      
+      // Convert date strings to Date objects
+      const updateData = { ...req.body };
+      if (updateData.dataProtectionSignedDate) {
+        updateData.dataProtectionSignedDate = new Date(updateData.dataProtectionSignedDate);
+      }
+      if (updateData.privacyNoticeSignedDate) {
+        updateData.privacyNoticeSignedDate = new Date(updateData.privacyNoticeSignedDate);
+      }
+      if (updateData.dateOfBirth) {
+        updateData.dateOfBirth = new Date(updateData.dateOfBirth);
+      }
+      
+      const updatedApplicant = await storage.updateApplicant(id, updateData);
       return res.json(updatedApplicant);
     } catch (error) {
       console.error("Failed to update applicant:", error);

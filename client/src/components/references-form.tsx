@@ -269,18 +269,35 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                   </Card>
                 );
 
-                // Check for gaps after this employment (but not after the last/current one)
-                if (index < sortedEntries.length - 1) {
-                  const currentEnd = employment.isCurrent ? new Date() : new Date(employment.endDate || employment.startDate);
-                  const nextStart = new Date(sortedEntries[index + 1].startDate);
-                  const gapDays = Math.floor((nextStart.getTime() - currentEnd.getTime()) / (1000 * 60 * 60 * 24)) - 1;
+                // Check for gaps - we need to compare chronologically, not by display order
+                // Find the chronologically previous job to check for gaps
+                const chronologicalEntries = employmentEntries
+                  .slice()
+                  .sort((a, b) => {
+                    const dateA = new Date(a.startDate || '1900-01-01');
+                    const dateB = new Date(b.startDate || '1900-01-01');
+                    return dateA.getTime() - dateB.getTime();
+                  });
+                
+                const chronologicalIndex = chronologicalEntries.findIndex(entry => 
+                  entry.employer === employment.employer && 
+                  entry.position === employment.position &&
+                  entry.startDate === employment.startDate
+                );
+                
+                // Check if there's a gap before this employment (chronologically)
+                if (chronologicalIndex > 0) {
+                  const previousEmployment = chronologicalEntries[chronologicalIndex - 1];
+                  const previousEnd = previousEmployment.isCurrent ? new Date() : new Date(previousEmployment.endDate || previousEmployment.startDate);
+                  const currentStart = new Date(employment.startDate);
+                  const gapDays = Math.floor((currentStart.getTime() - previousEnd.getTime()) / (1000 * 60 * 60 * 24)) - 1;
                   
                   if (gapDays > 0) {
-                    const gapStart = new Date(currentEnd.getTime() + 24 * 60 * 60 * 1000);
-                    const gapEnd = new Date(nextStart.getTime() - 24 * 60 * 60 * 1000);
+                    const gapStart = new Date(previousEnd.getTime() + 24 * 60 * 60 * 1000);
+                    const gapEnd = new Date(currentStart.getTime() - 24 * 60 * 60 * 1000);
                     
                     timelineItems.push(
-                      <Card key={`gap-after-${index}`} className="border-amber-200 bg-amber-50 my-2">
+                      <Card key={`gap-before-${index}`} className="border-amber-200 bg-amber-50 my-2">
                         <CardContent className="py-3">
                           <div className="flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-600" />

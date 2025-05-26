@@ -148,7 +148,22 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     setWorkDocumentFile(file);
+    
+    // Save file name to localStorage so we can show it was uploaded
+    if (file) {
+      localStorage.setItem('workDocumentFileName', file.name);
+    }
   };
+
+  // Load saved file name on component mount
+  useEffect(() => {
+    const savedFileName = localStorage.getItem('workDocumentFileName');
+    if (savedFileName) {
+      // Create a mock file object to show the name
+      const mockFile = new File([''], savedFileName, { type: 'application/pdf' });
+      setWorkDocumentFile(mockFile);
+    }
+  }, []);
 
   return (
     <Form {...form}>

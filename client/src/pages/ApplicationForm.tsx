@@ -151,7 +151,7 @@ export default function Home() {
                   Please provide details of your educational background, starting with the most recent.
                 </p>
                 <EducationForm 
-                  applicantId={applicantId || 1} // Allow preview with temporary ID 
+                  applicantId={applicantId || 2}
                   onSuccess={() => nextStep()} 
                   onBack={() => previousStep()} 
                 />

@@ -244,27 +244,28 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           </p>
         </div>
 
-        {/* Employment Entries */}
+        {/* Employment Entries with Embedded Gaps */}
         <div className="space-y-6">
           {fields.map((field, index) => (
-            <Card key={field.id} className="border-2">
-              <CardHeader className="bg-orange-50">
-                <CardTitle className="flex items-center justify-between text-primary">
-                  <span>Employment Entry {index + 1}</span>
-                  {fields.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => remove(index)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6 space-y-4">
+            <div key={field.id} className="space-y-4">
+              <Card className="border-2">
+                <CardHeader className="bg-orange-50">
+                  <CardTitle className="flex items-center justify-between text-primary">
+                    <span>Employment Entry {index + 1}</span>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => remove(index)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -505,6 +506,116 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                 />
               </CardContent>
             </Card>
+
+            {/* Show gap after this employment entry if one exists */}
+            {potentialGaps
+              .filter(gapInfo => gapInfo.afterEmploymentIndex === index)
+              .map((gapInfo, gapIndex) => {
+                // Find or create corresponding gap field
+                const existingGapField = gapFields.find((_, gapFieldIndex) => 
+                  gapFieldIndex === potentialGaps.findIndex(g => g === gapInfo)
+                );
+                const gapFieldIndex = gapFields.findIndex((_, gapFieldIndex) => 
+                  gapFieldIndex === potentialGaps.findIndex(g => g === gapInfo)
+                );
+
+                return (
+                  <Card key={`gap-${index}-${gapIndex}`} className="border-orange-200 bg-orange-50">
+                    <CardHeader className="bg-orange-100">
+                      <CardTitle className="flex items-center justify-between text-orange-800">
+                        <div className="flex items-center space-x-2">
+                          <AlertTriangle className="h-5 w-5" />
+                          <span>Employment Gap Detected</span>
+                        </div>
+                        <div className="text-sm font-normal">
+                          {gapInfo.gap.days} days ({format(gapInfo.gap.startDate, "dd/MM/yyyy")} - {format(gapInfo.gap.endDate, "dd/MM/yyyy")})
+                        </div>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      {gapFieldIndex >= 0 ? (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField
+                              control={form.control}
+                              name={`employmentGaps.${gapFieldIndex}.startDate`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Gap Start Date *</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="date" 
+                                      {...field} 
+                                      defaultValue={format(gapInfo.gap.startDate, "yyyy-MM-dd")}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`employmentGaps.${gapFieldIndex}.endDate`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Gap End Date *</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="date" 
+                                      {...field} 
+                                      defaultValue={format(gapInfo.gap.endDate, "yyyy-MM-dd")}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <FormField
+                            control={form.control}
+                            name={`employmentGaps.${gapFieldIndex}.reason`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Reason for Gap *</FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    placeholder="Please explain the reason for this employment gap"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        <div className="text-center py-4">
+                          <p className="text-orange-700 mb-3">
+                            Please explain this employment gap of {gapInfo.gap.days} days
+                          </p>
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              appendGap({
+                                startDate: format(gapInfo.gap.startDate, "yyyy-MM-dd"),
+                                endDate: format(gapInfo.gap.endDate, "yyyy-MM-dd"),
+                                reason: "",
+                              });
+                            }}
+                            className="bg-orange-600 hover:bg-orange-700 text-white"
+                          >
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add Gap Explanation
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           ))}
 
           <Button
@@ -540,79 +651,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           </Alert>
         )}
 
-        {/* Employment Gaps */}
-        {gapFields.length > 0 && (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-primary">Employment Gaps</h3>
-            {gapFields.map((field, index) => (
-              <Card key={field.id} className="border-yellow-200">
-                <CardHeader className="bg-yellow-50">
-                  <CardTitle className="flex items-center justify-between text-yellow-800">
-                    <span>Gap {index + 1}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeGap(index)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name={`employmentGaps.${index}.startDate`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gap Start Date *</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name={`employmentGaps.${index}.endDate`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Gap End Date *</FormLabel>
-                          <FormControl>
-                            <Input type="date" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <FormField
-                    control={form.control}
-                    name={`employmentGaps.${index}.reason`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Reason for Gap *</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Please explain the reason for this employment gap"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-
+        {/* Manual Add Employment Gap Button */}
         <Button
           type="button"
           variant="outline"
@@ -620,7 +659,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           className="w-full border-dashed border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Add Employment Gap
+          Add Manual Employment Gap
         </Button>
 
         <div className="mt-8 flex justify-between">

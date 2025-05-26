@@ -59,6 +59,10 @@ export const applicants = pgTable("applicants", {
   dataProtectionAgreed: boolean("data_protection_agreed"),
   dataProtectionSignedDate: timestamp("data_protection_signed_date"),
   
+  // Privacy notice fields
+  privacyNoticeAcknowledged: boolean("privacy_notice_acknowledged"),
+  privacyNoticeDate: timestamp("privacy_notice_date"),
+  
   // Equal opportunities data
   equalOpportunitiesCompleted: boolean("equal_opportunities_completed"),
   equalOpportunitiesDate: timestamp("equal_opportunities_date"),

@@ -80,18 +80,18 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   const [isComplete, setIsComplete] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   
-  // Fetch applicant data - but don't block rendering if no data available
-  const { data: applicant } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}`],
-    enabled: !!applicantId,
-    retry: false,
-    refetchOnWindowFocus: false,
-  });
-  
-  // Set up the form
-  const form = useForm<VerificationFormValues>({
-    resolver: zodResolver(verificationFormSchema),
-    defaultValues: {
+  // Load data from localStorage
+  const loadFromLocalStorage = (): VerificationFormValues => {
+    try {
+      const stored = localStorage.getItem(`verification_${applicantId}`);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch (error) {
+      console.warn('Failed to load verification data:', error);
+    }
+    
+    return {
       dbsCheck: {
         existingDbs: false,
         dbsNumber: "",
@@ -106,37 +106,22 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
         consentToOnlineDbsCheck: false,
         dataProtection: false,
       },
-    },
-  });
+    };
+  };
+
+  // Save data to localStorage
+  const saveToLocalStorage = (values: VerificationFormValues) => {
+    try {
+      localStorage.setItem(`verification_${applicantId}`, JSON.stringify(values));
+    } catch (error) {
+      console.warn('Failed to save verification data:', error);
+    }
+  };
   
-  // Create DBS check mutation
-  const createDbsCheck = useMutation({
-    mutationFn: async (values: any) => {
-      if (!applicantId) {
-        toast({
-          title: "Information Only",
-          description: "This is a preview. In the actual form, your DBS information would be saved.",
-        });
-        return { success: true };
-      }
-      const res = await apiRequest("POST", `/api/applicants/${applicantId}/dbs`, values);
-      return res.json();
-    },
-  });
-  
-  // Submit application mutation
-  const submitApplication = useMutation({
-    mutationFn: async () => {
-      if (!applicantId) {
-        toast({
-          title: "Information Only",
-          description: "This is a preview. In the actual form, your application would be submitted.",
-        });
-        return { success: true };
-      }
-      const res = await apiRequest("POST", `/api/applicants/${applicantId}/submit`, {});
-      return res.json();
-    },
+  // Set up the form
+  const form = useForm<VerificationFormValues>({
+    resolver: zodResolver(verificationFormSchema),
+    defaultValues: loadFromLocalStorage(),
   });
 
   // Watch existingDbs value to conditionally show fields
@@ -146,11 +131,13 @@ export function VerificationForm({ applicantId, onSuccess, onBack }: Verificatio
   async function onSubmit(values: VerificationFormValues) {
     setIsSubmitting(true);
     try {
-      // Submit DBS check
-      await createDbsCheck.mutateAsync(values.dbsCheck);
+      // Save to localStorage
+      saveToLocalStorage(values);
       
-      // Submit final application
-      await submitApplication.mutateAsync();
+      // Save DBS file name if uploaded
+      if (dbsFile) {
+        localStorage.setItem(`dbs_file_${applicantId}`, dbsFile.name);
+      }
       
       toast({
         title: "Application submitted successfully!",

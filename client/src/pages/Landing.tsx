@@ -69,15 +69,15 @@ export function Landing() {
               <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 3
               </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Assessment Process</h4>
-              <p className="text-sm text-gray-600">Work with our team through the assessment stages</p>
+              <h4 className="font-semibold mb-2 text-orange-900">Employment History</h4>
+              <p className="text-sm text-gray-600">Provide details of your work experience and employment background</p>
             </div>
             <div className="text-center">
               <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
                 4
               </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Approval & Matching</h4>
-              <p className="text-sm text-gray-600">Get approved and matched with children who need care</p>
+              <h4 className="font-semibold mb-2 text-orange-900">Skills & Experience</h4>
+              <p className="text-sm text-gray-600">Share your relevant skills and explain why you're suited for the role</p>
             </div>
           </div>
         </div>

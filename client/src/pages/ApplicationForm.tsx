@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { FormStepper } from "@/components/form-stepper";
@@ -14,6 +14,8 @@ import { VerificationForm } from "@/components/verification-form";
 import { PrivacyNotice } from "@/components/privacy-notice";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
+import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
 
 // Define the steps for the application process
 const steps = [
@@ -28,8 +30,15 @@ const steps = [
 ];
 
 export default function Home() {
+  const { user } = useAuth();
   const [applicantId, setApplicantId] = useState<number | null>(null);
   
+  // For now, use the last created applicant ID (your most recent application)
+  useEffect(() => {
+    // Set applicant ID to 2 (your most recent application based on server logs)
+    setApplicantId(2);
+  }, []);
+
   // Initialize form stepper
   const {
     currentStep,

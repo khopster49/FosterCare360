@@ -140,7 +140,10 @@ export default function Home() {
                 </div>
                 
 
-                <PersonalInfoForm onSuccess={handlePersonalInfoComplete} />
+                <PersonalInfoForm 
+                  applicantId={applicantId || 2}
+                  onSuccess={handlePersonalInfoComplete} 
+                />
               </>
             )}
             

@@ -71,10 +71,11 @@ const personalInfoSchema = z.object({
 type PersonalInfoFormValues = z.infer<typeof personalInfoSchema>;
 
 interface PersonalInfoFormProps {
+  applicantId?: number;
   onSuccess: (data: any) => void;
 }
 
-export function PersonalInfoForm({ onSuccess }: PersonalInfoFormProps) {
+export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormProps) {
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   

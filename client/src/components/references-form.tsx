@@ -57,6 +57,43 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
 
   // Use the references hook to determine required references
   const { requiredReferences } = useReferences(employmentEntries);
+
+  // Gap detection function
+  const detectEmploymentGaps = (entries: any[]) => {
+    if (entries.length < 2) return [];
+
+    const validEntries = entries
+      .filter(entry => entry.startDate && (entry.endDate || entry.isCurrent))
+      .map(entry => ({
+        ...entry,
+        startDate: new Date(entry.startDate),
+        endDate: entry.isCurrent ? new Date() : new Date(entry.endDate),
+      }))
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+
+    const gaps = [];
+    
+    for (let i = 0; i < validEntries.length - 1; i++) {
+      const currentEnd = validEntries[i].endDate;
+      const nextStart = validEntries[i + 1].startDate;
+      
+      const gapDays = Math.floor((nextStart.getTime() - currentEnd.getTime()) / (1000 * 60 * 60 * 24)) - 1;
+      
+      if (gapDays > 0) {
+        gaps.push({
+          startDate: new Date(currentEnd.getTime() + 24 * 60 * 60 * 1000),
+          endDate: new Date(nextStart.getTime() - 24 * 60 * 60 * 1000),
+          days: gapDays,
+          afterEmployer: validEntries[i].employer,
+          beforeEmployer: validEntries[i + 1].employer,
+        });
+      }
+    }
+    
+    return gaps;
+  };
+
+  const employmentGaps = detectEmploymentGaps(employmentEntries);
   
   // Set up the form
   const form = useForm<ReferenceConsentValues>({
@@ -218,16 +255,45 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                     </div>
                   </div>
 
-                  {/* Job Duties */}
-                  {employment.duties && (
-                    <div className="mt-4 pt-4 border-t">
-                      <p className="text-sm font-medium text-neutral-700 mb-2">Job Duties & Responsibilities</p>
-                      <p className="text-sm text-neutral-600">{employment.duties}</p>
-                    </div>
-                  )}
+
                 </CardContent>
               </Card>
             ))}
+
+            {/* Employment Gaps Section */}
+            {employmentGaps.length > 0 && (
+              <div className="mt-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <h3 className="text-lg font-medium text-amber-700">Employment Gaps Identified</h3>
+                  <Separator className="flex-1" />
+                </div>
+                
+                {employmentGaps.map((gap: any, index: number) => (
+                  <Card key={`gap-${index}`} className="border-amber-200 bg-amber-50 mb-4">
+                    <CardContent className="pt-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-5 w-5 text-amber-600" />
+                        <p className="font-medium text-amber-800">
+                          Gap of {gap.days} days between employment periods
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <p><span className="font-medium">Gap Period:</span></p>
+                          <p>{gap.startDate.toLocaleDateString('en-GB')} - {gap.endDate.toLocaleDateString('en-GB')}</p>
+                        </div>
+                        <div>
+                          <p><span className="font-medium">After:</span> {gap.afterEmployer}</p>
+                        </div>
+                        <div>
+                          <p><span className="font-medium">Before:</span> {gap.beforeEmployer}</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
         )}
         

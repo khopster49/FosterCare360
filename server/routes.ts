@@ -88,11 +88,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Applicant not found" });
       }
       
+      console.log("Updating applicant with data:", req.body);
       const updatedApplicant = await storage.updateApplicant(id, req.body);
       return res.json(updatedApplicant);
     } catch (error) {
+      console.error("Failed to update applicant:", error);
       return res.status(500).json({ 
-        message: "Failed to update applicant" 
+        message: "Failed to update applicant",
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });

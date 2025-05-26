@@ -36,6 +36,7 @@ const personalInfoSchema = z.object({
   // Personal Details
   title: z.string().min(1, { message: "Title is required" }),
   firstName: z.string().min(1, { message: "First name is required" }),
+  middleName: z.string().optional(),
   lastName: z.string().min(1, { message: "Last name is required" }),
   pronouns: z.string().optional(),
   otherNames: z.string().optional(),
@@ -87,6 +88,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
       positionAppliedFor: "",
       title: "",
       firstName: "",
+      middleName: "",
       lastName: "",
       pronouns: "",
       otherNames: "",
@@ -593,7 +595,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Proof of Right to Work</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select document type" />

@@ -30,6 +30,9 @@ import { Card, CardContent } from "@/components/ui/card";
 
 // Create a schema for the form based on the Swiis Application Form
 const personalInfoSchema = z.object({
+  // Position Applied For
+  positionAppliedFor: z.string().min(1, { message: "Position applied for is required" }),
+  
   // Personal Details
   title: z.string().min(1, { message: "Title is required" }),
   firstName: z.string().min(1, { message: "First name is required" }),
@@ -81,6 +84,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
+      positionAppliedFor: "",
       title: "",
       firstName: "",
       lastName: "",
@@ -147,6 +151,28 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {/* POSITION APPLIED FOR SECTION */}
+        <div>
+          <div className="flex items-center gap-2 mb-6">
+            <h3 className="text-lg font-bold text-primary">Position Applied For</h3>
+            <Separator className="flex-1" />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="positionAppliedFor"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Position Applied For</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Enter the position you are applying for" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         {/* PERSONAL DETAILS SECTION */}
         <div>
           <div className="flex items-center gap-2 mb-6">

@@ -15,10 +15,10 @@ export function Landing() {
               <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
             <Button 
-              onClick={() => window.location.href = '/api/login'}
+              onClick={() => window.location.href = '/application'}
               className="bg-orange-600 hover:bg-orange-700 text-white"
             >
-              Sign In
+              Apply Now
             </Button>
           </div>
         </div>
@@ -35,7 +35,7 @@ export function Landing() {
             Our streamlined application process makes it easy to apply for staff positions.
           </p>
           <Button 
-            onClick={() => window.location.href = '/api/login'}
+            onClick={() => window.location.href = '/application'}
             size="lg"
             className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
           >

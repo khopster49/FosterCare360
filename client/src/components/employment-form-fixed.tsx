@@ -184,6 +184,15 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
     return () => subscription.unsubscribe();
   }, [form]);
 
+  // Initial gap detection on load
+  useEffect(() => {
+    const currentValues = form.getValues();
+    if (currentValues.employmentEntries) {
+      const gaps = detectGaps(currentValues.employmentEntries);
+      setPotentialGaps(gaps);
+    }
+  }, []);
+
   // Submit handler
   const onSubmit = async (values: EmploymentFormValues) => {
     setIsSubmitting(true);
@@ -511,16 +520,19 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             {potentialGaps
               .filter(gapInfo => gapInfo.afterEmploymentIndex === index)
               .map((gapInfo, gapIndex) => {
-                // Find or create corresponding gap field
-                const existingGapField = gapFields.find((_, gapFieldIndex) => 
-                  gapFieldIndex === potentialGaps.findIndex(g => g === gapInfo)
-                );
-                const gapFieldIndex = gapFields.findIndex((_, gapFieldIndex) => 
-                  gapFieldIndex === potentialGaps.findIndex(g => g === gapInfo)
-                );
+                // Create a unique key for this specific gap
+                const gapKey = `${format(gapInfo.gap.startDate, "yyyy-MM-dd")}-${format(gapInfo.gap.endDate, "yyyy-MM-dd")}`;
+                
+                // Find existing gap field that matches this gap's dates
+                const matchingGapIndex = gapFields.findIndex(gapField => {
+                  const fieldStartDate = form.getValues(`employmentGaps.${gapFields.indexOf(gapField)}.startDate`);
+                  const fieldEndDate = form.getValues(`employmentGaps.${gapFields.indexOf(gapField)}.endDate`);
+                  return fieldStartDate === format(gapInfo.gap.startDate, "yyyy-MM-dd") && 
+                         fieldEndDate === format(gapInfo.gap.endDate, "yyyy-MM-dd");
+                });
 
                 return (
-                  <Card key={`gap-${index}-${gapIndex}`} className="border-orange-200 bg-orange-50">
+                  <Card key={gapKey} className="border-orange-200 bg-orange-50">
                     <CardHeader className="bg-orange-100">
                       <CardTitle className="flex items-center justify-between text-orange-800">
                         <div className="flex items-center space-x-2">
@@ -533,20 +545,19 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-4">
-                      {gapFieldIndex >= 0 ? (
+                      {matchingGapIndex >= 0 ? (
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField
                               control={form.control}
-                              name={`employmentGaps.${gapFieldIndex}.startDate`}
+                              name={`employmentGaps.${matchingGapIndex}.startDate`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>Gap Start Date *</FormLabel>
                                   <FormControl>
                                     <Input 
                                       type="date" 
-                                      {...field} 
-                                      defaultValue={format(gapInfo.gap.startDate, "yyyy-MM-dd")}
+                                      {...field}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -556,15 +567,14 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
 
                             <FormField
                               control={form.control}
-                              name={`employmentGaps.${gapFieldIndex}.endDate`}
+                              name={`employmentGaps.${matchingGapIndex}.endDate`}
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>Gap End Date *</FormLabel>
                                   <FormControl>
                                     <Input 
                                       type="date" 
-                                      {...field} 
-                                      defaultValue={format(gapInfo.gap.endDate, "yyyy-MM-dd")}
+                                      {...field}
                                     />
                                   </FormControl>
                                   <FormMessage />
@@ -575,7 +585,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
 
                           <FormField
                             control={form.control}
-                            name={`employmentGaps.${gapFieldIndex}.reason`}
+                            name={`employmentGaps.${matchingGapIndex}.reason`}
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Reason for Gap *</FormLabel>
@@ -589,6 +599,17 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                               </FormItem>
                             )}
                           />
+
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeGap(matchingGapIndex)}
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            Remove Gap Entry
+                          </Button>
                         </div>
                       ) : (
                         <div className="text-center py-4">

@@ -141,7 +141,7 @@ export default function Home() {
                 
 
                 <PersonalInfoForm 
-                  applicantId={applicantId || 2}
+                  applicantId={applicantId || 5}
                   onSuccess={handlePersonalInfoComplete} 
                 />
               </>

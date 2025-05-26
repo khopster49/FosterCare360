@@ -163,8 +163,15 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
         workDocumentType: values.workDocumentType || "",
       };
       
-      const res = await apiRequest("POST", "/api/applicants", apiValues);
-      return res.json();
+      if (applicantId) {
+        // Update existing applicant
+        const res = await apiRequest("PATCH", `/api/applicants/${applicantId}`, apiValues);
+        return res.json();
+      } else {
+        // Create new applicant
+        const res = await apiRequest("POST", "/api/applicants", apiValues);
+        return res.json();
+      }
     },
     onSuccess: (data) => {
       toast({

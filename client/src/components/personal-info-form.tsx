@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Loader2, Upload } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -79,6 +79,12 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   
+  // Load existing applicant data if applicantId is provided
+  const { data: existingApplicant } = useQuery({
+    queryKey: ['/api/applicants', applicantId],
+    enabled: !!applicantId,
+  });
+
   // Set up the form
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
@@ -108,8 +114,39 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
       professionalRegExpiry: ""
     },
   });
+
+  // Update form when existing data loads
+  useEffect(() => {
+    if (existingApplicant) {
+      form.reset({
+        title: existingApplicant.title || "",
+        firstName: existingApplicant.firstName || "",
+        lastName: existingApplicant.lastName || "",
+        pronouns: existingApplicant.pronouns || "",
+        otherNames: existingApplicant.otherNames || "",
+        email: existingApplicant.email || "",
+        address: existingApplicant.address || "",
+        postcode: existingApplicant.postcode || "",
+        homePhone: existingApplicant.homePhone || "",
+        mobilePhone: existingApplicant.phone || "",
+        drivingLicence: existingApplicant.drivingLicence || false,
+        nationality: existingApplicant.nationality || "",
+        visaType: existingApplicant.visaType || "",
+        visaExpiry: existingApplicant.visaExpiry || "",
+        niNumber: existingApplicant.niNumber || "",
+        rightToWork: existingApplicant.rightToWork || true,
+        dbsRegistered: existingApplicant.dbsRegistered || false,
+        dbsNumber: existingApplicant.dbsNumber || "",
+        dbsIssueDate: existingApplicant.dbsIssueDate || "",
+        workDocumentType: existingApplicant.workDocumentType || "",
+        referralSource: existingApplicant.referralSource || "",
+        professionalRegNumber: existingApplicant.professionalRegNumber || "",
+        professionalRegExpiry: existingApplicant.professionalRegExpiry || ""
+      });
+    }
+  }, [existingApplicant, form]);
   
-  // Create applicant mutation
+  // Create or update applicant mutation
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: PersonalInfoFormValues) => {
       // Transform into the format expected by the API

@@ -74,27 +74,15 @@ export function DataProtectionForm({ applicantId, onSuccess, onBack }: DataProte
     form.setValue("fullName", `${applicant.firstName} ${applicant.lastName}`);
   }
   
-  // Create mutation for updating data protection information
-  const updateDataProtection = useMutation({
-    mutationFn: async (values: DataProtectionFormValues) => {
-      const res = await apiRequest("PATCH", `/api/applicants/${applicantId}`, {
-        dataProtectionAgreed: values.dataProtectionAgreement,
-        dataProtectionSignedDate: new Date().toISOString(),
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [`/api/applicants/${applicantId}`],
-      });
-    },
-  });
-  
   // Handle form submission
   async function onSubmit(values: DataProtectionFormValues) {
     setIsSubmitting(true);
     try {
-      await updateDataProtection.mutateAsync(values);
+      // Save to localStorage
+      localStorage.setItem(`data_protection_${applicantId}`, JSON.stringify({
+        ...values,
+        signedDate: new Date().toISOString()
+      }));
       
       toast({
         title: "Data Protection Agreement Completed",

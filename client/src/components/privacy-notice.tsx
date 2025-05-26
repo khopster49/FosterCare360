@@ -3,9 +3,8 @@ import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const privacyNoticeSchema = z.object({
   acknowledged: z.boolean().refine(val => val === true, {
@@ -22,6 +21,9 @@ interface PrivacyNoticeProps {
 }
 
 export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeProps) {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<PrivacyNoticeValues>({
     resolver: zodResolver(privacyNoticeSchema),
     defaultValues: {
@@ -29,29 +31,30 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
     },
   });
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (values: PrivacyNoticeValues) => {
-      return await apiRequest(`/api/applicants/${applicantId}/privacy-notice`, "POST", values);
-    },
-    onSuccess: () => {
+  async function onSubmit(values: PrivacyNoticeValues) {
+    setIsSubmitting(true);
+    try {
+      // Save to localStorage
+      localStorage.setItem(`privacy_notice_${applicantId}`, JSON.stringify({
+        ...values,
+        acknowledgedDate: new Date().toISOString()
+      }));
+      
       toast({
         title: "Privacy Notice Acknowledged",
         description: "Thank you for acknowledging the privacy notice.",
       });
+      
       onSuccess();
-    },
-    onError: (error) => {
-      console.error("Error:", error);
+    } catch (error) {
       toast({
         title: "Error",
         description: "There was a problem saving your acknowledgment.",
         variant: "destructive",
       });
-    },
-  });
-
-  async function onSubmit(values: PrivacyNoticeValues) {
-    mutate(values);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -227,9 +230,9 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
                 </Button>
                 <Button 
                   type="submit"
-                  disabled={isPending}
+                  disabled={isSubmitting}
                 >
-                  {isPending ? "Submitting..." : "Complete Application"}
+                  {isSubmitting ? "Submitting..." : "Complete Application"}
                 </Button>
               </div>
             </form>

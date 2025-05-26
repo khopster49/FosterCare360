@@ -301,9 +301,14 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                         <CardContent className="py-3">
                           <div className="flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-600" />
-                            <p className="text-sm font-medium text-amber-800">
-                              Employment Gap: {gapDays} days from {previousEmployment.employer} to {employment.employer} ({gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')})
-                            </p>
+                            <div className="text-sm font-medium text-amber-800">
+                              <p>Employment Gap: {gapDays} days</p>
+                              <p className="text-xs mt-1">
+                                From: {previousEmployment.employer} (ended {previousEnd.toLocaleDateString('en-GB')}) 
+                                → To: {employment.employer} (started {new Date(employment.startDate).toLocaleDateString('en-GB')})
+                              </p>
+                              <p className="text-xs text-amber-700">Gap period: {gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')}</p>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>

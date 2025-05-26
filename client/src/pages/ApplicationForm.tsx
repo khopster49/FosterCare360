@@ -35,8 +35,8 @@ export default function Home() {
   
   // For now, use the last created applicant ID (your most recent application)
   useEffect(() => {
-    // Set applicant ID to 2 (your most recent application based on server logs)
-    setApplicantId(2);
+    // Set applicant ID to 5 (your most recent application based on server logs)
+    setApplicantId(5);
   }, []);
 
   // Initialize form stepper
@@ -141,7 +141,7 @@ export default function Home() {
                 
 
                 <PersonalInfoForm 
-                  applicantId={applicantId || 5}
+                  applicantId={applicantId || undefined}
                   onSuccess={handlePersonalInfoComplete} 
                 />
               </>

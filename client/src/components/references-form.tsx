@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, BadgeCheck, FileCheck, AlertCircle } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { BadgeCheck, FileCheck, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useReferences } from "@/hooks/use-references";
 
@@ -42,22 +40,23 @@ interface ReferencesFormProps {
 export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFormProps) {
   const { toast } = useToast();
   const [processing, setProcessing] = useState(false);
+  const [employmentEntries, setEmploymentEntries] = useState([]);
   
-  // Fetch employment entries
-  const { data: employmentEntries = [] } = useQuery({
-    queryKey: [`/api/applicants/${applicantId}/employment`],
-    enabled: !!applicantId,
-  });
-  
+  // Load employment entries from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`employment_${applicantId}`);
+      if (saved) {
+        const data = JSON.parse(saved);
+        setEmploymentEntries(data.employmentEntries || []);
+      }
+    } catch (error) {
+      console.warn('Failed to load employment data:', error);
+    }
+  }, [applicantId]);
+
   // Use the references hook to determine required references
   const { requiredReferences } = useReferences(employmentEntries);
-  
-  // Debug: Log employment entries to see what data we have
-  useEffect(() => {
-    if (employmentEntries && employmentEntries.length > 0) {
-      console.log("Employment entries data:", employmentEntries);
-    }
-  }, [employmentEntries]);
   
   // Set up the form
   const form = useForm<ReferenceConsentValues>({
@@ -68,48 +67,44 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     },
   });
   
-  // Create reference request mutations
-  const createReference = useMutation({
-    mutationFn: async (employmentEntryId: number) => {
-      const employmentEntry = employmentEntries.find((entry: any) => entry.id === employmentEntryId);
-      if (!employmentEntry) return null;
-      
-      // Create reference from employment entry data
-      const referenceData = {
-        applicantId,
-        employmentEntryId,
-        name: employmentEntry.referenceName,
-        email: employmentEntry.referenceEmail,
-        phone: employmentEntry.referencePhone,
-        employer: employmentEntry.employer,
-        employerAddress: employmentEntry.employerAddress || '',
-        position: employmentEntry.position
-      };
-      
-      const res = await apiRequest("POST", `/api/applicants/${applicantId}/references`, referenceData);
-      return res.json();
+  // Save references to localStorage
+  const saveReferences = (references: any[]) => {
+    try {
+      localStorage.setItem(`references_${applicantId}`, JSON.stringify(references));
+    } catch (error) {
+      console.warn('Failed to save references data:', error);
     }
-  });
+  };
   
   // Handle form submission
   async function onSubmit(values: ReferenceConsentValues) {
     setProcessing(true);
     try {
-      // Request references for all required positions
-      for (const reference of requiredReferences) {
-        await createReference.mutateAsync(reference.id);
-      }
+      // Save reference consent and data to localStorage
+      const referenceData = requiredReferences.map(reference => ({
+        applicantId,
+        name: reference.referenceName,
+        email: reference.referenceEmail,
+        phone: reference.referencePhone,
+        employer: reference.employer,
+        employerAddress: reference.employerAddress || '',
+        position: reference.position,
+        consentGiven: true,
+        requestedAt: new Date().toISOString()
+      }));
+      
+      saveReferences(referenceData);
       
       toast({
-        title: "References requested",
-        description: "Reference requests will be sent to all the specified contacts.",
+        title: "References Consent Recorded",
+        description: "Your consent for reference requests has been recorded successfully.",
       });
       
       onSuccess();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to process reference requests. Please try again.",
+        description: "Failed to save reference information. Please try again.",
         variant: "destructive",
       });
     } finally {

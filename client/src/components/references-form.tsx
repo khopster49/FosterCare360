@@ -190,14 +190,19 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
               <Separator className="flex-1" />
             </div>
             
-            {/* Sort employment entries chronologically (oldest first) and intersperse gaps */}
+            {/* Sort employment entries with current employer first, then reverse chronological */}
             {(() => {
               const sortedEntries = employmentEntries
                 .slice()
                 .sort((a, b) => {
-                  const dateA = new Date(a.startDate || '1900-01-01');
-                  const dateB = new Date(b.startDate || '1900-01-01');
-                  return dateA.getTime() - dateB.getTime();
+                  // Current employer always comes first
+                  if (a.isCurrent && !b.isCurrent) return -1;
+                  if (!a.isCurrent && b.isCurrent) return 1;
+                  
+                  // If both current or both not current, sort by most recent first
+                  const dateA = a.isCurrent ? new Date() : new Date(a.endDate || a.startDate || '1900-01-01');
+                  const dateB = b.isCurrent ? new Date() : new Date(b.endDate || b.startDate || '1900-01-01');
+                  return dateB.getTime() - dateA.getTime();
                 });
 
               const timelineItems = [];

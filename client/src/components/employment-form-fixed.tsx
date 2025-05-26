@@ -142,8 +142,9 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
 
     const validEntries = entries
       .filter(entry => entry.startDate && (entry.endDate || entry.isCurrent))
-      .map(entry => ({
+      .map((entry, originalIndex) => ({
         ...entry,
+        originalIndex,
         startDate: parse(entry.startDate, 'yyyy-MM-dd', new Date()),
         endDate: entry.isCurrent ? new Date() : parse(entry.endDate, 'yyyy-MM-dd', new Date()),
       }))
@@ -152,14 +153,16 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
     const gaps: GapWithIndex[] = [];
     
     for (let i = 0; i < validEntries.length - 1; i++) {
-      const currentEnd = validEntries[i].endDate;
-      const nextStart = validEntries[i + 1].startDate;
+      const currentEntry = validEntries[i];
+      const nextEntry = validEntries[i + 1];
+      const currentEnd = currentEntry.endDate;
+      const nextStart = nextEntry.startDate;
       
       if (isAfter(nextStart, addDays(currentEnd, 1))) {
         const gapDays = differenceInDays(nextStart, currentEnd) - 1;
         if (gapDays > 0) {
           gaps.push({
-            afterEmploymentIndex: i,
+            afterEmploymentIndex: currentEntry.originalIndex,
             gap: {
               startDate: addDays(currentEnd, 1),
               endDate: addDays(nextStart, -1),
@@ -650,27 +653,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           </Button>
         </div>
 
-        {/* Gap Detection Alert */}
-        {potentialGaps.length > 0 && (
-          <Alert className="border-orange-200 bg-orange-50">
-            <AlertTriangle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800">
-              <div className="space-y-2">
-                <p className="font-semibold">Employment gaps detected:</p>
-                {potentialGaps.map((gapInfo, index) => (
-                  <div key={index} className="text-sm">
-                    Gap of {gapInfo.gap.days} days from{" "}
-                    {format(gapInfo.gap.startDate, "dd/MM/yyyy")} to{" "}
-                    {format(gapInfo.gap.endDate, "dd/MM/yyyy")}
-                  </div>
-                ))}
-                <p className="text-sm mt-2">
-                  Please add employment gap entries below to explain these periods.
-                </p>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
+
 
         {/* Manual Add Employment Gap Button */}
         <Button

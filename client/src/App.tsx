@@ -9,26 +9,10 @@ import ApplicationForm from "@/pages/ApplicationForm";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
-    );
-  }
-
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/application" component={ApplicationForm} />
-        </>
-      )}
+      <Route path="/" component={Landing} />
+      <Route path="/application" component={ApplicationForm} />
       <Route component={NotFound} />
     </Switch>
   );

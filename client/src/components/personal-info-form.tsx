@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Upload } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 import {
@@ -79,13 +77,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
   const { toast } = useToast();
   const [workDocumentFile, setWorkDocumentFile] = useState<File | null>(null);
   
-  // Load existing applicant data if applicantId is provided
-  const { data: existingApplicant } = useQuery({
-    queryKey: ['/api/applicants', applicantId],
-    enabled: !!applicantId,
-  });
-
-  // Set up the form
+  // Set up the form with localStorage data
   const form = useForm<PersonalInfoFormValues>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
@@ -115,83 +107,36 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
     },
   });
 
-  // Update form when existing data loads
+  // Load data from localStorage on mount
   useEffect(() => {
-    if (existingApplicant) {
-      form.reset({
-        title: existingApplicant.title || "",
-        firstName: existingApplicant.firstName || "",
-        lastName: existingApplicant.lastName || "",
-        pronouns: existingApplicant.pronouns || "",
-        otherNames: existingApplicant.otherNames || "",
-        email: existingApplicant.email || "",
-        address: existingApplicant.address || "",
-        postcode: existingApplicant.postcode || "",
-        homePhone: existingApplicant.homePhone || "",
-        mobilePhone: existingApplicant.phone || "",
-        drivingLicence: existingApplicant.drivingLicence || false,
-        nationality: existingApplicant.nationality || "",
-        visaType: existingApplicant.visaType || "",
-        visaExpiry: existingApplicant.visaExpiry || "",
-        niNumber: existingApplicant.niNumber || "",
-        rightToWork: existingApplicant.rightToWork || true,
-        dbsRegistered: existingApplicant.dbsRegistered || false,
-        dbsNumber: existingApplicant.dbsNumber || "",
-        dbsIssueDate: existingApplicant.dbsIssueDate || "",
-        workDocumentType: existingApplicant.workDocumentType || "",
-        referralSource: existingApplicant.referralSource || "",
-        professionalRegNumber: existingApplicant.professionalRegNumber || "",
-        professionalRegExpiry: existingApplicant.professionalRegExpiry || ""
-      });
+    const savedData = localStorage.getItem('personalInfo');
+    if (savedData) {
+      const parsedData = JSON.parse(savedData);
+      form.reset(parsedData);
     }
-  }, [existingApplicant, form]);
+  }, [form]);
   
-  // Create or update applicant mutation
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (values: PersonalInfoFormValues) => {
-      // Transform into the format expected by the API
-      const apiValues = {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        phone: values.mobilePhone,
-        address: values.address,
-        city: "", // We're not collecting this separately now, can be part of address
-        postcode: values.postcode,
-        nationality: values.nationality,
-        rightToWork: values.rightToWork,
-        workDocumentType: values.workDocumentType || "",
-      };
-      
-      if (applicantId) {
-        // Update existing applicant
-        const res = await apiRequest("PATCH", `/api/applicants/${applicantId}`, apiValues);
-        return res.json();
-      } else {
-        // Create new applicant
-        const res = await apiRequest("POST", "/api/applicants", apiValues);
-        return res.json();
-      }
-    },
-    onSuccess: (data) => {
+  // Save to localStorage instead of API
+  const saveToLocalStorage = (values: PersonalInfoFormValues) => {
+    try {
+      localStorage.setItem('personalInfo', JSON.stringify(values));
       toast({
         title: "Personal information saved",
         description: "Your personal information has been saved successfully.",
       });
-      onSuccess(data);
-    },
-    onError: (error) => {
+      onSuccess({ id: 1, ...values }); // Mock response for compatibility
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to save personal information. Please try again.",
+        description: "Failed to save personal information. Please try again.",
         variant: "destructive",
       });
-    },
-  });
+    }
+  };
   
   // Handle form submission
   function onSubmit(values: PersonalInfoFormValues) {
-    mutate(values);
+    saveToLocalStorage(values);
   }
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -718,15 +663,8 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
         </div>
         
         <div className="mt-8 flex justify-end">
-          <Button type="submit" disabled={isPending} className="bg-primary hover:bg-primary/90">
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing
-              </>
-            ) : (
-              "Next: Education History"
-            )}
+          <Button type="submit" className="bg-primary hover:bg-primary/90">
+            Next: Education History
           </Button>
         </div>
       </form>

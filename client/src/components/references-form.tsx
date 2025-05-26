@@ -302,7 +302,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                           <div className="flex items-center gap-2">
                             <AlertCircle className="h-4 w-4 text-amber-600" />
                             <p className="text-sm font-medium text-amber-800">
-                              Employment Gap: {gapDays} days ({gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')})
+                              Employment Gap: {gapDays} days from {previousEmployment.employer} to {employment.employer} ({gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')})
                             </p>
                           </div>
                         </CardContent>

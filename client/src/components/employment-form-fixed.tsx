@@ -60,9 +60,21 @@ interface EmploymentFormProps {
   onBack: () => void;
 }
 
+interface Gap {
+  startDate: Date;
+  endDate: Date;
+  days: number;
+}
+
+interface GapWithIndex {
+  afterEmploymentIndex: number;
+  gap: Gap;
+}
+
 export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [potentialGaps, setPotentialGaps] = useState<GapWithIndex[]>([]);
 
   // Load existing data from localStorage
   const loadFromLocalStorage = (): EmploymentFormValues => {
@@ -123,6 +135,54 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
       console.warn('Failed to save employment data to localStorage:', error);
     }
   };
+
+  // Gap detection function
+  const detectGaps = (entries: any[]) => {
+    if (entries.length < 2) return [];
+
+    const validEntries = entries
+      .filter(entry => entry.startDate && (entry.endDate || entry.isCurrent))
+      .map(entry => ({
+        ...entry,
+        startDate: parse(entry.startDate, 'yyyy-MM-dd', new Date()),
+        endDate: entry.isCurrent ? new Date() : parse(entry.endDate, 'yyyy-MM-dd', new Date()),
+      }))
+      .sort((a, b) => a.startDate.getTime() - b.startDate.getTime());
+
+    const gaps: GapWithIndex[] = [];
+    
+    for (let i = 0; i < validEntries.length - 1; i++) {
+      const currentEnd = validEntries[i].endDate;
+      const nextStart = validEntries[i + 1].startDate;
+      
+      if (isAfter(nextStart, addDays(currentEnd, 1))) {
+        const gapDays = differenceInDays(nextStart, currentEnd) - 1;
+        if (gapDays > 0) {
+          gaps.push({
+            afterEmploymentIndex: i,
+            gap: {
+              startDate: addDays(currentEnd, 1),
+              endDate: addDays(nextStart, -1),
+              days: gapDays,
+            },
+          });
+        }
+      }
+    }
+    
+    return gaps;
+  };
+
+  // Effect to detect gaps when employment entries change
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (value.employmentEntries) {
+        const gaps = detectGaps(value.employmentEntries);
+        setPotentialGaps(gaps);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   // Submit handler
   const onSubmit = async (values: EmploymentFormValues) => {
@@ -457,6 +517,28 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             Add Another Employment Entry
           </Button>
         </div>
+
+        {/* Gap Detection Alert */}
+        {potentialGaps.length > 0 && (
+          <Alert className="border-orange-200 bg-orange-50">
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              <div className="space-y-2">
+                <p className="font-semibold">Employment gaps detected:</p>
+                {potentialGaps.map((gapInfo, index) => (
+                  <div key={index} className="text-sm">
+                    Gap of {gapInfo.gap.days} days from{" "}
+                    {format(gapInfo.gap.startDate, "dd/MM/yyyy")} to{" "}
+                    {format(gapInfo.gap.endDate, "dd/MM/yyyy")}
+                  </div>
+                ))}
+                <p className="text-sm mt-2">
+                  Please add employment gap entries below to explain these periods.
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Employment Gaps */}
         {gapFields.length > 0 && (

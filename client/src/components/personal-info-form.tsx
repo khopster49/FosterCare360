@@ -188,7 +188,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
               render={({ field }) => (
                 <FormItem className="col-span-1">
                   <FormLabel>Title</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select title" />
@@ -215,7 +215,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
               render={({ field }) => (
                 <FormItem className="col-span-1">
                   <FormLabel>Pronouns</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select pronouns" />
@@ -496,7 +496,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nationality</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select nationality" />
@@ -523,7 +523,7 @@ export function PersonalInfoForm({ applicantId, onSuccess }: PersonalInfoFormPro
                   <FormControl>
                     <RadioGroup 
                       onValueChange={(value) => field.onChange(value === "yes")}
-                      defaultValue={field.value ? "yes" : "no"}
+                      value={field.value ? "yes" : "no"}
                       className="flex items-center space-x-4 mt-2"
                     >
                       <div className="flex items-center space-x-2">

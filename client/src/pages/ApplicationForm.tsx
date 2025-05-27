@@ -92,9 +92,16 @@ export default function Home() {
       <div className="flex flex-col min-h-screen bg-neutral-50">
         <Header />
         
-        {/* Progress Bar */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <FormStepper 
+            steps={steps} 
+            currentStep={currentStep} 
+            completedSteps={completedSteps}
+            onStepClick={handleStepClick}
+          />
+          
+          {/* Progress Bar */}
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 p-4">
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-lg font-semibold text-gray-900">Application Progress</h2>
               <span className="text-sm text-gray-600">
@@ -111,15 +118,6 @@ export default function Home() {
               {steps[currentStep]?.label}
             </div>
           </div>
-        </div>
-        
-        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <FormStepper 
-            steps={steps} 
-            currentStep={currentStep} 
-            completedSteps={completedSteps}
-            onStepClick={handleStepClick}
-          />
           
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             {currentStep === 0 && (

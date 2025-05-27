@@ -472,9 +472,9 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       name={`employmentEntries.${index}.referenceName`}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Line Manager/Manager *</FormLabel>
+                          <FormLabel>Name of referee *</FormLabel>
                           <FormControl>
-                            <Input placeholder="Full name of line manager/manager" {...field} />
+                            <Input placeholder="Full name of referee" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -353,7 +353,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
 
                         {/* Reference Contact Details */}
                         <div>
-                          <p className="text-sm font-medium text-neutral-700 mb-2">Reference Contact (Line Manager/Manager)</p>
+                          <p className="text-sm font-medium text-neutral-700 mb-2">Reference Contact (Name of referee)</p>
                           <div className="space-y-1 text-sm">
                             <p><span className="font-medium">Name:</span> {employment.referenceName || 'Not provided'}</p>
                             <p><span className="font-medium">Email:</span> {employment.referenceEmail || 'Not provided'}</p>

@@ -33,6 +33,7 @@ const referenceConsentSchema = z.object({
   signatureType: z.enum(["draw", "upload"]),
   signatureData: z.string().optional(),
   signatureFile: z.string().optional(),
+  signatureDate: z.string().min(1, "Signature date is required"),
 }).refine(data => {
   if (data.consent) {
     if (data.signatureType === "draw") {
@@ -62,15 +63,17 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
   const [isDrawing, setIsDrawing] = useState(false);
   const [employmentEntries, setEmploymentEntries] = useState([]);
 
-  // Signature canvas functions
+  // Signature canvas functions with improved accuracy
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
     
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -86,8 +89,10 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     if (!canvas) return;
     
     const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
     
     const ctx = canvas.getContext('2d');
     if (ctx) {
@@ -119,16 +124,23 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     }
   };
 
-  // Initialize canvas
+  // Initialize canvas with better drawing settings
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 1.5;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        // Set canvas background to white
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#1a1a1a';
       }
     }
   }, []);
@@ -195,6 +207,7 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
       signatureType: "draw",
       signatureData: "",
       signatureFile: "",
+      signatureDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
     },
   });
   
@@ -453,18 +466,18 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                       <div className="mt-2 border border-orange-300 rounded-lg p-4 bg-white">
                         <canvas
                           ref={canvasRef}
-                          width={400}
-                          height={150}
-                          className="border border-gray-300 rounded cursor-crosshair w-full"
-                          style={{ touchAction: 'none' }}
+                          width={800}
+                          height={200}
+                          className="border border-gray-300 rounded cursor-crosshair w-full h-32"
+                          style={{ touchAction: 'none', maxWidth: '100%' }}
                           onMouseDown={startDrawing}
                           onMouseMove={draw}
                           onMouseUp={stopDrawing}
                           onMouseLeave={stopDrawing}
                         />
-                        <div className="mt-2 flex justify-between items-center">
+                        <div className="mt-3 flex justify-between items-center">
                           <p className="text-sm text-gray-600">
-                            Sign using your mouse or touch device
+                            Sign using your mouse, stylus, or finger
                           </p>
                           <Button
                             type="button"
@@ -477,39 +490,76 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                           </Button>
                         </div>
                       </div>
-                      <p className="text-xs text-orange-700 mt-2">
-                        Your signature confirms your consent and is legally binding for this application.
-                      </p>
+                      
+                      {/* Signature Date Field */}
+                      <FormField
+                        control={form.control}
+                        name="signatureDate"
+                        render={({ field }) => (
+                          <FormItem className="mt-4">
+                            <FormLabel>Date of Signature:</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                {...field}
+                                className="border-orange-300 focus:border-orange-500"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   )}
                   
                   {form.watch("signatureType") === "upload" && (
-                    <FormField
-                      control={form.control}
-                      name="signatureFile"
-                      render={({ field }) => (
-                        <FormItem className="mt-4">
-                          <FormLabel>Upload signature file:</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="file"
-                              accept="image/*,.pdf"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  field.onChange(file.name);
-                                }
-                              }}
-                              className="border-orange-300 focus:border-orange-500"
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Upload an image or PDF file containing your signature.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="mt-4">
+                      <FormField
+                        control={form.control}
+                        name="signatureFile"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Upload signature file:</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="file"
+                                accept="image/*,.pdf"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    field.onChange(file.name);
+                                  }
+                                }}
+                                className="border-orange-300 focus:border-orange-500"
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              Upload an image or PDF file containing your signature.
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      {/* Signature Date Field */}
+                      <FormField
+                        control={form.control}
+                        name="signatureDate"
+                        render={({ field }) => (
+                          <FormItem className="mt-4">
+                            <FormLabel>Date of Signature:</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                {...field}
+                                className="border-orange-300 focus:border-orange-500"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   )}
                   
                   <p className="text-xs text-orange-700 mt-3">

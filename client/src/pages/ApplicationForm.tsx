@@ -12,6 +12,7 @@ import { DataProtectionForm } from "@/components/data-protection-form";
 import { EqualOpportunitiesForm } from "@/components/equal-opportunities-form";
 import { VerificationForm } from "@/components/verification-form";
 import { PrivacyNotice } from "@/components/privacy-notice";
+import { ApplicationComplete } from "@/components/application-complete";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,6 +33,7 @@ const steps = [
 export default function Home() {
   const { user } = useAuth();
   const [applicantId, setApplicantId] = useState<number | null>(null);
+  const [isApplicationComplete, setIsApplicationComplete] = useState(false);
   
   // For now, use the last created applicant ID (your most recent application)
   useEffect(() => {
@@ -119,8 +121,15 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            {currentStep === 0 && (
+          {/* Show completion page when application is complete */}
+          {isApplicationComplete ? (
+            <ApplicationComplete 
+              applicantId={applicantId || 1}
+              onBack={() => setIsApplicationComplete(false)}
+            />
+          ) : (
+            <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+              {currentStep === 0 && (
               <>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Confidential Application Form</h2>
                 
@@ -251,12 +260,13 @@ export default function Home() {
                 </p>
                 <PrivacyNotice 
                   applicantId={applicantId || 1} // Allow preview with temporary ID
-                  onSuccess={() => nextStep()} 
+                  onSuccess={() => setIsApplicationComplete(true)} 
                   onBack={() => previousStep()} 
                 />
               </>
             )}
-          </div>
+            </div>
+          )}
         </main>
         
         <Footer />

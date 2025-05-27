@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -30,13 +30,13 @@ const referenceConsentSchema = z.object({
   consent: z.boolean().refine(value => value === true, {
     message: "You must provide consent to proceed",
   }),
-  signatureType: z.enum(["typed", "upload"]),
-  typedSignature: z.string().optional(),
+  signatureType: z.enum(["draw", "upload"]),
+  signatureData: z.string().optional(),
   signatureFile: z.string().optional(),
 }).refine(data => {
   if (data.consent) {
-    if (data.signatureType === "typed") {
-      return data.typedSignature && data.typedSignature.trim().length > 0;
+    if (data.signatureType === "draw") {
+      return data.signatureData && data.signatureData.length > 0;
     } else if (data.signatureType === "upload") {
       return data.signatureFile && data.signatureFile.length > 0;
     }
@@ -58,7 +58,80 @@ interface ReferencesFormProps {
 export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFormProps) {
   const { toast } = useToast();
   const [processing, setProcessing] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
   const [employmentEntries, setEmploymentEntries] = useState([]);
+
+  // Signature canvas functions
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+  };
+
+  const stopDrawing = () => {
+    if (!isDrawing) return;
+    setIsDrawing(false);
+    
+    // Save signature data
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const signatureData = canvas.toDataURL();
+      form.setValue('signatureData', signatureData);
+    }
+  };
+
+  const clearSignature = () => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        form.setValue('signatureData', '');
+      }
+    }
+  };
+
+  // Initialize canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+    }
+  }, []);
   
   // Load employment entries from localStorage
   useEffect(() => {
@@ -119,8 +192,8 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     defaultValues: {
       applicantId,
       consent: false,
-      signatureType: "typed",
-      typedSignature: "",
+      signatureType: "draw",
+      signatureData: "",
       signatureFile: "",
     },
   });
@@ -360,8 +433,8 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                             className="flex flex-col space-y-2"
                           >
                             <div className="flex items-center space-x-2">
-                              <RadioGroupItem value="typed" id="typed" />
-                              <Label htmlFor="typed">Type my name as signature</Label>
+                              <RadioGroupItem value="draw" id="draw" />
+                              <Label htmlFor="draw">Draw my signature</Label>
                             </div>
                             <div className="flex items-center space-x-2">
                               <RadioGroupItem value="upload" id="upload" />
@@ -374,27 +447,40 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                     )}
                   />
                   
-                  {form.watch("signatureType") === "typed" && (
-                    <FormField
-                      control={form.control}
-                      name="typedSignature"
-                      render={({ field }) => (
-                        <FormItem className="mt-4">
-                          <FormLabel>Type your full name as digital signature:</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="Enter your full name here"
-                              className="font-serif text-lg italic border-orange-300 focus:border-orange-500"
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            By typing your name here, you are providing your digital signature for this consent.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  {form.watch("signatureType") === "draw" && (
+                    <div className="mt-4">
+                      <FormLabel>Draw your signature below:</FormLabel>
+                      <div className="mt-2 border border-orange-300 rounded-lg p-4 bg-white">
+                        <canvas
+                          ref={canvasRef}
+                          width={400}
+                          height={150}
+                          className="border border-gray-300 rounded cursor-crosshair w-full"
+                          style={{ touchAction: 'none' }}
+                          onMouseDown={startDrawing}
+                          onMouseMove={draw}
+                          onMouseUp={stopDrawing}
+                          onMouseLeave={stopDrawing}
+                        />
+                        <div className="mt-2 flex justify-between items-center">
+                          <p className="text-sm text-gray-600">
+                            Sign using your mouse or touch device
+                          </p>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={clearSignature}
+                            className="text-orange-600 border-orange-300 hover:bg-orange-50"
+                          >
+                            Clear Signature
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-orange-700 mt-2">
+                        Your signature confirms your consent and is legally binding for this application.
+                      </p>
+                    </div>
                   )}
                   
                   {form.watch("signatureType") === "upload" && (

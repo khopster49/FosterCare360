@@ -20,6 +20,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 // Create schema for the form
 const referenceConsentSchema = z.object({
@@ -27,6 +30,21 @@ const referenceConsentSchema = z.object({
   consent: z.boolean().refine(value => value === true, {
     message: "You must provide consent to proceed",
   }),
+  signatureType: z.enum(["typed", "upload"]),
+  typedSignature: z.string().optional(),
+  signatureFile: z.string().optional(),
+}).refine(data => {
+  if (data.consent) {
+    if (data.signatureType === "typed") {
+      return data.typedSignature && data.typedSignature.trim().length > 0;
+    } else if (data.signatureType === "upload") {
+      return data.signatureFile && data.signatureFile.length > 0;
+    }
+  }
+  return true;
+}, {
+  message: "Please provide your signature to confirm consent",
+  path: ["signatureType"]
 });
 
 type ReferenceConsentValues = z.infer<typeof referenceConsentSchema>;
@@ -101,6 +119,9 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     defaultValues: {
       applicantId,
       consent: false,
+      signatureType: "typed",
+      typedSignature: "",
+      signatureFile: "",
     },
   });
   
@@ -269,52 +290,6 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                   </Card>
                 );
 
-                // Check for gaps - we need to compare chronologically, not by display order
-                // Find the chronologically previous job to check for gaps
-                const chronologicalEntries = employmentEntries
-                  .slice()
-                  .sort((a, b) => {
-                    const dateA = new Date(a.startDate || '1900-01-01');
-                    const dateB = new Date(b.startDate || '1900-01-01');
-                    return dateA.getTime() - dateB.getTime();
-                  });
-                
-                const chronologicalIndex = chronologicalEntries.findIndex(entry => 
-                  entry.employer === employment.employer && 
-                  entry.position === employment.position &&
-                  entry.startDate === employment.startDate
-                );
-                
-                // Check if there's a gap before this employment (chronologically)
-                if (chronologicalIndex > 0) {
-                  const previousEmployment = chronologicalEntries[chronologicalIndex - 1];
-                  const previousEnd = previousEmployment.isCurrent ? new Date() : new Date(previousEmployment.endDate || previousEmployment.startDate);
-                  const currentStart = new Date(employment.startDate);
-                  const gapDays = Math.floor((currentStart.getTime() - previousEnd.getTime()) / (1000 * 60 * 60 * 24)) - 1;
-                  
-                  if (gapDays > 0) {
-                    const gapStart = new Date(previousEnd.getTime() + 24 * 60 * 60 * 1000);
-                    const gapEnd = new Date(currentStart.getTime() - 24 * 60 * 60 * 1000);
-                    
-                    timelineItems.push(
-                      <Card key={`gap-before-${index}`} className="border-amber-200 bg-amber-50 my-2">
-                        <CardContent className="py-3">
-                          <div className="flex items-center gap-2">
-                            <AlertCircle className="h-4 w-4 text-amber-600" />
-                            <div className="text-sm font-medium text-amber-800">
-                              <p>Employment Gap: {gapDays} days</p>
-                              <p className="text-xs mt-1">
-                                From: {previousEmployment.employer} (ended {previousEnd.toLocaleDateString('en-GB')}) 
-                                → To: {employment.employer} (started {new Date(employment.startDate).toLocaleDateString('en-GB')})
-                              </p>
-                              <p className="text-xs text-amber-700">Gap period: {gapStart.toLocaleDateString('en-GB')} - {gapEnd.toLocaleDateString('en-GB')}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  }
-                }
               });
 
               return timelineItems;
@@ -366,6 +341,96 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
                   </FormItem>
                 )}
               />
+              
+              {/* Signature Section - Only show when consent is checked */}
+              {form.watch("consent") && (
+                <div className="mt-6 p-4 border border-orange-200 rounded-lg bg-orange-50">
+                  <h4 className="font-medium text-orange-800 mb-4">Digital Signature Required</h4>
+                  
+                  <FormField
+                    control={form.control}
+                    name="signatureType"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Choose signature method:</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-2"
+                          >
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="typed" id="typed" />
+                              <Label htmlFor="typed">Type my name as signature</Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <RadioGroupItem value="upload" id="upload" />
+                              <Label htmlFor="upload">Upload signature file</Label>
+                            </div>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  {form.watch("signatureType") === "typed" && (
+                    <FormField
+                      control={form.control}
+                      name="typedSignature"
+                      render={({ field }) => (
+                        <FormItem className="mt-4">
+                          <FormLabel>Type your full name as digital signature:</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="Enter your full name here"
+                              className="font-serif text-lg italic border-orange-300 focus:border-orange-500"
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            By typing your name here, you are providing your digital signature for this consent.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  
+                  {form.watch("signatureType") === "upload" && (
+                    <FormField
+                      control={form.control}
+                      name="signatureFile"
+                      render={({ field }) => (
+                        <FormItem className="mt-4">
+                          <FormLabel>Upload signature file:</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="file"
+                              accept="image/*,.pdf"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  field.onChange(file.name);
+                                }
+                              }}
+                              className="border-orange-300 focus:border-orange-500"
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Upload an image or PDF file containing your signature.
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+                  
+                  <p className="text-xs text-orange-700 mt-3">
+                    Your signature confirms your consent and is legally binding for this application.
+                  </p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

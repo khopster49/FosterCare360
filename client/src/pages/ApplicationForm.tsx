@@ -92,6 +92,27 @@ export default function Home() {
       <div className="flex flex-col min-h-screen bg-neutral-50">
         <Header />
         
+        {/* Progress Bar */}
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold text-gray-900">Application Progress</h2>
+              <span className="text-sm text-gray-600">
+                Step {currentStep + 1} of {steps.length}
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div 
+                className="bg-gradient-to-r from-orange-500 to-orange-600 h-3 rounded-full transition-all duration-300 ease-in-out"
+                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              ></div>
+            </div>
+            <div className="mt-2 text-sm text-gray-600">
+              {steps[currentStep]?.label}
+            </div>
+          </div>
+        </div>
+        
         <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <FormStepper 
             steps={steps} 

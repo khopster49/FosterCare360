@@ -108,8 +108,9 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     // Save signature data
     const canvas = canvasRef.current;
     if (canvas) {
-      const signatureData = canvas.toDataURL();
+      const signatureData = canvas.toDataURL('image/png');
       form.setValue('signatureData', signatureData);
+      console.log('Signature saved:', signatureData.substring(0, 50) + '...'); // Log confirmation
     }
   };
 
@@ -118,8 +119,14 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
     if (canvas) {
       const ctx = canvas.getContext('2d');
       if (ctx) {
+        // Clear the canvas and restore white background
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#1a1a1a';
+        
         form.setValue('signatureData', '');
+        console.log('Signature cleared');
       }
     }
   };
@@ -224,7 +231,29 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
   async function onSubmit(values: ReferenceConsentValues) {
     setProcessing(true);
     try {
-      // Save reference consent and data to localStorage
+      // Ensure signature data is captured for drawn signatures
+      if (values.signatureType === "draw") {
+        const canvas = canvasRef.current;
+        if (canvas) {
+          const signatureData = canvas.toDataURL('image/png');
+          values.signatureData = signatureData;
+        }
+      }
+      
+      // Save reference consent with signature to localStorage
+      const consentData = {
+        applicantId: values.applicantId,
+        consent: values.consent,
+        signatureType: values.signatureType,
+        signatureData: values.signatureData,
+        signatureFile: values.signatureFile,
+        signatureDate: values.signatureDate,
+        submittedAt: new Date().toISOString(),
+      };
+      
+      localStorage.setItem(`reference_consent_${applicantId}`, JSON.stringify(consentData));
+      
+      // Save reference data to localStorage
       const referenceData = requiredReferences.map(reference => ({
         applicantId,
         name: reference.referenceName,
@@ -239,9 +268,11 @@ export function ReferencesForm({ applicantId, onSuccess, onBack }: ReferencesFor
       
       saveReferences(referenceData);
       
+      console.log('Reference consent and signature saved:', consentData);
+      
       toast({
         title: "References Consent Recorded",
-        description: "Your consent for reference requests has been recorded successfully.",
+        description: "Your consent and signature have been recorded successfully.",
       });
       
       onSuccess();

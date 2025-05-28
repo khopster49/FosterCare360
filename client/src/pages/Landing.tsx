@@ -82,10 +82,10 @@ export function Landing() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-orange-200 mt-20">
+      <footer className="mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <div className="flex items-center justify-center mb-4">
+            <div className="flex items-center justify-center">
               <img src={swiisLogo} alt="Swiis Logo" className="h-6 mr-2" />
               <span className="font-semibold text-orange-600">Swiis Foster Care</span>
             </div>

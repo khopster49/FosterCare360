@@ -45,42 +45,7 @@ export function Landing() {
 
 
 
-        {/* Process Steps */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
-          <h3 className="text-2xl font-bold text-orange-900 mb-6 text-center">
-            Your Application Journey
-          </h3>
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
-                1
-              </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Personal Information</h4>
-              <p className="text-sm text-gray-600">Share your basic details and contact information</p>
-            </div>
-            <div className="text-center">
-              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
-                2
-              </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Background Checks</h4>
-              <p className="text-sm text-gray-600">Complete DBS checks and reference verifications</p>
-            </div>
-            <div className="text-center">
-              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
-                3
-              </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Employment History</h4>
-              <p className="text-sm text-gray-600">Provide details of your work experience and employment background</p>
-            </div>
-            <div className="text-center">
-              <div className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-sm font-bold">
-                4
-              </div>
-              <h4 className="font-semibold mb-2 text-orange-900">Skills & Experience</h4>
-              <p className="text-sm text-gray-600">Share your relevant skills and explain why you're suited for the role</p>
-            </div>
-          </div>
-        </div>
+
 
         {/* Call to Action */}
         <div className="text-center mt-16">
@@ -121,9 +86,6 @@ export function Landing() {
               <img src={swiisLogo} alt="Swiis Logo" className="h-6 mr-2" />
               <span className="font-semibold">Swiis Foster Care</span>
             </div>
-            <p className="text-gray-400">
-              Building careers and connecting talent with opportunity
-            </p>
           </div>
         </div>
       </footer>

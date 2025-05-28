@@ -55,23 +55,26 @@ export function Landing() {
           <p className="text-lg text-gray-600 mb-6">
             Sign in to start your staff application today
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              onClick={() => window.location.href = '/api/login'}
-              size="lg"
-              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
-            >
-              Sign In to Continue
-            </Button>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <div className="text-center">
-              <p className="text-sm text-gray-500 mb-2">Don't have login credentials?</p>
+              <h4 className="text-lg font-semibold text-orange-900 mb-3">Already have an account?</h4>
               <Button 
-                variant="outline"
+                onClick={() => window.location.href = '/api/login'}
                 size="lg"
-                className="border-orange-600 text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg"
-                onClick={() => window.location.href = 'mailto:hr@swiisfostercare.com?subject=Staff Application Access Request'}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
               >
-                Contact HR for Access
+                Sign In to Continue
+              </Button>
+            </div>
+            <div className="text-center">
+              <h4 className="text-lg font-semibold text-orange-900 mb-3">New to our platform?</h4>
+              <Button 
+                onClick={() => window.location.href = '/api/login'}
+                size="lg"
+                variant="outline"
+                className="border-orange-600 text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg"
+              >
+                Sign Up to Apply
               </Button>
             </div>
           </div>

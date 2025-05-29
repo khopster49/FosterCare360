@@ -1101,7 +1101,11 @@ export default function WorkingApplicationForm() {
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
               <Button
-                onClick={prevStep}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  prevStep();
+                }}
                 disabled={currentStep === 0}
                 variant="outline"
                 className="flex items-center"
@@ -1111,7 +1115,11 @@ export default function WorkingApplicationForm() {
               </Button>
 
               <Button
-                onClick={nextStep}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  nextStep();
+                }}
                 className="bg-orange-600 hover:bg-orange-700 flex items-center"
               >
                 {currentStep === steps.length - 1 ? 'Complete Application' : 'Continue'}

@@ -12,7 +12,7 @@ import {
   type Reference,
   type InsertReference,
   type User, 
-  type UpsertUser,
+  type InsertUser,
   users,
   applicants,
   educationEntries,
@@ -28,7 +28,7 @@ export interface IStorage {
   // User methods
   getUserById(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createUser(user: any): Promise<User>;
 
   // Applicant methods
   getApplicant(id: number): Promise<Applicant | undefined>;
@@ -78,7 +78,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async createUser(userData: InsertUser): Promise<User> {
+  async createUser(userData: any): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)

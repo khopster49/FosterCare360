@@ -145,7 +145,7 @@ export type EmploymentEntry = typeof employmentEntries.$inferSelect;
 
 // Employment Gap Schema
 export const employmentGaps = pgTable("employment_gaps", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   applicantId: integer("applicant_id").notNull(),
   startDate: date("start_date").notNull(),
   endDate: date("end_date").notNull(),
@@ -161,7 +161,7 @@ export type EmploymentGap = typeof employmentGaps.$inferSelect;
 
 // DBS Check Schema
 export const dbsChecks = pgTable("dbs_checks", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   applicantId: integer("applicant_id").notNull(),
   existingDbs: boolean("existing_dbs").default(false),
   dbsNumber: text("dbs_number"),
@@ -181,7 +181,7 @@ export type DbsCheck = typeof dbsChecks.$inferSelect;
 
 // Reference Schema
 export const references = pgTable("references", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   applicantId: integer("applicant_id").notNull(),
   employmentEntryId: integer("employment_entry_id").notNull(),
   name: text("name").notNull(),

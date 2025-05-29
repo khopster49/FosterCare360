@@ -14,7 +14,7 @@ import { VerificationForm } from "@/components/verification-form";
 import { PrivacyNotice } from "@/components/privacy-notice";
 import { ApplicationComplete } from "@/components/application-complete";
 import { useFormStepper } from "@/hooks/use-form-stepper";
-import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 
 
 // Define the steps for the application process
@@ -81,12 +81,6 @@ export default function Home() {
 
   return (
     <>
-      <Helmet>
-        <title>Swiis Foster Care - Application</title>
-        <meta name="description" content="Complete your fostering application to become a Swiis foster carer. Our online application process meets all Schedule 1 regulations." />
-        <meta property="og:title" content="Swiis Foster Care - Application" />
-        <meta property="og:description" content="Complete your fostering application to become a Swiis foster carer. Our online application process meets all Schedule 1 regulations." />
-      </Helmet>
       
       <div className="flex flex-col min-h-screen bg-neutral-50">
         <Header />

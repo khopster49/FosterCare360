@@ -102,9 +102,10 @@ export default function WorkingApplicationForm() {
         <div className="flex justify-center mb-8">
           <div className="flex space-x-2 overflow-x-auto pb-2">
             {steps.map((step, index) => (
-              <div
+              <button
                 key={step.id}
-                className={`flex flex-col items-center min-w-0 px-3 py-2 rounded-lg ${
+                onClick={() => setCurrentStep(index)}
+                className={`flex flex-col items-center min-w-0 px-3 py-2 rounded-lg transition-colors hover:opacity-80 ${
                   index === currentStep
                     ? 'bg-orange-600 text-white'
                     : index < currentStep
@@ -116,7 +117,7 @@ export default function WorkingApplicationForm() {
                   {step.id}
                 </div>
                 <span className="text-xs text-center whitespace-nowrap">{step.title}</span>
-              </div>
+              </button>
             ))}
           </div>
         </div>

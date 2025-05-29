@@ -44,16 +44,65 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     try {
-      // Collect all application data from localStorage
-      const personalInfo = JSON.parse(localStorage.getItem(`personal_info_${applicantId}`) || '{}');
-      const education = JSON.parse(localStorage.getItem(`education_${applicantId}`) || '[]');
-      const employment = JSON.parse(localStorage.getItem(`employment_${applicantId}`) || '[]');
-      const skills = JSON.parse(localStorage.getItem(`skills_${applicantId}`) || '{}');
-      const references = JSON.parse(localStorage.getItem(`references_${applicantId}`) || '[]');
-      const disciplinary = JSON.parse(localStorage.getItem(`disciplinary_${applicantId}`) || '{}');
-      const verification = JSON.parse(localStorage.getItem(`verification_${applicantId}`) || '{}');
+      // Collect all application data from localStorage - check different possible key formats
+      const personalInfo = JSON.parse(
+        localStorage.getItem(`personal_info_${applicantId}`) || 
+        localStorage.getItem(`personalInfo_${applicantId}`) || 
+        localStorage.getItem('personalInfo') || 
+        '{}'
+      );
+      const education = JSON.parse(
+        localStorage.getItem(`education_${applicantId}`) || 
+        localStorage.getItem(`educationEntries_${applicantId}`) || 
+        localStorage.getItem('education') || 
+        '[]'
+      );
+      const employment = JSON.parse(
+        localStorage.getItem(`employment_${applicantId}`) || 
+        localStorage.getItem(`employmentEntries_${applicantId}`) || 
+        localStorage.getItem('employment') || 
+        '[]'
+      );
+      const skills = JSON.parse(
+        localStorage.getItem(`skills_${applicantId}`) || 
+        localStorage.getItem(`skillsAndQualifications_${applicantId}`) || 
+        localStorage.getItem('skills') || 
+        '{}'
+      );
+      const references = JSON.parse(
+        localStorage.getItem(`references_${applicantId}`) || 
+        localStorage.getItem(`referenceConsent_${applicantId}`) || 
+        localStorage.getItem('references') || 
+        '[]'
+      );
+      const disciplinary = JSON.parse(
+        localStorage.getItem(`disciplinary_${applicantId}`) || 
+        localStorage.getItem(`disciplinaryInfo_${applicantId}`) || 
+        localStorage.getItem('disciplinary') || 
+        '{}'
+      );
+      const verification = JSON.parse(
+        localStorage.getItem(`verification_${applicantId}`) || 
+        localStorage.getItem(`verificationChecks_${applicantId}`) || 
+        localStorage.getItem('verification') || 
+        '{}'
+      );
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
-      const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
+      const gaps = JSON.parse(
+        localStorage.getItem(`employment_gaps_${applicantId}`) || 
+        localStorage.getItem(`employmentGaps_${applicantId}`) || 
+        localStorage.getItem('gaps') || 
+        '[]'
+      );
+
+      // Debug: Log what data we found
+      console.log('Personal Info:', personalInfo);
+      console.log('Education:', education);
+      console.log('Employment:', employment);
+      console.log('Skills:', skills);
+      console.log('References:', references);
+      console.log('Disciplinary:', disciplinary);
+      console.log('Data Protection:', dataProtection);
 
       // Create a simple text summary
       let textContent = `SWIIS STAFF APPLICATION FORM\n`;

@@ -562,6 +562,20 @@ export default function WorkingApplicationForm() {
                   <div className="border-t pt-6">
                     <h4 className="text-lg font-semibold text-orange-800 mb-4">Right to Work in the UK</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2 mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Do you have the right to work in the UK?</label>
+                        <div className="flex items-center space-x-4">
+                          <label className="flex items-center">
+                            <input type="radio" name="right-to-work" value="yes" className="mr-2 text-orange-600" />
+                            Yes
+                          </label>
+                          <label className="flex items-center">
+                            <input type="radio" name="right-to-work" value="no" className="mr-2 text-orange-600" />
+                            No
+                          </label>
+                        </div>
+                      </div>
+                      
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Visa Type (if applicable)</label>
                         <input 
@@ -586,20 +600,6 @@ export default function WorkingApplicationForm() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                           placeholder="AB123456C"
                         />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Do you have the right to work in the UK?</label>
-                        <div className="flex items-center space-x-4">
-                          <label className="flex items-center">
-                            <input type="radio" name="right-to-work" value="yes" className="mr-2 text-orange-600" />
-                            Yes
-                          </label>
-                          <label className="flex items-center">
-                            <input type="radio" name="right-to-work" value="no" className="mr-2 text-orange-600" />
-                            No
-                          </label>
-                        </div>
                       </div>
                       
                       <div className="md:col-span-2">

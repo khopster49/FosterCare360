@@ -266,20 +266,7 @@ export default function Home() {
             )}
             
 
-            
-            {currentStep === 7 && (
-              <>
-                <h2 className="text-xl font-medium mb-2 text-primary">Privacy Notice</h2>
-                <p className="text-neutral-700 text-sm mb-6">
-                  Please carefully review this important privacy notice regarding how we process your personal information.
-                </p>
-                <PrivacyNotice 
-                  applicantId={applicantId || 1} // Allow preview with temporary ID
-                  onSuccess={() => setIsApplicationComplete(true)} 
-                  onBack={() => previousStep()} 
-                />
-              </>
-            )}
+
             </div>
           )}
         </main>

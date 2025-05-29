@@ -141,9 +141,36 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
         textContent += `EMPLOYMENT GAPS\n`;
         textContent += `---------------\n`;
         employmentGaps.forEach((gap: any, index: number) => {
+          // Find the employment entries to get employer names
+          const gapStartDate = new Date(gap.startDate);
+          const gapEndDate = new Date(gap.endDate);
+          
+          // Find employer before the gap (ended just before gap starts)
+          const employerBefore = employment.find((emp: any) => {
+            if (!emp.endDate) return false;
+            const empEndDate = new Date(emp.endDate);
+            const daysDiff = Math.abs((gapStartDate.getTime() - empEndDate.getTime()) / (1000 * 60 * 60 * 24));
+            return daysDiff <= 1; // Within 1 day
+          });
+          
+          // Find employer after the gap (started just after gap ends)
+          const employerAfter = employment.find((emp: any) => {
+            const empStartDate = new Date(emp.startDate);
+            const daysDiff = Math.abs((empStartDate.getTime() - gapEndDate.getTime()) / (1000 * 60 * 60 * 24));
+            return daysDiff <= 1; // Within 1 day
+          });
+          
           textContent += `Gap ${index + 1}:\n`;
-          textContent += `  From: ${gap.startDate ? new Date(gap.startDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
-          textContent += `  To: ${gap.endDate ? new Date(gap.endDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  From: ${gap.startDate ? new Date(gap.startDate).toLocaleDateString('en-GB') : 'Not provided'}`;
+          if (employerBefore) {
+            textContent += ` (after leaving ${employerBefore.employer})`;
+          }
+          textContent += `\n`;
+          textContent += `  To: ${gap.endDate ? new Date(gap.endDate).toLocaleDateString('en-GB') : 'Not provided'}`;
+          if (employerAfter) {
+            textContent += ` (before starting at ${employerAfter.employer})`;
+          }
+          textContent += `\n`;
           textContent += `  Reason: ${gap.reason || gap.explanation || 'Not provided'}\n\n`;
         });
       }

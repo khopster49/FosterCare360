@@ -44,9 +44,13 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     try {
-      // Collect all application data from localStorage - use the correct keys based on console output
+      // Collect all application data from localStorage - fix personal info extraction
       const personalInfoRaw = JSON.parse(localStorage.getItem(`personal_info_${applicantId}`) || '[]');
-      const personalInfo = Array.isArray(personalInfoRaw) && personalInfoRaw.length > 0 ? personalInfoRaw[0] : {};
+      // Personal info is stored as an array, extract the actual data object
+      let personalInfo = {};
+      if (Array.isArray(personalInfoRaw) && personalInfoRaw.length > 0) {
+        personalInfo = personalInfoRaw[0];
+      }
       
       const educationRaw = JSON.parse(localStorage.getItem(`education_${applicantId}`) || '[]');
       const education = Array.isArray(educationRaw) ? educationRaw : [];
@@ -64,7 +68,12 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       const disciplinary = disciplinaryRaw;
       
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
+      const privacyNotice = JSON.parse(localStorage.getItem(`privacy_notice_${applicantId}`) || '{}');
       const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
+
+      // Debug: Let's see the actual personal info structure
+      console.log('Personal Info Raw:', personalInfoRaw);
+      console.log('Personal Info Extracted:', personalInfo);
 
       // Create a simple text summary
       let textContent = `SWIIS STAFF APPLICATION FORM\n`;
@@ -177,6 +186,11 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
         textContent += `Criminal Details: ${disciplinary.criminalDetails}\n`;
       }
       textContent += `\n`;
+
+      textContent += `PRIVACY NOTICE\n`;
+      textContent += `--------------\n`;
+      textContent += `Privacy Notice Acknowledged: ${privacyNotice.acknowledged ? 'Yes' : 'No'}\n`;
+      textContent += `Privacy Notice Date: ${privacyNotice.acknowledgedDate ? new Date(privacyNotice.acknowledgedDate).toLocaleDateString('en-GB') : 'Not provided'}\n\n`;
 
       textContent += `DECLARATION\n`;
       textContent += `-----------\n`;

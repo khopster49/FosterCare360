@@ -556,38 +556,466 @@ export default function WorkingApplicationForm() {
               )}
 
               {currentStep === 2 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Education History</h3>
-                  <p className="text-gray-700">
-                    Please provide details of your educational background, qualifications, and training.
-                  </p>
+                  <p className="text-gray-600 mb-4">Please provide details of your educational background, starting with the most recent.</p>
+                  
+                  <div className="space-y-6">
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-800 mb-3">Education Entry 1</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Institution Name</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="University/College/School name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Qualification Obtained</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="e.g., BSc Psychology, A-Levels"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Grade/Result</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="e.g., 2:1, Pass, A*AA"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Year Completed</label>
+                          <input 
+                            type="number" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="2020"
+                            min="1950"
+                            max="2030"
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Subjects/Modules (if applicable)</label>
+                          <textarea 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            rows={2}
+                            placeholder="List main subjects or modules studied"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      type="button"
+                      className="flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
+                    >
+                      <span className="mr-2">+</span>
+                      Add Another Education Entry
+                    </button>
+                  </div>
                 </div>
               )}
 
               {currentStep === 3 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Employment History</h3>
-                  <p className="text-gray-700">
-                    Details of your work experience, including current and previous positions, responsibilities, and employment gaps.
-                  </p>
+                  <p className="text-gray-600 mb-4">Please provide details of your employment history, starting with your most recent position.</p>
+                  
+                  <div className="space-y-6">
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-800 mb-3">Employment Entry 1</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Employer Name</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Company/Organization name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Your position/role"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                          <input 
+                            type="date" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                          <input 
+                            type="date" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Leave blank if current"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Salary</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="£30,000 per annum"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Hours per Week</label>
+                          <input 
+                            type="number" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="37.5"
+                            min="0"
+                            max="70"
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Key Responsibilities</label>
+                          <textarea 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            rows={3}
+                            placeholder="Describe your main duties and responsibilities"
+                          ></textarea>
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Leaving</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Career progression, relocation, etc."
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <h5 className="font-medium text-gray-700 mb-2">Referee Details</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-3 rounded">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Name</label>
+                              <input 
+                                type="text" 
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                placeholder="Manager/Supervisor name"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Position</label>
+                              <input 
+                                type="text" 
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                placeholder="Their job title"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Email</label>
+                              <input 
+                                type="email" 
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                placeholder="referee@company.com"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Phone</label>
+                              <input 
+                                type="tel" 
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                placeholder="020 XXXX XXXX"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      type="button"
+                      className="flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
+                    >
+                      <span className="mr-2">+</span>
+                      Add Another Employment Entry
+                    </button>
+                    
+                    <div className="border-t pt-6">
+                      <h4 className="text-lg font-semibold text-orange-800 mb-4">Employment Gaps</h4>
+                      <p className="text-gray-600 mb-4">Please explain any gaps in your employment history (any period without work).</p>
+                      
+                      <div className="border border-gray-200 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-800 mb-3">Gap Period 1</h5>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Gap Start Date</label>
+                            <input 
+                              type="date" 
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Gap End Date</label>
+                            <input 
+                              type="date" 
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                          </div>
+                          
+                          <div className="md:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Gap</label>
+                            <textarea 
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                              rows={2}
+                              placeholder="Please explain the reason for this employment gap"
+                            ></textarea>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <button 
+                        type="button"
+                        className="mt-4 flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
+                      >
+                        <span className="mr-2">+</span>
+                        Add Another Gap Period
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {currentStep === 4 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Skills & Experience</h3>
-                  <p className="text-gray-700">
-                    Tell us about your relevant skills, experience, and what makes you suitable for this role.
-                  </p>
+                  <p className="text-gray-600 mb-4">Tell us about your relevant skills and experience for this role.</p>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Relevant Skills</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={4}
+                        placeholder="List your key skills relevant to this position (e.g., communication, teamwork, computer skills, etc.)"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Experience with Children/Young People</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={4}
+                        placeholder="Describe any experience you have working with children or young people (professional or personal)"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Why are you interested in this role?</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={4}
+                        placeholder="Explain your motivation for applying for this position"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Additional Qualifications/Training</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={3}
+                        placeholder="List any additional qualifications, training courses, or certifications relevant to this role"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Languages Spoken</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="List languages you speak and your proficiency level"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Do you have any hobbies or interests?</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={3}
+                        placeholder="Tell us about your hobbies and interests outside of work"
+                      ></textarea>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {currentStep === 5 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">References</h3>
-                  <p className="text-gray-700">
-                    Please provide professional references who can speak to your character and work performance.
-                  </p>
+                  <p className="text-gray-600 mb-4">Please provide at least two professional references who can vouch for your work experience and character.</p>
+                  
+                  <div className="space-y-6">
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-800 mb-3">Reference 1</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Reference's full name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Their current position"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Company/Organization name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Relationship to You</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="e.g., Line Manager, Colleague"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                          <input 
+                            type="email" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="reference@company.com"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                          <input 
+                            type="tel" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="020 XXXX XXXX"
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                          <textarea 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            rows={2}
+                            placeholder="Reference's work address"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <h4 className="font-medium text-gray-800 mb-3">Reference 2</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Reference's full name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Their current position"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Organization</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Company/Organization name"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Relationship to You</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="e.g., Line Manager, Colleague"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                          <input 
+                            type="email" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="reference@company.com"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                          <input 
+                            type="tel" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="020 XXXX XXXX"
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                          <textarea 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            rows={2}
+                            placeholder="Reference's work address"
+                          ></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      type="button"
+                      className="flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
+                    >
+                      <span className="mr-2">+</span>
+                      Add Another Reference
+                    </button>
+                  </div>
                 </div>
               )}
 

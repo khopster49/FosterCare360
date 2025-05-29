@@ -171,15 +171,39 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       `;
 
       // Create and download HTML file
-      const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(htmlBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.html`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      const fileName = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.html`;
+      
+      try {
+        const htmlBlob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        
+        // Check if browser supports the download attribute
+        const link = document.createElement('a');
+        if (typeof link.download === 'string') {
+          const url = URL.createObjectURL(htmlBlob);
+          link.href = url;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        } else {
+          // Fallback for older browsers
+          const url = URL.createObjectURL(htmlBlob);
+          window.open(url, '_blank');
+          URL.revokeObjectURL(url);
+        }
+      } catch (blobError) {
+        // Fallback: create a data URL
+        const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
       toast({
         title: "Download Complete",

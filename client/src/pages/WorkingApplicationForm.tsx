@@ -132,27 +132,219 @@ export default function WorkingApplicationForm() {
           <CardContent>
             <div className="min-h-[300px] flex flex-col justify-center">
               {currentStep === 0 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Data Protection Privacy Notice</h3>
-                  <p className="text-gray-700">
-                    This notice explains how we collect, use, and protect your personal information during the recruitment process.
-                    Please read carefully before proceeding.
-                  </p>
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-700">
-                      By continuing, you acknowledge that you have read and understood our privacy notice
-                      and consent to the processing of your personal data for recruitment purposes.
+                  
+                  <div className="prose prose-sm max-w-none">
+                    <p className="text-gray-700 mb-4">
+                      This notice explains what personal data (information) we will hold about you, how we collect it, and how we will use 
+                      and may share information about you during the application process. We are required to notify you of this information, 
+                      under data protection legislation.
                     </p>
+                    
+                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">Who collects the information</h4>
+                    <p className="text-gray-700 mb-4">
+                      Swiis Foster Care ('Company') is a 'data controller' and gathers and uses certain information about you. This information is also 
+                      used by our affiliated entities and group companies, namely Swiis UK Ltd, Swiis Foster Care Ltd, Swiis Foster Care 
+                      Scotland Ltd.
+                    </p>
+
+                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">About the information we collect and hold</h4>
+                    <p className="text-gray-700 mb-2">
+                      We may collect the following information up to and including the shortlisting stage of the recruitment process:
+                    </p>
+                    <ul className="list-disc ml-6 mb-4 text-gray-700 space-y-1">
+                      <li>Your name and contact details (i.e. address, home and mobile phone numbers, email address)</li>
+                      <li>Details of your qualifications, experience, employment history and interests</li>
+                      <li>Your racial or ethnic origin, sex and sexual orientation, religious or similar beliefs</li>
+                      <li>Information regarding your criminal record</li>
+                      <li>Details of your referees</li>
+                      <li>Information about your health, including any medical condition for adjustments needed in the recruitment process</li>
+                    </ul>
+
+                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">How we use your information</h4>
+                    <p className="text-gray-700 mb-4">
+                      We will typically collect and use this information for the following purposes: to take steps to enter into a contract, 
+                      for compliance with legal obligations, for the performance of tasks carried out in the public interest, 
+                      and for our legitimate interests in the recruitment process.
+                    </p>
+
+                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">Your rights</h4>
+                    <p className="text-gray-700 mb-4">
+                      Please contact our HR Team at HRTeam@swiis.com or 0203 219 2865 if you would like to correct or request access to 
+                      information that we hold relating to you or if you have any questions about this notice.
+                    </p>
+                  </div>
+
+                  <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                    <div className="flex items-start space-x-3">
+                      <input 
+                        type="checkbox" 
+                        id="privacy-acknowledge" 
+                        className="mt-1 h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500" 
+                        required
+                      />
+                      <label htmlFor="privacy-acknowledge" className="text-sm text-gray-700 leading-relaxed">
+                        <strong>I acknowledge that I have read and understood the privacy notice.</strong>
+                        <br />
+                        By checking this box, I consent to the processing of my personal data for recruitment purposes as described above.
+                      </label>
+                    </div>
                   </div>
                 </div>
               )}
 
               {currentStep === 1 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Personal Information</h3>
-                  <p className="text-gray-700">
-                    We'll collect your basic personal details including name, contact information, and position applied for.
-                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Position Applied For</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="Enter the position you are applying for"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Select title</option>
+                        <option value="mr">Mr</option>
+                        <option value="mrs">Mrs</option>
+                        <option value="miss">Miss</option>
+                        <option value="ms">Ms</option>
+                        <option value="dr">Dr</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Pronouns</label>
+                      <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option value="">Select pronouns</option>
+                        <option value="she/her">She/Her</option>
+                        <option value="he/him">He/Him</option>
+                        <option value="they/them">They/Them</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="John"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Middle Name(s)</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="Optional"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Surname</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="Smith"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                      <input 
+                        type="email" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="john.smith@example.com"
+                      />
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Have you ever been known by any other name?</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="Enter previous names if applicable"
+                      />
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Permanent Address</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={3}
+                        placeholder="123 Main Street, City"
+                      ></textarea>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Post Code</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="SW1A 1AA"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Home Telephone Number</label>
+                      <input 
+                        type="tel" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="020 XXXX XXXX"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Telephone Number</label>
+                      <input 
+                        type="tel" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="07XX XXX XXXX"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Nationality</label>
+                      <input 
+                        type="text" 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        placeholder="British"
+                      />
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Do you hold a full current driving licence?</label>
+                      <div className="flex items-center space-x-4">
+                        <label className="flex items-center">
+                          <input type="radio" name="driving-licence" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="driving-licence" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">How did you hear about us?</label>
+                      <textarea 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        rows={2}
+                        placeholder="Please let us know how you found out about this opportunity"
+                      ></textarea>
+                    </div>
+                  </div>
                 </div>
               )}
 

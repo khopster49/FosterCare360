@@ -20,14 +20,14 @@ import { useQuery } from "@tanstack/react-query";
 
 // Define the steps for the application process
 const steps = [
-  { id: 1, label: "Personal Info" },
-  { id: 2, label: "Education" },
-  { id: 3, label: "Employment" },
-  { id: 4, label: "Skills" },
-  { id: 5, label: "References" },
-  { id: 6, label: "Disciplinary" },
-  { id: 7, label: "Declaration" },
-  { id: 8, label: "Privacy Notice" },
+  { id: 1, label: "Privacy Notice" },
+  { id: 2, label: "Personal Info" },
+  { id: 3, label: "Education" },
+  { id: 4, label: "Employment" },
+  { id: 5, label: "Skills" },
+  { id: 6, label: "References" },
+  { id: 7, label: "Disciplinary" },
+  { id: 8, label: "Declaration" },
 ];
 
 export default function Home() {
@@ -161,7 +161,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 1 && (
+            {currentStep === 2 && (
               <>
                 <h2 className="text-xl font-medium mb-2">Education History</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -175,7 +175,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 2 && (
+            {currentStep === 3 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Employment History</h2>
                 <div className="text-neutral-700 text-sm mb-6 space-y-4">

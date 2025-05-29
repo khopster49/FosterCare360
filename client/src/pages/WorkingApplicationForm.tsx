@@ -566,11 +566,25 @@ export default function WorkingApplicationForm() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Do you have the right to work in the UK?</label>
                         <div className="flex items-center space-x-4">
                           <label className="flex items-center">
-                            <input type="radio" name="right-to-work" value="yes" className="mr-2 text-orange-600" />
+                            <input 
+                              type="radio" 
+                              name="right-to-work" 
+                              value="yes" 
+                              className="mr-2 text-orange-600"
+                              checked={formData.rightToWork === 'yes'}
+                              onChange={(e) => updateFormData('rightToWork', e.target.value)}
+                            />
                             Yes
                           </label>
                           <label className="flex items-center">
-                            <input type="radio" name="right-to-work" value="no" className="mr-2 text-orange-600" />
+                            <input 
+                              type="radio" 
+                              name="right-to-work" 
+                              value="no" 
+                              className="mr-2 text-orange-600"
+                              checked={formData.rightToWork === 'no'}
+                              onChange={(e) => updateFormData('rightToWork', e.target.value)}
+                            />
                             No
                           </label>
                         </div>
@@ -604,7 +618,11 @@ export default function WorkingApplicationForm() {
                       
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Work Document Type</label>
-                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <select 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          value={formData.workDocumentType}
+                          onChange={(e) => updateFormData('workDocumentType', e.target.value)}
+                        >
                           <option value="">Select document type</option>
                           <option value="passport">UK/EU Passport</option>
                           <option value="birth-certificate">Birth Certificate + National Insurance</option>
@@ -969,6 +987,8 @@ export default function WorkingApplicationForm() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         rows={12}
                         placeholder="Please provide details about your relevant skills, qualities, and experience..."
+                        value={formData.skills}
+                        onChange={(e) => updateFormData('skills', e.target.value)}
                       ></textarea>
                       <p className="text-sm text-gray-500 mt-1">Minimum 50 characters required</p>
                     </div>
@@ -1021,11 +1041,25 @@ export default function WorkingApplicationForm() {
                       </label>
                       <div className="flex items-center space-x-4 mb-3">
                         <label className="flex items-center">
-                          <input type="radio" name="criminal-conviction" value="yes" className="mr-2 text-orange-600" />
+                          <input 
+                            type="radio" 
+                            name="criminal-conviction" 
+                            value="yes" 
+                            className="mr-2 text-orange-600"
+                            checked={formData.criminalConvictions === true}
+                            onChange={(e) => updateFormData('criminalConvictions', e.target.value === 'yes')}
+                          />
                           Yes
                         </label>
                         <label className="flex items-center">
-                          <input type="radio" name="criminal-conviction" value="no" className="mr-2 text-orange-600" />
+                          <input 
+                            type="radio" 
+                            name="criminal-conviction" 
+                            value="no" 
+                            className="mr-2 text-orange-600"
+                            checked={formData.criminalConvictions === false}
+                            onChange={(e) => updateFormData('criminalConvictions', false)}
+                          />
                           No
                         </label>
                       </div>
@@ -1035,6 +1069,8 @@ export default function WorkingApplicationForm() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                           rows={3}
                           placeholder="Please provide full details including dates and circumstances"
+                          value={formData.criminalConvictionsDetails}
+                          onChange={(e) => updateFormData('criminalConvictionsDetails', e.target.value)}
                         ></textarea>
                       </div>
                     </div>

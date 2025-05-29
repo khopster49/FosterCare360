@@ -194,7 +194,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 3 && (
+            {currentStep === 4 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Skills and Experience</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -208,7 +208,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 4 && (
+            {currentStep === 5 && (
               <>
                 <h2 className="text-xl font-medium mb-2">References</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -222,7 +222,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 5 && (
+            {currentStep === 6 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Disciplinary & Criminal Issues</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -236,7 +236,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 6 && (
+            {currentStep === 7 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Data Protection/Declaration & Confidentiality Agreement</h2>
                 <p className="text-neutral-700 text-sm mb-6">

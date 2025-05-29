@@ -231,8 +231,9 @@ export function PrivacyNotice({ applicantId, onSuccess, onBack }: PrivacyNoticeP
                 <Button 
                   type="submit"
                   disabled={isSubmitting}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
                 >
-                  {isSubmitting ? "Submitting..." : "Complete Application"}
+                  {isSubmitting ? "Submitting..." : "Next - Personal Information"}
                 </Button>
               </div>
             </form>

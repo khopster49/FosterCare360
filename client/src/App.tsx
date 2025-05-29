@@ -6,14 +6,35 @@ import { useAuth } from "@/hooks/useAuth";
 import { Landing } from "@/pages/Landing";
 import { Home } from "@/pages/Home";
 import ApplicationForm from "@/pages/ApplicationForm";
+import Auth from "@/pages/Auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/application" component={ApplicationForm} />
-      <Route component={NotFound} />
+      {!isAuthenticated ? (
+        <Route path="*" component={() => <Auth onAuthSuccess={() => window.location.reload()} />} />
+      ) : (
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/application" component={ApplicationForm} />
+          <Route component={NotFound} />
+        </>
+      )}
     </Switch>
   );
 }

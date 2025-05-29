@@ -4,19 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Eye, EyeOff } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 const registrationSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  confirmPassword: z.string(),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  role: z.enum(["applicant", "admin"]),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your password"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -30,38 +28,33 @@ interface RegistrationFormProps {
 }
 
 export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFormProps) {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
-      firstName: "",
-      lastName: "",
-      role: "applicant",
     },
   });
 
   const onSubmit = async (values: RegistrationFormValues) => {
-    setIsSubmitting(true);
     try {
+      setIsLoading(true);
+      setError(null);
+
+      const { confirmPassword, ...registrationData } = values;
+
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          role: values.role,
-        }),
+        body: JSON.stringify(registrationData),
       });
 
       const data = await response.json();
@@ -70,37 +63,35 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
         throw new Error(data.message || 'Registration failed');
       }
 
+      // Store the token
       localStorage.setItem('authToken', data.token);
       
-      toast({
-        title: "Registration Successful",
-        description: "Your account has been created successfully.",
-      });
-
+      // Call success callback with user data
       onSuccess(data.user);
-    } catch (error: any) {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "There was an error creating your account. Please try again.",
-        variant: "destructive",
-      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader className="text-center">
-        <div className="mx-auto h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-          <UserPlus className="h-6 w-6 text-primary" />
-        </div>
-        <CardTitle className="text-2xl font-bold text-primary">Create Account</CardTitle>
-        <p className="text-gray-600">Sign up to start your application</p>
+        <CardTitle className="text-2xl font-bold text-orange-600">Create Account</CardTitle>
+        <CardDescription>
+          Join the Swiis staff recruitment platform
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -109,12 +100,17 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John" {...field} />
+                      <Input
+                        {...field}
+                        placeholder="John"
+                        disabled={isLoading}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="lastName"
@@ -122,7 +118,11 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Doe" {...field} />
+                      <Input
+                        {...field}
+                        placeholder="Doe"
+                        disabled={isLoading}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,30 +137,13 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="john.doe@example.com" {...field} />
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="your.email@example.com"
+                      disabled={isLoading}
+                    />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Account Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select account type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="applicant">Applicant</SelectItem>
-                      <SelectItem value="admin">Administrator</SelectItem>
-                    </SelectContent>
-                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -173,26 +156,12 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input 
-                        type={showPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
-                        {...field} 
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Enter your password"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,26 +175,12 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input 
-                        type={showConfirmPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
-                        {...field} 
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Confirm your password"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -234,10 +189,17 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
 
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary/90" 
-              disabled={isSubmitting}
+              className="w-full bg-orange-600 hover:bg-orange-700"
+              disabled={isLoading}
             >
-              {isSubmitting ? "Creating Account..." : "Create Account"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </Button>
           </form>
         </Form>
@@ -246,10 +208,11 @@ export function RegistrationForm({ onSuccess, onSwitchToLogin }: RegistrationFor
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
             <button
+              type="button"
               onClick={onSwitchToLogin}
-              className="text-primary hover:underline font-medium"
+              className="text-orange-600 hover:text-orange-700 font-medium underline"
             >
-              Sign in
+              Sign In
             </button>
           </p>
         </div>

@@ -4,10 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { LogIn, Eye, EyeOff } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -22,9 +22,8 @@ interface LoginFormProps {
 }
 
 export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
-  const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -35,8 +34,10 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
-    setIsSubmitting(true);
     try {
+      setIsLoading(true);
+      setError(null);
+
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -51,38 +52,35 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store token in localStorage
+      // Store the token
       localStorage.setItem('authToken', data.token);
       
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
-      });
-
+      // Call success callback with user data
       onSuccess(data.user);
-    } catch (error: any) {
-      toast({
-        title: "Login Failed",
-        description: error.message || "Invalid email or password. Please try again.",
-        variant: "destructive",
-      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader className="text-center">
-        <div className="mx-auto h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-          <LogIn className="h-6 w-6 text-primary" />
-        </div>
-        <CardTitle className="text-2xl font-bold text-primary">Welcome Back</CardTitle>
-        <p className="text-gray-600">Sign in to your account</p>
+        <CardTitle className="text-2xl font-bold text-orange-600">Sign In</CardTitle>
+        <CardDescription>
+          Access your Swiis staff account
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <FormField
               control={form.control}
               name="email"
@@ -90,7 +88,12 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
                 <FormItem>
                   <FormLabel>Email Address</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="john.doe@example.com" {...field} />
+                    <Input
+                      {...field}
+                      type="email"
+                      placeholder="your.email@example.com"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,26 +107,12 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <div className="relative">
-                      <Input 
-                        type={showPassword ? "text" : "password"} 
-                        placeholder="••••••••" 
-                        {...field} 
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="Enter your password"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,10 +121,17 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
 
             <Button 
               type="submit" 
-              className="w-full bg-primary hover:bg-primary/90" 
-              disabled={isSubmitting}
+              className="w-full bg-orange-600 hover:bg-orange-700"
+              disabled={isLoading}
             >
-              {isSubmitting ? "Signing In..." : "Sign In"}
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
         </Form>
@@ -144,10 +140,11 @@ export function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormProps) {
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
             <button
+              type="button"
               onClick={onSwitchToRegister}
-              className="text-primary hover:underline font-medium"
+              className="text-orange-600 hover:text-orange-700 font-medium underline"
             >
-              Sign up
+              Create Account
             </button>
           </p>
         </div>

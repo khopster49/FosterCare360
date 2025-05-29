@@ -21,16 +21,21 @@ export default function WorkingApplicationForm() {
   const [isComplete, setIsComplete] = useState(false);
 
   const nextStep = () => {
+    console.log('Next step clicked, current step:', currentStep);
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      console.log('Moving to step:', currentStep + 1);
     } else {
       setIsComplete(true);
+      console.log('Application completed');
     }
   };
 
   const prevStep = () => {
+    console.log('Previous step clicked, current step:', currentStep);
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      console.log('Moving to step:', currentStep - 1);
     }
   };
 
@@ -1100,31 +1105,28 @@ export default function WorkingApplicationForm() {
 
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
-              <Button
+              <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  prevStep();
-                }}
+                onClick={prevStep}
                 disabled={currentStep === 0}
-                variant="outline"
-                className="flex items-center"
+                className={`px-4 py-2 border border-gray-300 rounded-md flex items-center ${
+                  currentStep === 0 
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Previous
-              </Button>
+              </button>
 
-              <Button
+              <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  nextStep();
-                }}
-                className="bg-orange-600 hover:bg-orange-700 flex items-center"
+                onClick={nextStep}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-md flex items-center"
               >
                 {currentStep === steps.length - 1 ? 'Complete Application' : 'Continue'}
                 <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              </button>
             </div>
           </CardContent>
         </Card>

@@ -24,9 +24,15 @@ export async function comparePassword(password: string, hashedPassword: string):
   return bcrypt.compare(password, hashedPassword);
 }
 
-export function generateToken(user: { id: number; email: string; role: string }): string {
+export function generateToken(user: { id: number; email: string; firstName: string; lastName: string; role: string }): string {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
+    { 
+      id: user.id, 
+      email: user.email, 
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role 
+    },
     JWT_SECRET,
     { expiresIn: '24h' }
   );
@@ -59,7 +65,13 @@ export async function authenticateToken(req: AuthRequest, res: Response, next: N
     return res.status(403).json({ message: 'User not found' });
   }
 
-  req.user = { id: user.id, email: user.email, role: user.role };
+  req.user = { 
+    id: user.id, 
+    email: user.email, 
+    firstName: user.firstName || '', 
+    lastName: user.lastName || '', 
+    role: user.role 
+  };
   next();
 }
 

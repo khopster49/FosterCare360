@@ -55,164 +55,114 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
       const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
 
-      // Format the data into a readable HTML document
-      const formatDate = (dateStr: string) => {
-        if (!dateStr) return 'Not provided';
-        return new Date(dateStr).toLocaleDateString('en-GB');
-      };
-
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>Swiis Staff Application</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-            h1 { color: #D97706; border-bottom: 2px solid #D97706; padding-bottom: 10px; }
-            h2 { color: #D97706; margin-top: 30px; }
-            .section { margin-bottom: 30px; }
-            .field { margin-bottom: 10px; }
-            .label { font-weight: bold; color: #374151; }
-            .value { margin-left: 20px; }
-            .employment-entry, .education-entry { border: 1px solid #E5E7EB; padding: 15px; margin: 10px 0; }
-            .signature { max-width: 200px; border: 1px solid #ccc; }
-          </style>
-        </head>
-        <body>
-          <h1>Swiis Staff Application Form</h1>
-          <p><strong>Application Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
-          
-          <div class="section">
-            <h2>Personal Information</h2>
-            <div class="field"><span class="label">Title:</span> <span class="value">${personalInfo.title || 'Not provided'}</span></div>
-            <div class="field"><span class="label">First Name:</span> <span class="value">${personalInfo.firstName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Middle Name:</span> <span class="value">${personalInfo.middleName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Last Name:</span> <span class="value">${personalInfo.lastName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Previous Name:</span> <span class="value">${personalInfo.previousName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Date of Birth:</span> <span class="value">${formatDate(personalInfo.dateOfBirth)}</span></div>
-            <div class="field"><span class="label">National Insurance Number:</span> <span class="value">${personalInfo.nationalInsuranceNumber || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Address:</span> <span class="value">${personalInfo.address || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Postcode:</span> <span class="value">${personalInfo.postcode || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Phone:</span> <span class="value">${personalInfo.phone || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Email:</span> <span class="value">${personalInfo.email || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Emergency Contact:</span> <span class="value">${personalInfo.emergencyContactName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Emergency Contact Phone:</span> <span class="value">${personalInfo.emergencyContactPhone || 'Not provided'}</span></div>
-          </div>
-
-          <div class="section">
-            <h2>Education</h2>
-            ${education.map((edu: any, index: number) => `
-              <div class="education-entry">
-                <h3>Education ${index + 1}</h3>
-                <div class="field"><span class="label">Institution:</span> <span class="value">${edu.institution || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Qualification:</span> <span class="value">${edu.qualification || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Start Date:</span> <span class="value">${formatDate(edu.startDate)}</span></div>
-                <div class="field"><span class="label">End Date:</span> <span class="value">${formatDate(edu.endDate)}</span></div>
-              </div>
-            `).join('')}
-          </div>
-
-          <div class="section">
-            <h2>Employment History</h2>
-            ${employment.map((emp: any, index: number) => `
-              <div class="employment-entry">
-                <h3>Employment ${index + 1}</h3>
-                <div class="field"><span class="label">Job Title:</span> <span class="value">${emp.jobTitle || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Employer:</span> <span class="value">${emp.employer || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Start Date:</span> <span class="value">${formatDate(emp.startDate)}</span></div>
-                <div class="field"><span class="label">End Date:</span> <span class="value">${formatDate(emp.endDate)}</span></div>
-                <div class="field"><span class="label">Reason for Leaving:</span> <span class="value">${emp.reasonForLeaving || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Referee Name:</span> <span class="value">${emp.refereeName || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Referee Position:</span> <span class="value">${emp.refereePosition || 'Not provided'}</span></div>
-                <div class="field"><span class="label">Referee Contact:</span> <span class="value">${emp.refereeContact || 'Not provided'}</span></div>
-              </div>
-            `).join('')}
-          </div>
-
-          ${gaps.length > 0 ? `
-          <div class="section">
-            <h2>Employment Gaps</h2>
-            ${gaps.map((gap: any, index: number) => `
-              <div class="field">
-                <span class="label">Gap ${index + 1}:</span> 
-                <span class="value">${formatDate(gap.startDate)} to ${formatDate(gap.endDate)} - ${gap.reason || 'Not provided'}</span>
-              </div>
-            `).join('')}
-          </div>
-          ` : ''}
-
-          <div class="section">
-            <h2>Skills and Qualifications</h2>
-            <div class="field"><span class="label">Skills:</span> <span class="value">${skills.skills || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Additional Qualifications:</span> <span class="value">${skills.additionalQualifications || 'Not provided'}</span></div>
-          </div>
-
-          <div class="section">
-            <h2>Disciplinary Information</h2>
-            <div class="field"><span class="label">Criminal Convictions:</span> <span class="value">${disciplinary.hasCriminalConvictions ? 'Yes' : 'No'}</span></div>
-            ${disciplinary.hasCriminalConvictions ? `<div class="field"><span class="label">Details:</span> <span class="value">${disciplinary.criminalConvictionsDetails || 'Not provided'}</span></div>` : ''}
-            <div class="field"><span class="label">Disciplinary Action:</span> <span class="value">${disciplinary.hasDisciplinaryAction ? 'Yes' : 'No'}</span></div>
-            ${disciplinary.hasDisciplinaryAction ? `<div class="field"><span class="label">Details:</span> <span class="value">${disciplinary.disciplinaryActionDetails || 'Not provided'}</span></div>` : ''}
-          </div>
-
-          <div class="section">
-            <h2>Declaration</h2>
-            <div class="field"><span class="label">Full Name:</span> <span class="value">${dataProtection.fullName || 'Not provided'}</span></div>
-            <div class="field"><span class="label">Signature Confirmed:</span> <span class="value">${dataProtection.signatureConfirmation ? 'Yes' : 'No'}</span></div>
-            <div class="field"><span class="label">Data Protection Agreement:</span> <span class="value">${dataProtection.dataProtectionAgreement ? 'Agreed' : 'Not agreed'}</span></div>
-            <div class="field"><span class="label">Date Signed:</span> <span class="value">${formatDate(dataProtection.signedDate)}</span></div>
-          </div>
-
-          <p style="margin-top: 40px; font-style: italic; color: #6B7280;">
-            This application was completed and downloaded on ${new Date().toLocaleDateString('en-GB')} at ${new Date().toLocaleTimeString('en-GB')}.
-          </p>
-        </body>
-        </html>
-      `;
-
-      // Create and download HTML file
-      const fileName = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.html`;
+      // Create a simple text summary
+      let textContent = `SWIIS STAFF APPLICATION FORM\n`;
+      textContent += `=====================================\n\n`;
+      textContent += `Application Date: ${new Date().toLocaleDateString('en-GB')}\n\n`;
       
-      try {
-        const htmlBlob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-        
-        // Check if browser supports the download attribute
-        const link = document.createElement('a');
-        if (typeof link.download === 'string') {
-          const url = URL.createObjectURL(htmlBlob);
-          link.href = url;
-          link.download = fileName;
-          link.style.display = 'none';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-        } else {
-          // Fallback for older browsers
-          const url = URL.createObjectURL(htmlBlob);
-          window.open(url, '_blank');
-          URL.revokeObjectURL(url);
-        }
-      } catch (blobError) {
-        // Fallback: create a data URL
-        const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        link.download = fileName;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      textContent += `PERSONAL INFORMATION\n`;
+      textContent += `-------------------\n`;
+      textContent += `Title: ${personalInfo.title || 'Not provided'}\n`;
+      textContent += `First Name: ${personalInfo.firstName || 'Not provided'}\n`;
+      textContent += `Middle Name: ${personalInfo.middleName || 'Not provided'}\n`;
+      textContent += `Last Name: ${personalInfo.lastName || 'Not provided'}\n`;
+      textContent += `Previous Name: ${personalInfo.previousName || 'Not provided'}\n`;
+      textContent += `Date of Birth: ${personalInfo.dateOfBirth ? new Date(personalInfo.dateOfBirth).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+      textContent += `National Insurance Number: ${personalInfo.nationalInsuranceNumber || 'Not provided'}\n`;
+      textContent += `Address: ${personalInfo.address || 'Not provided'}\n`;
+      textContent += `Postcode: ${personalInfo.postcode || 'Not provided'}\n`;
+      textContent += `Phone: ${personalInfo.phone || 'Not provided'}\n`;
+      textContent += `Email: ${personalInfo.email || 'Not provided'}\n`;
+      textContent += `Emergency Contact: ${personalInfo.emergencyContactName || 'Not provided'}\n`;
+      textContent += `Emergency Contact Phone: ${personalInfo.emergencyContactPhone || 'Not provided'}\n\n`;
+
+      if (education.length > 0) {
+        textContent += `EDUCATION\n`;
+        textContent += `---------\n`;
+        education.forEach((edu: any, index: number) => {
+          textContent += `Education ${index + 1}:\n`;
+          textContent += `  Institution: ${edu.institution || 'Not provided'}\n`;
+          textContent += `  Qualification: ${edu.qualification || 'Not provided'}\n`;
+          textContent += `  Start Date: ${edu.startDate ? new Date(edu.startDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  End Date: ${edu.endDate ? new Date(edu.endDate).toLocaleDateString('en-GB') : 'Not provided'}\n\n`;
+        });
       }
+
+      if (employment.length > 0) {
+        textContent += `EMPLOYMENT HISTORY\n`;
+        textContent += `------------------\n`;
+        employment.forEach((emp: any, index: number) => {
+          textContent += `Employment ${index + 1}:\n`;
+          textContent += `  Job Title: ${emp.jobTitle || 'Not provided'}\n`;
+          textContent += `  Employer: ${emp.employer || 'Not provided'}\n`;
+          textContent += `  Start Date: ${emp.startDate ? new Date(emp.startDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  End Date: ${emp.endDate ? new Date(emp.endDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  Reason for Leaving: ${emp.reasonForLeaving || 'Not provided'}\n`;
+          textContent += `  Referee Name: ${emp.refereeName || 'Not provided'}\n`;
+          textContent += `  Referee Position: ${emp.refereePosition || 'Not provided'}\n`;
+          textContent += `  Referee Contact: ${emp.refereeContact || 'Not provided'}\n\n`;
+        });
+      }
+
+      if (gaps.length > 0) {
+        textContent += `EMPLOYMENT GAPS\n`;
+        textContent += `---------------\n`;
+        gaps.forEach((gap: any, index: number) => {
+          textContent += `Gap ${index + 1}: ${gap.startDate ? new Date(gap.startDate).toLocaleDateString('en-GB') : 'Not provided'} to ${gap.endDate ? new Date(gap.endDate).toLocaleDateString('en-GB') : 'Not provided'} - ${gap.reason || 'Not provided'}\n`;
+        });
+        textContent += `\n`;
+      }
+
+      textContent += `SKILLS AND QUALIFICATIONS\n`;
+      textContent += `-------------------------\n`;
+      textContent += `Skills: ${skills.skills || 'Not provided'}\n`;
+      textContent += `Additional Qualifications: ${skills.additionalQualifications || 'Not provided'}\n\n`;
+
+      textContent += `DISCIPLINARY INFORMATION\n`;
+      textContent += `------------------------\n`;
+      textContent += `Criminal Convictions: ${disciplinary.hasCriminalConvictions ? 'Yes' : 'No'}\n`;
+      if (disciplinary.hasCriminalConvictions) {
+        textContent += `Details: ${disciplinary.criminalConvictionsDetails || 'Not provided'}\n`;
+      }
+      textContent += `Disciplinary Action: ${disciplinary.hasDisciplinaryAction ? 'Yes' : 'No'}\n`;
+      if (disciplinary.hasDisciplinaryAction) {
+        textContent += `Details: ${disciplinary.disciplinaryActionDetails || 'Not provided'}\n`;
+      }
+      textContent += `\n`;
+
+      textContent += `DECLARATION\n`;
+      textContent += `-----------\n`;
+      textContent += `Full Name: ${dataProtection.fullName || 'Not provided'}\n`;
+      textContent += `Signature Confirmed: ${dataProtection.signatureConfirmation ? 'Yes' : 'No'}\n`;
+      textContent += `Data Protection Agreement: ${dataProtection.dataProtectionAgreement ? 'Agreed' : 'Not agreed'}\n`;
+      textContent += `Date Signed: ${dataProtection.signedDate ? new Date(dataProtection.signedDate).toLocaleDateString('en-GB') : 'Not provided'}\n\n`;
+
+      textContent += `---\n`;
+      textContent += `This application was completed and downloaded on ${new Date().toLocaleDateString('en-GB')} at ${new Date().toLocaleTimeString('en-GB')}.`;
+
+      // Create and download text file
+      const fileName = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.txt`;
+      
+      const textBlob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(textBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
       toast({
         title: "Download Complete",
-        description: "Your application has been downloaded as an HTML file. You can open it in any browser or convert it to PDF.",
+        description: "Your application has been downloaded as a text file. You can open it in any text editor or word processor.",
       });
     } catch (error) {
+      console.error('Download error:', error);
       toast({
-        title: "Download Error",
-        description: "There was a problem downloading your application. Please try again.",
+        title: "Download Error", 
+        description: "There was a problem downloading your application. Please try again or contact support.",
         variant: "destructive",
       });
     } finally {

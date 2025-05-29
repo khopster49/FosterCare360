@@ -44,65 +44,27 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     try {
-      // Collect all application data from localStorage - check different possible key formats
-      const personalInfo = JSON.parse(
-        localStorage.getItem(`personal_info_${applicantId}`) || 
-        localStorage.getItem(`personalInfo_${applicantId}`) || 
-        localStorage.getItem('personalInfo') || 
-        '{}'
-      );
-      const education = JSON.parse(
-        localStorage.getItem(`education_${applicantId}`) || 
-        localStorage.getItem(`educationEntries_${applicantId}`) || 
-        localStorage.getItem('education') || 
-        '[]'
-      );
-      const employment = JSON.parse(
-        localStorage.getItem(`employment_${applicantId}`) || 
-        localStorage.getItem(`employmentEntries_${applicantId}`) || 
-        localStorage.getItem('employment') || 
-        '[]'
-      );
-      const skills = JSON.parse(
-        localStorage.getItem(`skills_${applicantId}`) || 
-        localStorage.getItem(`skillsAndQualifications_${applicantId}`) || 
-        localStorage.getItem('skills') || 
-        '{}'
-      );
-      const references = JSON.parse(
-        localStorage.getItem(`references_${applicantId}`) || 
-        localStorage.getItem(`referenceConsent_${applicantId}`) || 
-        localStorage.getItem('references') || 
-        '[]'
-      );
-      const disciplinary = JSON.parse(
-        localStorage.getItem(`disciplinary_${applicantId}`) || 
-        localStorage.getItem(`disciplinaryInfo_${applicantId}`) || 
-        localStorage.getItem('disciplinary') || 
-        '{}'
-      );
-      const verification = JSON.parse(
-        localStorage.getItem(`verification_${applicantId}`) || 
-        localStorage.getItem(`verificationChecks_${applicantId}`) || 
-        localStorage.getItem('verification') || 
-        '{}'
-      );
+      // Collect all application data from localStorage - use the correct keys based on console output
+      const personalInfoRaw = JSON.parse(localStorage.getItem(`personal_info_${applicantId}`) || '[]');
+      const personalInfo = Array.isArray(personalInfoRaw) && personalInfoRaw.length > 0 ? personalInfoRaw[0] : {};
+      
+      const educationRaw = JSON.parse(localStorage.getItem(`education_${applicantId}`) || '[]');
+      const education = Array.isArray(educationRaw) ? educationRaw : [];
+      
+      const employmentRaw = JSON.parse(localStorage.getItem(`employment_${applicantId}`) || '{}');
+      const employment = employmentRaw.employmentEntries || [];
+      
+      const skillsRaw = JSON.parse(localStorage.getItem(`skills_${applicantId}`) || '{}');
+      const skills = skillsRaw.skillsAndExperience ? { skills: skillsRaw.skillsAndExperience } : {};
+      
+      const referencesRaw = JSON.parse(localStorage.getItem(`references_${applicantId}`) || '[]');
+      const references = Array.isArray(referencesRaw) ? referencesRaw : [];
+      
+      const disciplinaryRaw = JSON.parse(localStorage.getItem(`disciplinary_${applicantId}`) || '{}');
+      const disciplinary = disciplinaryRaw;
+      
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
-      const gaps = JSON.parse(
-        localStorage.getItem(`employment_gaps_${applicantId}`) || 
-        localStorage.getItem(`employmentGaps_${applicantId}`) || 
-        localStorage.getItem('gaps') || 
-        '[]'
-      );
-
-      // Debug: Log what data we found
-      console.log('Personal Info:', personalInfo);
-      console.log('Education:', education);
-      console.log('Employment:', employment);
-      console.log('Skills:', skills);
-      console.log('References:', references);
-      console.log('Disciplinary:', disciplinary);
-      console.log('Data Protection:', dataProtection);
+      const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
 
       // Create a simple text summary
       let textContent = `SWIIS STAFF APPLICATION FORM\n`;
@@ -111,19 +73,31 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       
       textContent += `PERSONAL INFORMATION\n`;
       textContent += `-------------------\n`;
+      textContent += `Position Applied For: ${personalInfo.positionAppliedFor || 'Not provided'}\n`;
       textContent += `Title: ${personalInfo.title || 'Not provided'}\n`;
       textContent += `First Name: ${personalInfo.firstName || 'Not provided'}\n`;
       textContent += `Middle Name: ${personalInfo.middleName || 'Not provided'}\n`;
       textContent += `Last Name: ${personalInfo.lastName || 'Not provided'}\n`;
-      textContent += `Previous Name: ${personalInfo.previousName || 'Not provided'}\n`;
-      textContent += `Date of Birth: ${personalInfo.dateOfBirth ? new Date(personalInfo.dateOfBirth).toLocaleDateString('en-GB') : 'Not provided'}\n`;
-      textContent += `National Insurance Number: ${personalInfo.nationalInsuranceNumber || 'Not provided'}\n`;
+      textContent += `Pronouns: ${personalInfo.pronouns || 'Not provided'}\n`;
+      textContent += `Other Names: ${personalInfo.otherNames || 'Not provided'}\n`;
+      textContent += `Email: ${personalInfo.email || 'Not provided'}\n`;
       textContent += `Address: ${personalInfo.address || 'Not provided'}\n`;
       textContent += `Postcode: ${personalInfo.postcode || 'Not provided'}\n`;
-      textContent += `Phone: ${personalInfo.phone || 'Not provided'}\n`;
-      textContent += `Email: ${personalInfo.email || 'Not provided'}\n`;
-      textContent += `Emergency Contact: ${personalInfo.emergencyContactName || 'Not provided'}\n`;
-      textContent += `Emergency Contact Phone: ${personalInfo.emergencyContactPhone || 'Not provided'}\n\n`;
+      textContent += `Home Phone: ${personalInfo.homePhone || 'Not provided'}\n`;
+      textContent += `Mobile Phone: ${personalInfo.mobilePhone || 'Not provided'}\n`;
+      textContent += `Driving Licence: ${personalInfo.drivingLicence ? 'Yes' : 'No'}\n`;
+      textContent += `Nationality: ${personalInfo.nationality || 'Not provided'}\n`;
+      textContent += `Visa Type: ${personalInfo.visaType || 'Not provided'}\n`;
+      textContent += `Visa Expiry: ${personalInfo.visaExpiry || 'Not provided'}\n`;
+      textContent += `National Insurance Number: ${personalInfo.niNumber || 'Not provided'}\n`;
+      textContent += `Right to Work: ${personalInfo.rightToWork ? 'Yes' : 'No'}\n`;
+      textContent += `DBS Registered: ${personalInfo.dbsRegistered ? 'Yes' : 'No'}\n`;
+      textContent += `DBS Number: ${personalInfo.dbsNumber || 'Not provided'}\n`;
+      textContent += `DBS Issue Date: ${personalInfo.dbsIssueDate || 'Not provided'}\n`;
+      textContent += `Work Document Type: ${personalInfo.workDocumentType || 'Not provided'}\n`;
+      textContent += `Referral Source: ${personalInfo.referralSource || 'Not provided'}\n`;
+      textContent += `Professional Registration Number: ${personalInfo.professionalRegNumber || 'Not provided'}\n`;
+      textContent += `Professional Registration Expiry: ${personalInfo.professionalRegExpiry || 'Not provided'}\n\n`;
 
       if (education.length > 0) {
         textContent += `EDUCATION\n`;
@@ -142,14 +116,20 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
         textContent += `------------------\n`;
         employment.forEach((emp: any, index: number) => {
           textContent += `Employment ${index + 1}:\n`;
-          textContent += `  Job Title: ${emp.jobTitle || 'Not provided'}\n`;
+          textContent += `  Position: ${emp.position || 'Not provided'}\n`;
           textContent += `  Employer: ${emp.employer || 'Not provided'}\n`;
+          textContent += `  Employer Address: ${emp.employerAddress || 'Not provided'}\n`;
+          textContent += `  Employer Postcode: ${emp.employerPostcode || 'Not provided'}\n`;
+          textContent += `  Employer Phone: ${emp.employerPhone || 'Not provided'}\n`;
           textContent += `  Start Date: ${emp.startDate ? new Date(emp.startDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
-          textContent += `  End Date: ${emp.endDate ? new Date(emp.endDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  End Date: ${emp.endDate ? new Date(emp.endDate).toLocaleDateString('en-GB') : emp.isCurrent ? 'Current Position' : 'Not provided'}\n`;
+          textContent += `  Current Position: ${emp.isCurrent ? 'Yes' : 'No'}\n`;
+          textContent += `  Duties: ${emp.duties || 'Not provided'}\n`;
           textContent += `  Reason for Leaving: ${emp.reasonForLeaving || 'Not provided'}\n`;
-          textContent += `  Referee Name: ${emp.refereeName || 'Not provided'}\n`;
-          textContent += `  Referee Position: ${emp.refereePosition || 'Not provided'}\n`;
-          textContent += `  Referee Contact: ${emp.refereeContact || 'Not provided'}\n\n`;
+          textContent += `  Reference Name: ${emp.referenceName || 'Not provided'}\n`;
+          textContent += `  Reference Email: ${emp.referenceEmail || 'Not provided'}\n`;
+          textContent += `  Reference Phone: ${emp.referencePhone || 'Not provided'}\n`;
+          textContent += `  Worked with Vulnerable People: ${emp.workedWithVulnerable ? 'Yes' : 'No'}\n\n`;
         });
       }
 
@@ -164,18 +144,37 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
 
       textContent += `SKILLS AND QUALIFICATIONS\n`;
       textContent += `-------------------------\n`;
-      textContent += `Skills: ${skills.skills || 'Not provided'}\n`;
-      textContent += `Additional Qualifications: ${skills.additionalQualifications || 'Not provided'}\n\n`;
+      textContent += `Skills and Experience: ${skills.skills || skillsRaw.skillsAndExperience || 'Not provided'}\n\n`;
+
+      if (references.length > 0) {
+        textContent += `REFERENCES\n`;
+        textContent += `----------\n`;
+        references.forEach((ref: any, index: number) => {
+          textContent += `Reference ${index + 1}:\n`;
+          textContent += `  Name: ${ref.name || 'Not provided'}\n`;
+          textContent += `  Email: ${ref.email || 'Not provided'}\n`;
+          textContent += `  Phone: ${ref.phone || 'Not provided'}\n`;
+          textContent += `  Employer: ${ref.employer || 'Not provided'}\n`;
+          textContent += `  Position: ${ref.position || 'Not provided'}\n`;
+          textContent += `  Consent Given: ${ref.consentGiven ? 'Yes' : 'No'}\n\n`;
+        });
+      }
 
       textContent += `DISCIPLINARY INFORMATION\n`;
       textContent += `------------------------\n`;
-      textContent += `Criminal Convictions: ${disciplinary.hasCriminalConvictions ? 'Yes' : 'No'}\n`;
-      if (disciplinary.hasCriminalConvictions) {
-        textContent += `Details: ${disciplinary.criminalConvictionsDetails || 'Not provided'}\n`;
+      textContent += `Has Disciplinary Action: ${disciplinary.hasDisciplinary ? 'Yes' : 'No'}\n`;
+      if (disciplinary.hasDisciplinary) {
+        textContent += `Disciplinary Details: ${disciplinary.disciplinaryDetails || 'Not provided'}\n`;
       }
-      textContent += `Disciplinary Action: ${disciplinary.hasDisciplinaryAction ? 'Yes' : 'No'}\n`;
-      if (disciplinary.hasDisciplinaryAction) {
-        textContent += `Details: ${disciplinary.disciplinaryActionDetails || 'Not provided'}\n`;
+      textContent += `Has Police Warning: ${disciplinary.hasPoliceWarning ? 'Yes' : 'No'}\n`;
+      textContent += `Has Unresolved Charges: ${disciplinary.hasUnresolvedCharges ? 'Yes' : 'No'}\n`;
+      textContent += `Has Police Investigation: ${disciplinary.hasPoliceInvestigation ? 'Yes' : 'No'}\n`;
+      textContent += `Dismissed for Misconduct: ${disciplinary.hasDismissedForMisconduct ? 'Yes' : 'No'}\n`;
+      textContent += `Professional Disqualification: ${disciplinary.hasProfessionalDisqualification ? 'Yes' : 'No'}\n`;
+      textContent += `Ongoing Investigation: ${disciplinary.hasOngoingInvestigation ? 'Yes' : 'No'}\n`;
+      textContent += `Has Prohibition: ${disciplinary.hasProhibition ? 'Yes' : 'No'}\n`;
+      if (disciplinary.criminalDetails) {
+        textContent += `Criminal Details: ${disciplinary.criminalDetails}\n`;
       }
       textContent += `\n`;
 

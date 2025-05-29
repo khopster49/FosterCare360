@@ -45,12 +45,8 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
     setIsDownloading(true);
     try {
       // Collect all application data from localStorage - fix personal info extraction
-      const personalInfoRaw = JSON.parse(localStorage.getItem(`personal_info_${applicantId}`) || '[]');
-      // Personal info is stored as an array, extract the actual data object
-      let personalInfo = {};
-      if (Array.isArray(personalInfoRaw) && personalInfoRaw.length > 0) {
-        personalInfo = personalInfoRaw[0];
-      }
+      // Personal info is stored with key 'personalInfo' (not with applicant ID)
+      const personalInfo = JSON.parse(localStorage.getItem('personalInfo') || '{}');
       
       const educationRaw = JSON.parse(localStorage.getItem(`education_${applicantId}`) || '[]');
       const education = Array.isArray(educationRaw) ? educationRaw : [];

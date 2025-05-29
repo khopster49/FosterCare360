@@ -53,39 +53,137 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       const disciplinary = JSON.parse(localStorage.getItem(`disciplinary_${applicantId}`) || '{}');
       const verification = JSON.parse(localStorage.getItem(`verification_${applicantId}`) || '{}');
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
-      const equalOpportunities = JSON.parse(localStorage.getItem(`equal_opportunities_${applicantId}`) || '{}');
-      const privacyNotice = JSON.parse(localStorage.getItem(`privacy_notice_${applicantId}`) || '{}');
+      const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
 
-      // Create a simple text-based summary for download
-      const applicationData = {
-        personalInfo,
-        education,
-        employment,
-        skills,
-        references,
-        disciplinary,
-        verification,
-        dataProtection,
-        equalOpportunities,
-        privacyNotice,
-        submittedAt: new Date().toISOString()
+      // Format the data into a readable HTML document
+      const formatDate = (dateStr: string) => {
+        if (!dateStr) return 'Not provided';
+        return new Date(dateStr).toLocaleDateString('en-GB');
       };
 
-      // Create and download a JSON file with the application data
-      const dataStr = JSON.stringify(applicationData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Swiis Staff Application</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+            h1 { color: #D97706; border-bottom: 2px solid #D97706; padding-bottom: 10px; }
+            h2 { color: #D97706; margin-top: 30px; }
+            .section { margin-bottom: 30px; }
+            .field { margin-bottom: 10px; }
+            .label { font-weight: bold; color: #374151; }
+            .value { margin-left: 20px; }
+            .employment-entry, .education-entry { border: 1px solid #E5E7EB; padding: 15px; margin: 10px 0; }
+            .signature { max-width: 200px; border: 1px solid #ccc; }
+          </style>
+        </head>
+        <body>
+          <h1>Swiis Staff Application Form</h1>
+          <p><strong>Application Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
+          
+          <div class="section">
+            <h2>Personal Information</h2>
+            <div class="field"><span class="label">Title:</span> <span class="value">${personalInfo.title || 'Not provided'}</span></div>
+            <div class="field"><span class="label">First Name:</span> <span class="value">${personalInfo.firstName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Middle Name:</span> <span class="value">${personalInfo.middleName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Last Name:</span> <span class="value">${personalInfo.lastName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Previous Name:</span> <span class="value">${personalInfo.previousName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Date of Birth:</span> <span class="value">${formatDate(personalInfo.dateOfBirth)}</span></div>
+            <div class="field"><span class="label">National Insurance Number:</span> <span class="value">${personalInfo.nationalInsuranceNumber || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Address:</span> <span class="value">${personalInfo.address || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Postcode:</span> <span class="value">${personalInfo.postcode || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Phone:</span> <span class="value">${personalInfo.phone || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Email:</span> <span class="value">${personalInfo.email || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Emergency Contact:</span> <span class="value">${personalInfo.emergencyContactName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Emergency Contact Phone:</span> <span class="value">${personalInfo.emergencyContactPhone || 'Not provided'}</span></div>
+          </div>
+
+          <div class="section">
+            <h2>Education</h2>
+            ${education.map((edu: any, index: number) => `
+              <div class="education-entry">
+                <h3>Education ${index + 1}</h3>
+                <div class="field"><span class="label">Institution:</span> <span class="value">${edu.institution || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Qualification:</span> <span class="value">${edu.qualification || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Start Date:</span> <span class="value">${formatDate(edu.startDate)}</span></div>
+                <div class="field"><span class="label">End Date:</span> <span class="value">${formatDate(edu.endDate)}</span></div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="section">
+            <h2>Employment History</h2>
+            ${employment.map((emp: any, index: number) => `
+              <div class="employment-entry">
+                <h3>Employment ${index + 1}</h3>
+                <div class="field"><span class="label">Job Title:</span> <span class="value">${emp.jobTitle || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Employer:</span> <span class="value">${emp.employer || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Start Date:</span> <span class="value">${formatDate(emp.startDate)}</span></div>
+                <div class="field"><span class="label">End Date:</span> <span class="value">${formatDate(emp.endDate)}</span></div>
+                <div class="field"><span class="label">Reason for Leaving:</span> <span class="value">${emp.reasonForLeaving || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Referee Name:</span> <span class="value">${emp.refereeName || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Referee Position:</span> <span class="value">${emp.refereePosition || 'Not provided'}</span></div>
+                <div class="field"><span class="label">Referee Contact:</span> <span class="value">${emp.refereeContact || 'Not provided'}</span></div>
+              </div>
+            `).join('')}
+          </div>
+
+          ${gaps.length > 0 ? `
+          <div class="section">
+            <h2>Employment Gaps</h2>
+            ${gaps.map((gap: any, index: number) => `
+              <div class="field">
+                <span class="label">Gap ${index + 1}:</span> 
+                <span class="value">${formatDate(gap.startDate)} to ${formatDate(gap.endDate)} - ${gap.reason || 'Not provided'}</span>
+              </div>
+            `).join('')}
+          </div>
+          ` : ''}
+
+          <div class="section">
+            <h2>Skills and Qualifications</h2>
+            <div class="field"><span class="label">Skills:</span> <span class="value">${skills.skills || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Additional Qualifications:</span> <span class="value">${skills.additionalQualifications || 'Not provided'}</span></div>
+          </div>
+
+          <div class="section">
+            <h2>Disciplinary Information</h2>
+            <div class="field"><span class="label">Criminal Convictions:</span> <span class="value">${disciplinary.hasCriminalConvictions ? 'Yes' : 'No'}</span></div>
+            ${disciplinary.hasCriminalConvictions ? `<div class="field"><span class="label">Details:</span> <span class="value">${disciplinary.criminalConvictionsDetails || 'Not provided'}</span></div>` : ''}
+            <div class="field"><span class="label">Disciplinary Action:</span> <span class="value">${disciplinary.hasDisciplinaryAction ? 'Yes' : 'No'}</span></div>
+            ${disciplinary.hasDisciplinaryAction ? `<div class="field"><span class="label">Details:</span> <span class="value">${disciplinary.disciplinaryActionDetails || 'Not provided'}</span></div>` : ''}
+          </div>
+
+          <div class="section">
+            <h2>Declaration</h2>
+            <div class="field"><span class="label">Full Name:</span> <span class="value">${dataProtection.fullName || 'Not provided'}</span></div>
+            <div class="field"><span class="label">Signature Confirmed:</span> <span class="value">${dataProtection.signatureConfirmation ? 'Yes' : 'No'}</span></div>
+            <div class="field"><span class="label">Data Protection Agreement:</span> <span class="value">${dataProtection.dataProtectionAgreement ? 'Agreed' : 'Not agreed'}</span></div>
+            <div class="field"><span class="label">Date Signed:</span> <span class="value">${formatDate(dataProtection.signedDate)}</span></div>
+          </div>
+
+          <p style="margin-top: 40px; font-style: italic; color: #6B7280;">
+            This application was completed and downloaded on ${new Date().toLocaleDateString('en-GB')} at ${new Date().toLocaleTimeString('en-GB')}.
+          </p>
+        </body>
+        </html>
+      `;
+
+      // Create and download HTML file
+      const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(htmlBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `swiis-application-${applicantId}-${new Date().toISOString().split('T')[0]}.json`;
+      link.download = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.html`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Download Started",
-        description: "Your application data has been downloaded as a JSON file.",
+        title: "Download Complete",
+        description: "Your application has been downloaded as an HTML file. You can open it in any browser or convert it to PDF.",
       });
     } catch (error) {
       toast({

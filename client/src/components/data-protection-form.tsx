@@ -257,7 +257,7 @@ export function DataProtectionForm({ applicantId, onSuccess, onBack }: DataProte
                 Submitting
               </>
             ) : (
-              "Next: Verification Checks"
+              "Complete Application Form"
             )}
           </Button>
         </div>

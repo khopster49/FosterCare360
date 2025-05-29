@@ -256,7 +256,7 @@ export default function Home() {
                 </p>
                 <DataProtectionForm 
                   applicantId={applicantId || 1} // Allow preview with temporary ID
-                  onSuccess={() => nextStep()} 
+                  onSuccess={() => setIsApplicationComplete(true)} 
                   onBack={() => previousStep()} 
                 />
               </>

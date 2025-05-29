@@ -15,8 +15,7 @@ import { PrivacyNotice } from "@/components/privacy-notice";
 import { ApplicationComplete } from "@/components/application-complete";
 import { useFormStepper } from "@/hooks/use-form-stepper";
 import { Helmet } from "react-helmet";
-import { useAuth } from "@/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
+
 
 // Define the steps for the application process
 const steps = [
@@ -31,14 +30,12 @@ const steps = [
 ];
 
 export default function Home() {
-  const { user } = useAuth();
   const [applicantId, setApplicantId] = useState<number | null>(null);
   const [isApplicationComplete, setIsApplicationComplete] = useState(false);
   
-  // For now, use the last created applicant ID (your most recent application)
+  // Set a simple applicant ID for localStorage-only mode
   useEffect(() => {
-    // Set applicant ID to 5 (your most recent application based on server logs)
-    setApplicantId(5);
+    setApplicantId(1);
   }, []);
 
   // Initialize form stepper

@@ -266,7 +266,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
           <Briefcase className="mx-auto h-12 w-12 text-primary mb-4" />
           <h2 className="text-3xl font-bold text-primary mb-2">Employment History</h2>
           <p className="text-gray-600">
-            Please provide details of all your employment history including any voluntary work.
+            Please provide details of all your employment history including any voluntary work. Any gaps in employment need to be explained.
           </p>
         </div>
 

@@ -217,8 +217,8 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
         const gapStartDate = addDays(currentEndDate, 1);
         const gapDays = differenceInDays(nextStartDate, gapStartDate);
         
-        // Only include gaps of 31 days or more
-        if (gapDays >= 31) {
+        // Include any employment gap that needs explanation
+        if (gapDays > 0) {
           // Find the original index of this entry in the unfiltered employment entries
           const originalIndex = fields.findIndex(f => 
             f.employer === current.employer && 
@@ -281,8 +281,8 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
             const gapStartDate = addDays(currentEndDate, 1);
             const gapDays = differenceInDays(nextStartDate, gapStartDate);
             
-            // Only include gaps of 31 days or more
-            if (gapDays >= 31) {
+            // Include any employment gap that needs explanation
+            if (gapDays > 0) {
               // Find the original index in the form array
               const originalIndex = watchedEmploymentEntries.findIndex(e => 
                 e.employer === current.employer && 
@@ -588,7 +588,7 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                                                 if (nextStartDate > new Date(currentEndDate.getTime() + 86400000)) {
                                                   const gapDays = Math.floor((nextStartDate.getTime() - currentEndDate.getTime()) / 86400000) - 1;
                                                   
-                                                  if (gapDays >= 31) {
+                                                  if (gapDays > 0) {
                                                     const originalIndex = form.getValues('employmentEntries').findIndex(e => 
                                                       e.employer === current.employer && 
                                                       e.position === current.position &&
@@ -786,9 +786,9 @@ export function EmploymentForm({ applicantId, onSuccess, onBack }: EmploymentFor
                       <div className="w-full">
                         <h4 className="font-medium text-amber-800 mb-1">Employment Gap Detected</h4>
                         <p className="text-sm text-amber-700 mb-4">
-                          We've detected a gap of {gapAfterThisEntry.gap.days} days after this employment
+                          We've detected an employment gap of {gapAfterThisEntry.gap.days} days after this employment
                           ({formatDate(gapAfterThisEntry.gap.startDate)} to {formatDate(gapAfterThisEntry.gap.endDate)}).
-                          Please provide an explanation for this gap.
+                          All employment gaps need to be explained.
                         </p>
                         
                         <FormField

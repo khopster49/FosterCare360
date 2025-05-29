@@ -1,6 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { FormStepper } from "@/components/form-stepper";
+import { PersonalInfoForm } from "@/components/personal-info-form";
+import { EducationForm } from "@/components/education-form";
+import { EmploymentForm } from "@/components/employment-form-fixed";
+import { SkillsExperienceForm } from "@/components/skills-experience-form";
+import { ReferencesForm } from "@/components/references-form";
+import { DisciplinaryForm } from "@/components/disciplinary-form";
+import { DataProtectionForm } from "@/components/data-protection-form";
+import { PrivacyNotice } from "@/components/privacy-notice";
+import { ApplicationComplete } from "@/components/application-complete";
+import { useFormStepper } from "@/hooks/use-form-stepper";
 
 
 // Define the steps for the application process
@@ -15,14 +26,9 @@ const steps = [
   { id: 8, label: "Declaration" },
 ];
 
-export default function Home() {
+export default function ApplicationForm() {
   const [applicantId, setApplicantId] = useState<number | null>(null);
   const [isApplicationComplete, setIsApplicationComplete] = useState(false);
-  
-  // Set a simple applicant ID for localStorage-only mode
-  useEffect(() => {
-    setApplicantId(1);
-  }, []);
 
   // Initialize form stepper
   const {
@@ -30,7 +36,8 @@ export default function Home() {
     nextStep,
     previousStep,
     completedSteps,
-    goToStep
+    goToStep,
+    markStepComplete
   } = useFormStepper({
     initialStep: 0,
     totalSteps: steps.length,

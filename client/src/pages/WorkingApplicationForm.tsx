@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 import swiisLogo from "@assets/Picture3.jpg";
 
 const steps = [
@@ -19,6 +22,93 @@ const steps = [
 export default function WorkingApplicationForm() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const [submittedApplicationId, setSubmittedApplicationId] = useState<number | null>(null);
+  const { toast } = useToast();
+
+  // Form data state
+  const [formData, setFormData] = useState({
+    // Personal Information
+    title: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    preferredName: '',
+    dateOfBirth: '',
+    nationalInsuranceNumber: '',
+    address: '',
+    postcode: '',
+    phoneNumber: '',
+    mobileNumber: '',
+    email: '',
+    rightToWork: '',
+    workDocumentType: '',
+    dbsRegistered: '',
+    dbsCertificateNumber: '',
+    dbsIssuedDate: '',
+    professionalRegistration: '',
+    professionalBody: '',
+    professionalNumber: '',
+    professionalExpiryDate: '',
+    
+    // Education (will be stored separately)
+    education: [],
+    
+    // Employment (will be stored separately)
+    employment: [],
+    
+    // Skills
+    skills: '',
+    
+    // References
+    references: '',
+    
+    // Disciplinary
+    criminalConvictions: false,
+    criminalConvictionsDetails: '',
+    disciplinaryAction: false,
+    disciplinaryActionDetails: '',
+    safeguardingConcerns: false,
+    safeguardingConcernsDetails: '',
+    
+    // Declaration
+    declaration: false,
+    signature: '',
+    signatureDate: ''
+  });
+
+  // Submit application mutation
+  const submitApplication = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/applications/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to submit application');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (result) => {
+      setSubmittedApplicationId(result.id);
+      setIsComplete(true);
+      toast({
+        title: "Application Submitted",
+        description: "Your application has been successfully submitted."
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Submission Failed",
+        description: "There was an error submitting your application. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
 
   const nextStep = () => {
     console.log('Next step clicked, current step:', currentStep);
@@ -26,8 +116,9 @@ export default function WorkingApplicationForm() {
       setCurrentStep(currentStep + 1);
       console.log('Moving to step:', currentStep + 1);
     } else {
-      setIsComplete(true);
-      console.log('Application completed');
+      // Submit the application
+      submitApplication.mutate(formData);
+      console.log('Application submitted');
     }
   };
 

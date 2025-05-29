@@ -792,6 +792,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Complete application submission endpoint
+  app.post("/api/applications/submit", async (req: Request, res: Response) => {
+    try {
+      // Create the applicant record
+      const applicantData = {
+        title: req.body.title,
+        firstName: req.body.firstName,
+        middleName: req.body.middleName,
+        lastName: req.body.lastName,
+        preferredName: req.body.preferredName,
+        dateOfBirth: req.body.dateOfBirth,
+        nationalInsuranceNumber: req.body.nationalInsuranceNumber,
+        address: req.body.address,
+        postcode: req.body.postcode,
+        phoneNumber: req.body.phoneNumber,
+        mobileNumber: req.body.mobileNumber,
+        email: req.body.email,
+        rightToWork: req.body.rightToWork === 'yes',
+        workDocumentType: req.body.workDocumentType,
+        dbsRegistered: req.body.dbsRegistered === 'yes',
+        dbsCertificateNumber: req.body.dbsCertificateNumber,
+        dbsIssuedDate: req.body.dbsIssuedDate ? new Date(req.body.dbsIssuedDate) : null,
+        professionalRegistration: req.body.professionalRegistration === 'yes',
+        professionalBody: req.body.professionalBody,
+        professionalNumber: req.body.professionalNumber,
+        professionalExpiryDate: req.body.professionalExpiryDate ? new Date(req.body.professionalExpiryDate) : null,
+        skills: req.body.skills,
+        references: req.body.references,
+        criminalConvictions: req.body.criminalConvictions,
+        criminalConvictionsDetails: req.body.criminalConvictionsDetails,
+        disciplinaryAction: req.body.disciplinaryAction,
+        disciplinaryActionDetails: req.body.disciplinaryActionDetails,
+        safeguardingConcerns: req.body.safeguardingConcerns,
+        safeguardingConcernsDetails: req.body.safeguardingConcernsDetails,
+        declaration: req.body.declaration,
+        signature: req.body.signature,
+        signatureDate: req.body.signatureDate ? new Date(req.body.signatureDate) : new Date(),
+        status: "submitted",
+        completedAt: new Date()
+      };
+
+      const applicant = await storage.createApplicant(applicantData);
+
+      // Add education entries if provided
+      if (req.body.education && Array.isArray(req.body.education)) {
+        for (const edu of req.body.education) {
+          await storage.createEducationEntry({
+            applicantId: applicant.id,
+            institution: edu.institution,
+            qualification: edu.qualification,
+            startDate: edu.startDate,
+            endDate: edu.endDate,
+            details: edu.details
+          });
+        }
+      }
+
+      // Add employment entries if provided
+      if (req.body.employment && Array.isArray(req.body.employment)) {
+        for (const emp of req.body.employment) {
+          await storage.createEmploymentEntry({
+            applicantId: applicant.id,
+            employer: emp.employer,
+            employerAddress: emp.employerAddress,
+            employerPostcode: emp.employerPostcode,
+            employerPhone: emp.employerPhone,
+            employerMobile: emp.employerMobile,
+            jobTitle: emp.jobTitle,
+            startDate: emp.startDate,
+            endDate: emp.endDate,
+            reasonForLeaving: emp.reasonForLeaving,
+            responsibilities: emp.responsibilities,
+            refereeEmail: emp.refereeEmail,
+            refereeName: emp.refereeName,
+            refereePhone: emp.refereePhone
+          });
+        }
+      }
+
+      return res.status(201).json({
+        success: true,
+        id: applicant.id,
+        message: "Application submitted successfully"
+      });
+    } catch (error) {
+      console.error('Application submission error:', error);
+      return res.status(500).json({ 
+        message: "Failed to submit application" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

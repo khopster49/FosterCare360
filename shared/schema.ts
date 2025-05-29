@@ -15,7 +15,7 @@ export const sessions = pgTable(
 
 // User storage table for authentication
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   email: varchar("email").unique().notNull(),
   password: varchar("password").notNull(),
   firstName: varchar("first_name"),
@@ -37,8 +37,8 @@ export type User = typeof users.$inferSelect;
 
 // Applicant Schema
 export const applicants = pgTable("applicants", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+  userId: integer("user_id").references(() => users.id),
   firstName: text("first_name").notNull(),
   middleName: text("middle_name"),
   lastName: text("last_name").notNull(),
@@ -93,7 +93,7 @@ export type Applicant = typeof applicants.$inferSelect;
 
 // Education Entry Schema
 export const educationEntries = pgTable("education_entries", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   applicantId: integer("applicant_id").notNull(),
   institution: text("institution").notNull(),
   qualification: text("qualification").notNull(),
@@ -111,7 +111,7 @@ export type EducationEntry = typeof educationEntries.$inferSelect;
 
 // Employment Entry Schema
 export const employmentEntries = pgTable("employment_entries", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   applicantId: integer("applicant_id").notNull(),
   employer: text("employer").notNull(),
   employerAddress: text("employer_address").notNull(),

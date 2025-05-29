@@ -37,7 +37,6 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/application" component={WorkingApplicationForm} />
           <Route path="/application/:step" component={WorkingApplicationForm} />
-          <Route component={NotFound} />
         </>
       )}
     </Switch>

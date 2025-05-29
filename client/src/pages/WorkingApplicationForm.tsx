@@ -132,48 +132,138 @@ export default function WorkingApplicationForm() {
           <CardContent>
             <div className="min-h-[300px] flex flex-col justify-center">
               {currentStep === 0 && (
-                <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-orange-800">Data Protection Privacy Notice</h3>
+                <div className="space-y-6 max-w-none">
+                  <h3 className="text-2xl font-bold text-orange-800 mb-4">Data Protection Privacy Notice (Recruitment)</h3>
                   
-                  <div className="prose prose-sm max-w-none">
-                    <p className="text-gray-700 mb-4">
+                  <div className="space-y-6 text-gray-700 text-sm leading-relaxed max-h-96 overflow-y-auto border border-gray-200 p-4 rounded-lg">
+                    <p>
                       This notice explains what personal data (information) we will hold about you, how we collect it, and how we will use 
                       and may share information about you during the application process. We are required to notify you of this information, 
-                      under data protection legislation.
+                      under data protection legislation. Please ensure that you read this notice (sometimes referred to as a 'privacy notice') 
+                      and any other similar notice we may provide to you from time to time when we collect or process personal information 
+                      about you.
                     </p>
                     
-                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">Who collects the information</h4>
-                    <p className="text-gray-700 mb-4">
-                      Swiis Foster Care ('Company') is a 'data controller' and gathers and uses certain information about you. This information is also 
-                      used by our affiliated entities and group companies, namely Swiis UK Ltd, Swiis Foster Care Ltd, Swiis Foster Care 
-                      Scotland Ltd.
-                    </p>
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Who collects the information</h4>
+                      <p>
+                        Swiis Foster Care ('Company') is a 'data controller' and gathers and uses certain information about you. This information is also 
+                        used by our affiliated entities and group companies, namely Swiis UK Ltd, Swiis Foster Care Ltd, Swiis Foster Care 
+                        Scotland Ltd, (our 'group companies') and so, in this notice, references to 'we' or 'us' mean the Company and our 
+                        group companies.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Data protection principles</h4>
+                      <p>
+                        We will comply with the data protection principles when gathering and using personal information, as set out in our 
+                        GDPR Data Protection Policy and GDPR Data Retention Policy.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">About the information we collect and hold</h4>
+                      <h5 className="font-medium mb-2">What information</h5>
+                      <p className="mb-2">
+                        We may collect the following information up to and including the shortlisting stage of the recruitment process:
+                      </p>
+                      <ul className="list-disc ml-6 mb-4 space-y-1">
+                        <li>Your name and contact details (i.e. address, home and mobile phone numbers, email address)</li>
+                        <li>Details of your qualifications, experience, employment history (including job titles, salary and working hours) and interests</li>
+                        <li>Your racial or ethnic origin, sex and sexual orientation, religious or similar beliefs</li>
+                        <li>Information regarding your criminal record</li>
+                        <li>Details of your referees</li>
+                        <li>Information about your health, including any medical condition, health, and sickness records for the purposes of establishing if any adjustments need to be made to the recruitment process</li>
+                      </ul>
+                      
+                      <p className="mb-2">
+                        We may collect the following information after the shortlisting stage, and before making a final decision to recruit:
+                      </p>
+                      <ul className="list-disc ml-6 mb-4 space-y-1">
+                        <li>Information about your previous academic and/or employment history, including details of any conduct, grievance or performance issues, appraisals, time and attendance and references obtained about you from previous employers and/or education providers</li>
+                        <li>Information regarding your academic and professional qualifications</li>
+                        <li>Information regarding your criminal record, in criminal records certificates and enhanced criminal records certificates (DBS)</li>
+                        <li>Your nationality and immigration status and information from related documents, such as your passport or other identification and immigration information</li>
+                        <li>A copy of your driving licence</li>
+                        <li>Information about your health, including any medical condition, health and sickness records for the purposes of assessing the ability to carry out intrinsic elements of the role</li>
+                      </ul>
+                    </div>
 
-                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">About the information we collect and hold</h4>
-                    <p className="text-gray-700 mb-2">
-                      We may collect the following information up to and including the shortlisting stage of the recruitment process:
-                    </p>
-                    <ul className="list-disc ml-6 mb-4 text-gray-700 space-y-1">
-                      <li>Your name and contact details (i.e. address, home and mobile phone numbers, email address)</li>
-                      <li>Details of your qualifications, experience, employment history and interests</li>
-                      <li>Your racial or ethnic origin, sex and sexual orientation, religious or similar beliefs</li>
-                      <li>Information regarding your criminal record</li>
-                      <li>Details of your referees</li>
-                      <li>Information about your health, including any medical condition for adjustments needed in the recruitment process</li>
-                    </ul>
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">How we collect the information</h4>
+                      <p>
+                        We may collect this information from you, your referees (details of whom you will have provided), your education provider, the relevant professional body, The Disclosure and Barring Service (DBS), the Home Office.
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Why we collect the information and how we use it</h4>
+                      <p className="mb-2">
+                        We will typically collect and use this information for the following purposes (other purposes that may also apply are explained in our GDPR Data Protection Policy):
+                      </p>
+                      <ul className="list-disc ml-6 mb-4 space-y-1">
+                        <li>to take steps to enter into a contract</li>
+                        <li>for compliance with a legal obligation (e.g. our obligation to check that you are eligible to work in the United Kingdom)</li>
+                        <li>for the performance of a task carried out in the public interest</li>
+                        <li>for the purposes of our legitimate interests or those of a relevant third party (such as a benefits provider), but only if these are not overridden by your interests, rights or freedoms</li>
+                        <li>because it is necessary for carrying out obligations or exercising rights in employment law</li>
+                        <li>(i.e. equality of opportunity or treatment, promoting or retaining racial and ethnic diversity at senior level, preventing or detecting unlawful acts); and</li>
+                        <li>to establish, exercise and/or defend any legal claims that may be brought by or against us in connection with your recruitment</li>
+                      </ul>
+                    </div>
 
-                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">How we use your information</h4>
-                    <p className="text-gray-700 mb-4">
-                      We will typically collect and use this information for the following purposes: to take steps to enter into a contract, 
-                      for compliance with legal obligations, for the performance of tasks carried out in the public interest, 
-                      and for our legitimate interests in the recruitment process.
-                    </p>
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">How we may share the information</h4>
+                      <p>
+                        We may also need to share some of the above categories of personal information with other parties, such as HR consultants and professional advisers. Usually, information will be anonymised but this may not always be possible. The recipient of the information will be bound by confidentiality obligations. We may also be required to share some personal information with our regulators or as required to comply with the law.
+                      </p>
+                    </div>
 
-                    <h4 className="text-md font-semibold text-orange-700 mt-6 mb-3">Your rights</h4>
-                    <p className="text-gray-700 mb-4">
-                      Please contact our HR Team at HRTeam@swiis.com or 0203 219 2865 if you would like to correct or request access to 
-                      information that we hold relating to you or if you have any questions about this notice.
-                    </p>
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Sensitive personal information and criminal records information</h4>
+                      <p>
+                        Further details on how we handle sensitive personal information and information relating to criminal convictions and offences are set out in our Criminal Convictions Policy and GDPR Retention Policy, which are available from the HR Team.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Where information may be held</h4>
+                      <p>
+                        Information may be held at our offices and those of our group companies, and third party agencies, service providers, representatives and agents as described above.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">How long we keep your information</h4>
+                      <p className="mb-2">
+                        We keep the personal information that we obtain about you during the recruitment process for no longer than is necessary for the purposes for which it is processed. How long we keep your information will depend on whether your application is successful and you become employed by us, the nature of the information concerned and the purposes for which it is processed.
+                      </p>
+                      <p>
+                        We will keep recruitment information (including interview notes) for no longer than is reasonable, taking into account the limitation periods for potential claims such as race or sex discrimination (as extended to take account of early conciliation), after which they will be destroyed.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Your rights to correct and access your information</h4>
+                      <p>
+                        Please contact our HR Team at T: 0203 219 2865 E: HRTeam@swiis.com if (in accordance with applicable law) you would like to correct or request access to information that we hold relating to you or if you have any questions about this notice.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">Keeping your personal information secure</h4>
+                      <p>
+                        We have appropriate security measures in place to prevent personal information from being accidentally lost, used or accessed in an unauthorised way. We limit access to your personal information to those who have a genuine business need to know it.
+                      </p>
+                    </div>
+
+                    <div>
+                      <h4 className="text-lg font-semibold text-orange-600 mb-2">How to complain</h4>
+                      <p>
+                        We hope that our Data Protection Officer can resolve any query or concern you raise about our use of your information. If not, please contact the Information Commissioner at https://ico.org.uk/concerns/ or telephone: 0303 123 1113 for further information about your rights and how to make a formal complaint.
+                      </p>
+                    </div>
                   </div>
 
                   <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
@@ -343,6 +433,123 @@ export default function WorkingApplicationForm() {
                         rows={2}
                         placeholder="Please let us know how you found out about this opportunity"
                       ></textarea>
+                    </div>
+                  </div>
+
+                  {/* Visa and Immigration Section */}
+                  <div className="border-t pt-6">
+                    <h4 className="text-lg font-semibold text-orange-800 mb-4">Visa and Immigration Status</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Visa Type (if applicable)</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          placeholder="e.g., Tier 2, Spouse visa"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Visa Expiry Date (if applicable)</label>
+                        <input 
+                          type="date" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">National Insurance Number</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          placeholder="AB123456C"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Do you have the right to work in the UK?</label>
+                        <div className="flex items-center space-x-4">
+                          <label className="flex items-center">
+                            <input type="radio" name="right-to-work" value="yes" className="mr-2 text-orange-600" />
+                            Yes
+                          </label>
+                          <label className="flex items-center">
+                            <input type="radio" name="right-to-work" value="no" className="mr-2 text-orange-600" />
+                            No
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Work Document Type</label>
+                        <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500">
+                          <option value="">Select document type</option>
+                          <option value="passport">UK/EU Passport</option>
+                          <option value="birth-certificate">Birth Certificate + National Insurance</option>
+                          <option value="visa">Visa/Work Permit</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* DBS Section */}
+                  <div className="border-t pt-6">
+                    <h4 className="text-lg font-semibold text-orange-800 mb-4">DBS Registration</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Are you registered with the Disclosure and Barring Scheme Update Service?</label>
+                        <div className="flex items-center space-x-4">
+                          <label className="flex items-center">
+                            <input type="radio" name="dbs-registered" value="yes" className="mr-2 text-orange-600" />
+                            Yes
+                          </label>
+                          <label className="flex items-center">
+                            <input type="radio" name="dbs-registered" value="no" className="mr-2 text-orange-600" />
+                            No
+                          </label>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">DBS Certificate Number (if applicable)</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          placeholder="Enter DBS number"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">DBS Issue Date (if applicable)</label>
+                        <input 
+                          type="date" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Professional Registration Section */}
+                  <div className="border-t pt-6">
+                    <h4 className="text-lg font-semibold text-orange-800 mb-4">Professional Registration</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Professional Registration Number (if applicable)</label>
+                        <input 
+                          type="text" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          placeholder="e.g., Social Work England number"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Professional Registration Expiry Date (if applicable)</label>
+                        <input 
+                          type="date" 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

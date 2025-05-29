@@ -110,6 +110,14 @@ export default function WorkingApplicationForm() {
     }
   });
 
+  // Helper function to update form data
+  const updateFormData = (field: string, value: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const nextStep = () => {
     console.log('Next step clicked, current step:', currentStep);
     if (currentStep < steps.length - 1) {
@@ -368,6 +376,8 @@ export default function WorkingApplicationForm() {
                         type="checkbox" 
                         id="privacy-acknowledge" 
                         className="mt-1 h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500" 
+                        checked={formData.declaration}
+                        onChange={(e) => updateFormData('declaration', e.target.checked)}
                         required
                       />
                       <label htmlFor="privacy-acknowledge" className="text-sm text-gray-700 leading-relaxed">
@@ -424,6 +434,8 @@ export default function WorkingApplicationForm() {
                         type="text" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="John"
+                        value={formData.firstName}
+                        onChange={(e) => updateFormData('firstName', e.target.value)}
                       />
                     </div>
                     
@@ -433,6 +445,8 @@ export default function WorkingApplicationForm() {
                         type="text" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="Optional"
+                        value={formData.middleName}
+                        onChange={(e) => updateFormData('middleName', e.target.value)}
                       />
                     </div>
                     
@@ -442,6 +456,8 @@ export default function WorkingApplicationForm() {
                         type="text" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="Smith"
+                        value={formData.lastName}
+                        onChange={(e) => updateFormData('lastName', e.target.value)}
                       />
                     </div>
                     
@@ -451,6 +467,8 @@ export default function WorkingApplicationForm() {
                         type="email" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="john.smith@example.com"
+                        value={formData.email}
+                        onChange={(e) => updateFormData('email', e.target.value)}
                       />
                     </div>
                     
@@ -469,6 +487,8 @@ export default function WorkingApplicationForm() {
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         rows={3}
                         placeholder="123 Main Street, City"
+                        value={formData.address}
+                        onChange={(e) => updateFormData('address', e.target.value)}
                       ></textarea>
                     </div>
                     
@@ -478,6 +498,8 @@ export default function WorkingApplicationForm() {
                         type="text" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="SW1A 1AA"
+                        value={formData.postcode}
+                        onChange={(e) => updateFormData('postcode', e.target.value)}
                       />
                     </div>
                     
@@ -487,6 +509,8 @@ export default function WorkingApplicationForm() {
                         type="tel" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="020 XXXX XXXX"
+                        value={formData.phoneNumber}
+                        onChange={(e) => updateFormData('phoneNumber', e.target.value)}
                       />
                     </div>
                     
@@ -496,6 +520,8 @@ export default function WorkingApplicationForm() {
                         type="tel" 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         placeholder="07XX XXX XXXX"
+                        value={formData.mobileNumber}
+                        onChange={(e) => updateFormData('mobileNumber', e.target.value)}
                       />
                     </div>
                     

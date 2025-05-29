@@ -20,14 +20,14 @@ import { useQuery } from "@tanstack/react-query";
 
 // Define the steps for the application process
 const steps = [
-  { id: 1, label: "Data Protection" },
-  { id: 2, label: "Personal Info" },
-  { id: 3, label: "Education" },
-  { id: 4, label: "Employment" },
-  { id: 5, label: "Skills" },
-  { id: 6, label: "References" },
-  { id: 7, label: "Disciplinary" },
-  { id: 8, label: "Declaration" },
+  { id: 1, label: "Personal Info" },
+  { id: 2, label: "Education" },
+  { id: 3, label: "Employment" },
+  { id: 4, label: "Skills" },
+  { id: 5, label: "References" },
+  { id: 6, label: "Disciplinary" },
+  { id: 7, label: "Declaration" },
+  { id: 8, label: "Privacy Notice" },
 ];
 
 export default function Home() {
@@ -130,20 +130,6 @@ export default function Home() {
           ) : (
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
               {currentStep === 0 && (
-                <>
-                  <h2 className="text-xl font-medium mb-2 text-primary">Data Protection & Privacy Notice</h2>
-                  <p className="text-neutral-700 text-sm mb-6">
-                    Please carefully review this important privacy notice regarding how we process your personal information.
-                  </p>
-                  <DataProtectionForm 
-                    applicantId={applicantId || 1} 
-                    onSuccess={() => setIsApplicationComplete(true)} 
-                    onBack={() => previousStep()} 
-                  />
-                </>
-              )}
-
-              {currentStep === 1 && (
               <>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Confidential Application Form</h2>
                 
@@ -165,6 +151,8 @@ export default function Home() {
                     clearly against the job description for the role.
                   </p>
                 </div>
+                
+                
 
                 <PersonalInfoForm 
                   applicantId={applicantId || undefined}
@@ -173,7 +161,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 2 && (
+            {currentStep === 1 && (
               <>
                 <h2 className="text-xl font-medium mb-2">Education History</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -187,7 +175,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 3 && (
+            {currentStep === 2 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Employment History</h2>
                 <div className="text-neutral-700 text-sm mb-6 space-y-4">
@@ -206,7 +194,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 4 && (
+            {currentStep === 3 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Skills and Experience</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -220,7 +208,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 5 && (
+            {currentStep === 4 && (
               <>
                 <h2 className="text-xl font-medium mb-2">References</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -234,7 +222,7 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 6 && (
+            {currentStep === 5 && (
               <>
                 <h2 className="text-xl font-medium mb-2 text-primary">Disciplinary & Criminal Issues</h2>
                 <p className="text-neutral-700 text-sm mb-6">
@@ -248,13 +236,29 @@ export default function Home() {
               </>
             )}
             
-            {currentStep === 7 && (
+            {currentStep === 6 && (
               <>
-                <h2 className="text-xl font-medium mb-2 text-primary">Declaration & Confidentiality Agreement</h2>
+                <h2 className="text-xl font-medium mb-2 text-primary">Data Protection/Declaration & Confidentiality Agreement</h2>
                 <p className="text-neutral-700 text-sm mb-6">
                   Please review and agree to the declaration and confidentiality agreement to complete your application.
                 </p>
-                <VerificationForm 
+                <DataProtectionForm 
+                  applicantId={applicantId || 1} // Allow preview with temporary ID
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+
+            
+            {currentStep === 7 && (
+              <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Privacy Notice</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please carefully review this important privacy notice regarding how we process your personal information.
+                </p>
+                <PrivacyNotice 
                   applicantId={applicantId || 1} // Allow preview with temporary ID
                   onSuccess={() => setIsApplicationComplete(true)} 
                   onBack={() => previousStep()} 

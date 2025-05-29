@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, Shield, Users, CheckCircle } from "lucide-react";
+import { Heart, Shield, Users, CheckCircle, LogOut } from "lucide-react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 import swiisLogo from "@assets/Picture3.jpg";
 
 export function Landing() {
+  const [, setLocation] = useLocation();
+  const { user, logout } = useAuth();
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100">
       {/* Header */}
@@ -14,12 +18,29 @@ export function Landing() {
               <img src={swiisLogo} alt="Swiis Foster Care" className="h-8 w-auto mr-2" />
               <h1 className="text-2xl font-bold text-orange-900">Swiis Foster Care</h1>
             </div>
-            <Button 
-              onClick={() => window.location.href = '/application'}
-              className="bg-orange-600 hover:bg-orange-700 text-white"
-            >
-              Apply Now
-            </Button>
+            <div className="flex items-center gap-4">
+              {user && (
+                <span className="text-sm text-gray-600">
+                  Welcome, {user.firstName} {user.lastName}
+                </span>
+              )}
+              <Button 
+                onClick={() => setLocation('/application')}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                Apply Now
+              </Button>
+              {user && (
+                <Button 
+                  onClick={logout}
+                  variant="outline"
+                  className="border-orange-600 text-orange-600 hover:bg-orange-50"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -35,7 +56,7 @@ export function Landing() {
             Our streamlined application process makes it easy to apply for staff positions.
           </p>
           <Button 
-            onClick={() => window.location.href = '/application'}
+            onClick={() => setLocation('/application')}
             size="lg"
             className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
           >
@@ -59,7 +80,7 @@ export function Landing() {
             <div className="text-center">
               <h4 className="text-lg font-semibold text-orange-900 mb-3">Already have an account?</h4>
               <Button 
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/application')}
                 size="lg"
                 className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg"
               >
@@ -69,7 +90,7 @@ export function Landing() {
             <div className="text-center">
               <h4 className="text-lg font-semibold text-orange-900 mb-3">New to our platform?</h4>
               <Button 
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => setLocation('/application')}
                 size="lg"
                 variant="outline"
                 className="border-orange-600 text-orange-600 hover:bg-orange-50 px-8 py-3 text-lg"

@@ -87,7 +87,6 @@ export default function WorkingApplicationForm() {
           </div>
         </div>
       </header>
-
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Progress Section */}
         <Card className="mb-8">
@@ -444,7 +443,7 @@ export default function WorkingApplicationForm() {
 
                   {/* Visa and Immigration Section */}
                   <div className="border-t pt-6">
-                    <h4 className="text-lg font-semibold text-orange-800 mb-4">Visa and Immigration Status</h4>
+                    <h4 className="text-lg font-semibold text-orange-800 mb-4">Right to Work in the UK</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Visa Type (if applicable)</label>

@@ -53,6 +53,7 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       
       const employmentRaw = JSON.parse(localStorage.getItem(`employment_${applicantId}`) || '{}');
       const employment = employmentRaw.employmentEntries || [];
+      const employmentGaps = employmentRaw.employmentGaps || [];
       
       const skillsRaw = JSON.parse(localStorage.getItem(`skills_${applicantId}`) || '{}');
       const skills = skillsRaw.skillsAndExperience ? { skills: skillsRaw.skillsAndExperience } : {};
@@ -65,7 +66,6 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       
       const dataProtection = JSON.parse(localStorage.getItem(`data_protection_${applicantId}`) || '{}');
       const privacyNotice = JSON.parse(localStorage.getItem(`privacy_notice_${applicantId}`) || '{}');
-      const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
 
       // Debug: Let's see the actual personal info structure
       console.log('Personal Info:', personalInfo);
@@ -137,13 +137,15 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
         });
       }
 
-      if (gaps.length > 0) {
+      if (employmentGaps.length > 0) {
         textContent += `EMPLOYMENT GAPS\n`;
         textContent += `---------------\n`;
-        gaps.forEach((gap: any, index: number) => {
-          textContent += `Gap ${index + 1}: ${gap.startDate ? new Date(gap.startDate).toLocaleDateString('en-GB') : 'Not provided'} to ${gap.endDate ? new Date(gap.endDate).toLocaleDateString('en-GB') : 'Not provided'} - ${gap.reason || 'Not provided'}\n`;
+        employmentGaps.forEach((gap: any, index: number) => {
+          textContent += `Gap ${index + 1}:\n`;
+          textContent += `  From: ${gap.startDate ? new Date(gap.startDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  To: ${gap.endDate ? new Date(gap.endDate).toLocaleDateString('en-GB') : 'Not provided'}\n`;
+          textContent += `  Reason: ${gap.reason || gap.explanation || 'Not provided'}\n\n`;
         });
-        textContent += `\n`;
       }
 
       textContent += `SKILLS AND QUALIFICATIONS\n`;

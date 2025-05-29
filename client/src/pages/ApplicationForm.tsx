@@ -131,6 +131,23 @@ export default function Home() {
             <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
               {currentStep === 0 && (
               <>
+                <h2 className="text-xl font-medium mb-2 text-primary">Privacy Notice</h2>
+                <p className="text-neutral-700 text-sm mb-6">
+                  Please carefully review this important privacy notice regarding how we process your personal information.
+                </p>
+                
+                
+
+                <PrivacyNotice 
+                  applicantId={applicantId || 1}
+                  onSuccess={() => nextStep()} 
+                  onBack={() => previousStep()} 
+                />
+              </>
+            )}
+            
+            {currentStep === 1 && (
+              <>
                 <h2 className="text-2xl font-semibold mb-4 text-primary">Confidential Application Form</h2>
                 
                 <div className="text-neutral-700 text-sm mb-4 space-y-4">
@@ -152,8 +169,6 @@ export default function Home() {
                   </p>
                 </div>
                 
-                
-
                 <PersonalInfoForm 
                   applicantId={applicantId || undefined}
                   onSuccess={handlePersonalInfoComplete} 

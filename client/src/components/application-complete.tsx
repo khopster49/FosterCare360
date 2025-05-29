@@ -68,8 +68,7 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       const gaps = JSON.parse(localStorage.getItem(`employment_gaps_${applicantId}`) || '[]');
 
       // Debug: Let's see the actual personal info structure
-      console.log('Personal Info Raw:', personalInfoRaw);
-      console.log('Personal Info Extracted:', personalInfo);
+      console.log('Personal Info:', personalInfo);
 
       // Create a simple text summary
       let textContent = `SWIIS STAFF APPLICATION FORM\n`;
@@ -199,18 +198,60 @@ export function ApplicationComplete({ applicantId, onBack }: ApplicationComplete
       textContent += `This application was completed and downloaded on ${new Date().toLocaleDateString('en-GB')} at ${new Date().toLocaleTimeString('en-GB')}.`;
 
       // Create and download text file
-      const fileName = `swiis-application-${personalInfo.firstName || 'applicant'}-${personalInfo.lastName || applicantId}-${new Date().toISOString().split('T')[0]}.txt`;
+      const firstName = personalInfo?.firstName || 'applicant';
+      const lastName = personalInfo?.lastName || applicantId;
+      const fileName = `swiis-application-${firstName}-${lastName}-${new Date().toISOString().split('T')[0]}.txt`;
       
-      const textBlob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(textBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      // Try multiple download methods for better compatibility
+      try {
+        // Method 1: Blob download
+        const textBlob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        
+        if (window.navigator && (window.navigator as any).msSaveOrOpenBlob) {
+          // For IE/Edge
+          (window.navigator as any).msSaveOrOpenBlob(textBlob, fileName);
+        } else {
+          // For modern browsers
+          const url = URL.createObjectURL(textBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          
+          // Clean up
+          setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }, 100);
+        }
+      } catch (blobError) {
+        console.error('Blob download failed:', blobError);
+        
+        // Method 2: Data URL fallback
+        try {
+          const dataUrl = 'data:text/plain;charset=utf-8,' + encodeURIComponent(textContent);
+          const link = document.createElement('a');
+          link.href = dataUrl;
+          link.download = fileName;
+          link.style.display = 'none';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (dataUrlError) {
+          console.error('Data URL download failed:', dataUrlError);
+          
+          // Method 3: Open in new window as last resort
+          const newWindow = window.open('', '_blank');
+          if (newWindow) {
+            newWindow.document.write('<pre>' + textContent.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>');
+            newWindow.document.title = fileName;
+          } else {
+            throw new Error('All download methods failed');
+          }
+        }
+      }
 
       toast({
         title: "Download Complete",

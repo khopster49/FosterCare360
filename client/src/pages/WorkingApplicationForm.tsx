@@ -1020,20 +1020,227 @@ export default function WorkingApplicationForm() {
               )}
 
               {currentStep === 6 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Disciplinary Questions</h3>
-                  <p className="text-gray-700">
-                    Background questions regarding any disciplinary actions, criminal convictions, or other relevant matters.
-                  </p>
+                  <p className="text-gray-600 mb-4">Please answer the following questions honestly. All information will be treated confidentially.</p>
+                  
+                  <div className="space-y-6">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Have you ever been convicted of a criminal offence (including cautions, reprimands, and final warnings)?
+                      </label>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <label className="flex items-center">
+                          <input type="radio" name="criminal-conviction" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="criminal-conviction" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">If yes, please provide details:</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Please provide full details including dates and circumstances"
+                        ></textarea>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Have you ever been subject to disciplinary action or investigation by an employer?
+                      </label>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <label className="flex items-center">
+                          <input type="radio" name="disciplinary-action" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="disciplinary-action" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">If yes, please provide details:</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Please provide full details including dates and outcomes"
+                        ></textarea>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Have you ever been refused employment, dismissed from employment, or asked to resign from any position?
+                      </label>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <label className="flex items-center">
+                          <input type="radio" name="employment-issues" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="employment-issues" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">If yes, please provide details:</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Please provide full details including reasons and circumstances"
+                        ></textarea>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Are you currently subject to any professional investigation or disciplinary proceedings?
+                      </label>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <label className="flex items-center">
+                          <input type="radio" name="current-investigation" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="current-investigation" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">If yes, please provide details:</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Please provide full details of the investigation or proceedings"
+                        ></textarea>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Do you have any health conditions that may affect your ability to carry out the role?
+                      </label>
+                      <div className="flex items-center space-x-4 mb-3">
+                        <label className="flex items-center">
+                          <input type="radio" name="health-conditions" value="yes" className="mr-2 text-orange-600" />
+                          Yes
+                        </label>
+                        <label className="flex items-center">
+                          <input type="radio" name="health-conditions" value="no" className="mr-2 text-orange-600" />
+                          No
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">If yes, please provide details and any adjustments needed:</label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Please describe any conditions and reasonable adjustments that may be required"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
               {currentStep === 7 && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">Declaration</h3>
-                  <p className="text-gray-700">
-                    Final declaration confirming the accuracy of the information provided and agreement to terms.
-                  </p>
+                  <p className="text-gray-600 mb-4">Please read and confirm the following declarations to complete your application.</p>
+                  
+                  <div className="space-y-6">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-gray-800 mb-3">Application Declaration</h4>
+                      <div className="space-y-3 text-sm text-gray-700">
+                        <p>I declare that:</p>
+                        <ul className="list-disc ml-6 space-y-2">
+                          <li>The information I have provided in this application is true and complete to the best of my knowledge</li>
+                          <li>I understand that any false information may lead to the refusal of my application or cancellation of employment</li>
+                          <li>I consent to Swiis Foster Care making such enquiries as may be necessary to verify the information given</li>
+                          <li>I understand that this position is subject to an enhanced DBS check</li>
+                          <li>I understand that references will be sought for all employment</li>
+                          <li>I understand that any offer of employment will be subject to satisfactory references, health clearance, and right to work verification</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <label className="flex items-start space-x-3">
+                          <input 
+                            type="checkbox" 
+                            className="mt-1 h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500" 
+                            required
+                          />
+                          <span className="text-sm text-gray-700">
+                            <strong>I confirm that I have read and agree to the above declaration.</strong>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-gray-800 mb-3">Equal Opportunities</h4>
+                      <div className="space-y-3 text-sm text-gray-700">
+                        <p>Swiis Foster Care is committed to equal opportunities and values diversity. We welcome applications from all qualified candidates regardless of age, disability, gender reassignment, marriage and civil partnership, pregnancy and maternity, race, religion or belief, sex, or sexual orientation.</p>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <label className="flex items-start space-x-3">
+                          <input 
+                            type="checkbox" 
+                            className="mt-1 h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500" 
+                            required
+                          />
+                          <span className="text-sm text-gray-700">
+                            <strong>I acknowledge the equal opportunities statement.</strong>
+                          </span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                      <h4 className="font-medium text-orange-800 mb-3">Final Submission</h4>
+                      <p className="text-sm text-gray-700 mb-3">
+                        By submitting this application, you confirm that all information provided is accurate and complete. 
+                        You understand that your application will be reviewed and you may be contacted for further information or to arrange an interview.
+                      </p>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name (Digital Signature)</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="Type your full name as digital signature"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                          <input 
+                            type="date" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            defaultValue={new Date().toISOString().split('T')[0]}
+                            required
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="text-center">
+                        <button 
+                          type="submit"
+                          className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-md hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        >
+                          Submit Application
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

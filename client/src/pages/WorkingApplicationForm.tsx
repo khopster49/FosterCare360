@@ -656,11 +656,25 @@ export default function WorkingApplicationForm() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Are you registered with the Disclosure and Barring Scheme Update Service?</label>
                         <div className="flex items-center space-x-4">
                           <label className="flex items-center">
-                            <input type="radio" name="dbs-registered" value="yes" className="mr-2 text-orange-600" />
+                            <input 
+                              type="radio" 
+                              name="dbs-registered" 
+                              value="yes" 
+                              className="mr-2 text-orange-600"
+                              checked={formData.dbsRegistered === 'yes'}
+                              onChange={(e) => updateFormData('dbsRegistered', e.target.value)}
+                            />
                             Yes
                           </label>
                           <label className="flex items-center">
-                            <input type="radio" name="dbs-registered" value="no" className="mr-2 text-orange-600" />
+                            <input 
+                              type="radio" 
+                              name="dbs-registered" 
+                              value="no" 
+                              className="mr-2 text-orange-600"
+                              checked={formData.dbsRegistered === 'no'}
+                              onChange={(e) => updateFormData('dbsRegistered', e.target.value)}
+                            />
                             No
                           </label>
                         </div>
@@ -672,6 +686,8 @@ export default function WorkingApplicationForm() {
                           type="text" 
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                           placeholder="Enter DBS number"
+                          value={formData.dbsCertificateNumber}
+                          onChange={(e) => updateFormData('dbsCertificateNumber', e.target.value)}
                         />
                       </div>
                       
@@ -680,6 +696,8 @@ export default function WorkingApplicationForm() {
                         <input 
                           type="date" 
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          value={formData.dbsIssuedDate}
+                          onChange={(e) => updateFormData('dbsIssuedDate', e.target.value)}
                         />
                       </div>
                     </div>
@@ -695,6 +713,8 @@ export default function WorkingApplicationForm() {
                           type="text" 
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                           placeholder="e.g., Social Work England number"
+                          value={formData.professionalNumber}
+                          onChange={(e) => updateFormData('professionalNumber', e.target.value)}
                         />
                       </div>
                       
@@ -703,6 +723,8 @@ export default function WorkingApplicationForm() {
                         <input 
                           type="date" 
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          value={formData.professionalExpiryDate}
+                          onChange={(e) => updateFormData('professionalExpiryDate', e.target.value)}
                         />
                       </div>
                     </div>
@@ -1216,6 +1238,8 @@ export default function WorkingApplicationForm() {
                             type="checkbox" 
                             className="mt-1 h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500" 
                             required
+                            checked={formData.declaration}
+                            onChange={(e) => updateFormData('declaration', e.target.checked)}
                           />
                           <span className="text-sm text-gray-700">
                             <strong>I confirm that I have read and agree to the above declaration.</strong>
@@ -1259,6 +1283,8 @@ export default function WorkingApplicationForm() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                             placeholder="Type your full name as digital signature"
                             required
+                            value={formData.signature}
+                            onChange={(e) => updateFormData('signature', e.target.value)}
                           />
                         </div>
                         
@@ -1267,7 +1293,8 @@ export default function WorkingApplicationForm() {
                           <input 
                             type="date" 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            defaultValue={new Date().toISOString().split('T')[0]}
+                            value={formData.signatureDate || new Date().toISOString().split('T')[0]}
+                            onChange={(e) => updateFormData('signatureDate', e.target.value)}
                             required
                           />
                         </div>

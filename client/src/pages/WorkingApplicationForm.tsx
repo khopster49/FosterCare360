@@ -120,7 +120,7 @@ export default function WorkingApplicationForm() {
                 <div className="w-6 h-6 rounded-full bg-current bg-opacity-20 flex items-center justify-center text-xs font-semibold mb-1">
                   {step.id}
                 </div>
-                <span className="text-xs text-center whitespace-nowrap">{step.title}</span>
+                <span className="text-xs text-center break-words max-w-20 leading-tight">{step.title}</span>
               </button>
             ))}
           </div>
@@ -554,6 +554,35 @@ export default function WorkingApplicationForm() {
                           type="date" 
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
+                      </div>
+                    </div>
+                    
+                    <div className="border-t pt-6">
+                      <h4 className="text-lg font-semibold text-orange-800 mb-4">Work Documents Upload</h4>
+                      <p className="text-gray-600 mb-4">Please upload any relevant work documents (CV, certificates, qualifications, etc.)</p>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Documents
+                          </label>
+                          <input
+                            type="file"
+                            multiple
+                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Accepted formats: PDF, Word documents, JPEG, PNG. Maximum 10MB per file.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-orange-50 p-3 rounded-lg">
+                          <p className="text-sm text-orange-800">
+                            <strong>Suggested documents:</strong> CV/Resume, Educational certificates, Professional qualifications, 
+                            Training certificates, DBS certificate (if available), References
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>

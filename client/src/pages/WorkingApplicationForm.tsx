@@ -584,6 +584,22 @@ export default function WorkingApplicationForm() {
                         </div>
                         
                         <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                          <input 
+                            type="date" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                          <input 
+                            type="date" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          />
+                        </div>
+                        
+                        <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">Grade/Result</label>
                           <input 
                             type="text" 
@@ -592,23 +608,12 @@ export default function WorkingApplicationForm() {
                           />
                         </div>
                         
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Year Completed</label>
-                          <input 
-                            type="number" 
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            placeholder="2020"
-                            min="1950"
-                            max="2030"
-                          />
-                        </div>
-                        
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Subjects/Modules (if applicable)</label>
+                        <div className="md:col-span-1">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Additional Details</label>
                           <textarea 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            rows={2}
-                            placeholder="List main subjects or modules studied"
+                            rows={3}
+                            placeholder="Any additional relevant details about this qualification"
                           ></textarea>
                         </div>
                       </div>
@@ -621,6 +626,20 @@ export default function WorkingApplicationForm() {
                       <span className="mr-2">+</span>
                       Add Another Education Entry
                     </button>
+                    
+                    <div className="border-t pt-6">
+                      <h4 className="text-lg font-semibold text-orange-800 mb-4">Education Gaps or Breaks</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Please explain any gaps or breaks in your education (if applicable)
+                        </label>
+                        <textarea 
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                          rows={3}
+                          placeholder="Explain any periods where you were not in education, including reasons and what you did during those times"
+                        ></textarea>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -644,11 +663,47 @@ export default function WorkingApplicationForm() {
                         </div>
                         
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Position/Job Title</label>
                           <input 
                             type="text" 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                             placeholder="Your position/role"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Employer Address</label>
+                          <textarea 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            rows={2}
+                            placeholder="Full address"
+                          ></textarea>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Employer Postcode</label>
+                          <input 
+                            type="text" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="SW1A 1AA"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Employer Phone</label>
+                          <input 
+                            type="tel" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="020 XXXX XXXX"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Employer Mobile</label>
+                          <input 
+                            type="tel" 
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            placeholder="07XX XXX XXXX"
                           />
                         </div>
                         
@@ -665,32 +720,21 @@ export default function WorkingApplicationForm() {
                           <input 
                             type="date" 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            placeholder="Leave blank if current"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Salary</label>
-                          <input 
-                            type="text" 
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            placeholder="£30,000 per annum"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Hours per Week</label>
-                          <input 
-                            type="number" 
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            placeholder="37.5"
-                            min="0"
-                            max="70"
                           />
                         </div>
                         
                         <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-1">Key Responsibilities</label>
+                          <label className="flex items-center space-x-2">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                            />
+                            <span className="text-sm text-gray-700">This is my current position</span>
+                          </label>
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Duties and Responsibilities</label>
                           <textarea 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                             rows={3}
@@ -708,10 +752,10 @@ export default function WorkingApplicationForm() {
                         </div>
                         
                         <div className="md:col-span-2">
-                          <h5 className="font-medium text-gray-700 mb-2">Referee Details</h5>
+                          <h5 className="font-medium text-gray-700 mb-2">Reference Details</h5>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-3 rounded">
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Name</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Name</label>
                               <input 
                                 type="text" 
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -720,25 +764,16 @@ export default function WorkingApplicationForm() {
                             </div>
                             
                             <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Position</label>
-                              <input 
-                                type="text" 
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                                placeholder="Their job title"
-                              />
-                            </div>
-                            
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Email</label>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Email</label>
                               <input 
                                 type="email" 
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                                placeholder="referee@company.com"
+                                placeholder="reference@company.com"
                               />
                             </div>
                             
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">Referee Phone</label>
+                            <div className="md:col-span-2">
+                              <label className="block text-sm font-medium text-gray-700 mb-1">Reference Phone</label>
                               <input 
                                 type="tel" 
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -746,6 +781,16 @@ export default function WorkingApplicationForm() {
                               />
                             </div>
                           </div>
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label className="flex items-center space-x-2">
+                            <input 
+                              type="checkbox" 
+                              className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                            />
+                            <span className="text-sm text-gray-700">Did this work involve working with vulnerable children or adults?</span>
+                          </label>
                         </div>
                       </div>
                     </div>
@@ -760,45 +805,14 @@ export default function WorkingApplicationForm() {
                     
                     <div className="border-t pt-6">
                       <h4 className="text-lg font-semibold text-orange-800 mb-4">Employment Gaps</h4>
-                      <p className="text-gray-600 mb-4">Please explain any gaps in your employment history (any period without work).</p>
+                      <p className="text-gray-600 mb-4">Please explain any gaps in your employment history.</p>
                       
-                      <div className="border border-gray-200 rounded-lg p-4">
-                        <h5 className="font-medium text-gray-800 mb-3">Gap Period 1</h5>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Gap Start Date</label>
-                            <input 
-                              type="date" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            />
-                          </div>
-                          
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Gap End Date</label>
-                            <input 
-                              type="date" 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                            />
-                          </div>
-                          
-                          <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Gap</label>
-                            <textarea 
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                              rows={2}
-                              placeholder="Please explain the reason for this employment gap"
-                            ></textarea>
-                          </div>
-                        </div>
+                      <div className="bg-orange-50 p-4 rounded-lg mb-4">
+                        <p className="text-sm text-orange-800">
+                          <strong>Note:</strong> Any employment gaps will be automatically calculated based on your employment dates. 
+                          You'll need to provide explanations for any gaps between positions.
+                        </p>
                       </div>
-                      
-                      <button 
-                        type="button"
-                        className="mt-4 flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
-                      >
-                        <span className="mr-2">+</span>
-                        Add Another Gap Period
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -806,62 +820,20 @@ export default function WorkingApplicationForm() {
 
               {currentStep === 4 && (
                 <div className="space-y-6">
-                  <h3 className="text-lg font-semibold text-orange-800">Skills & Experience</h3>
-                  <p className="text-gray-600 mb-4">Tell us about your relevant skills and experience for this role.</p>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Relevant Skills</label>
-                      <textarea 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        rows={4}
-                        placeholder="List your key skills relevant to this position (e.g., communication, teamwork, computer skills, etc.)"
-                      ></textarea>
-                    </div>
+                  <h3 className="text-lg font-semibold text-orange-800">Skills and Experience</h3>
+                  <div className="space-y-4">
+                    <p className="text-gray-700 text-base">
+                      In your own words, please explain why you consider yourself suited to this position outlining what you would
+                      contribute to the post if appointed, by reference to the job description and/or person specification.
+                    </p>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Experience with Children/Young People</label>
                       <textarea 
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        rows={4}
-                        placeholder="Describe any experience you have working with children or young people (professional or personal)"
+                        rows={12}
+                        placeholder="Please provide details about your relevant skills, qualities, and experience..."
                       ></textarea>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Why are you interested in this role?</label>
-                      <textarea 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        rows={4}
-                        placeholder="Explain your motivation for applying for this position"
-                      ></textarea>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Additional Qualifications/Training</label>
-                      <textarea 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        rows={3}
-                        placeholder="List any additional qualifications, training courses, or certifications relevant to this role"
-                      ></textarea>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Languages Spoken</label>
-                      <input 
-                        type="text" 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        placeholder="List languages you speak and your proficiency level"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Do you have any hobbies or interests?</label>
-                      <textarea 
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        rows={3}
-                        placeholder="Tell us about your hobbies and interests outside of work"
-                      ></textarea>
+                      <p className="text-sm text-gray-500 mt-1">Minimum 50 characters required</p>
                     </div>
                   </div>
                 </div>
@@ -870,9 +842,38 @@ export default function WorkingApplicationForm() {
               {currentStep === 5 && (
                 <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-orange-800">References</h3>
-                  <p className="text-gray-600 mb-4">Please provide at least two professional references who can vouch for your work experience and character.</p>
+                  <p className="text-gray-600 mb-4">We will seek references from your last two employers and all previous positions where you worked with children or vulnerable adults.</p>
                   
-                  <div className="space-y-6">
+                  <div className="bg-orange-50 p-4 rounded-lg mb-6">
+                    <p className="text-sm text-orange-800">
+                      <strong>Note:</strong> References will be automatically pulled from the employment history you provided. 
+                      We will contact the references you specified for each employment position.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h4 className="text-lg font-medium text-gray-800">Reference Summary</h4>
+                    <p className="text-gray-600">Based on your employment history, we will contact:</p>
+                    
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 p-3 rounded border">
+                        <p className="font-medium text-gray-700">Employment Reference 1</p>
+                        <p className="text-sm text-gray-600">From your most recent employment position</p>
+                        <p className="text-sm text-gray-500">Reference details will be taken from Employment History section</p>
+                      </div>
+                      
+                      <div className="bg-gray-50 p-3 rounded border">
+                        <p className="font-medium text-gray-700">Employment Reference 2</p>
+                        <p className="text-sm text-gray-600">From your second most recent employment position</p>
+                        <p className="text-sm text-gray-500">Reference details will be taken from Employment History section</p>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t pt-4">
+                      <h4 className="text-lg font-medium text-gray-800 mb-3">Additional Reference (Optional)</h4>
+                      <p className="text-gray-600 mb-4">If you would like to provide an additional character or professional reference not covered in your employment history:</p>
+                      
+                      <div className="space-y-6">
                     <div className="border border-gray-200 rounded-lg p-4">
                       <h4 className="font-medium text-gray-800 mb-3">Reference 1</h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1009,13 +1010,15 @@ export default function WorkingApplicationForm() {
                       </div>
                     </div>
                     
-                    <button 
-                      type="button"
-                      className="flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
-                    >
-                      <span className="mr-2">+</span>
-                      Add Another Reference
-                    </button>
+                        <button 
+                          type="button"
+                          className="flex items-center px-4 py-2 text-orange-600 border border-orange-300 rounded-md hover:bg-orange-50"
+                        >
+                          <span className="mr-2">+</span>
+                          Add Another Reference
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

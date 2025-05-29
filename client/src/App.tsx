@@ -33,7 +33,7 @@ function Router() {
         <Route path="*" component={() => <Auth onAuthSuccess={() => window.location.reload()} />} />
       ) : (
         <>
-          <Route path="/" component={Landing} />
+          <Route path="/" component={Home} />
           <Route path="/application" component={ApplicationFormComplete} />
           <Route component={NotFound} />
         </>

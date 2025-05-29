@@ -1081,11 +1081,25 @@ export default function WorkingApplicationForm() {
                       </label>
                       <div className="flex items-center space-x-4 mb-3">
                         <label className="flex items-center">
-                          <input type="radio" name="disciplinary-action" value="yes" className="mr-2 text-orange-600" />
+                          <input 
+                            type="radio" 
+                            name="disciplinary-action" 
+                            value="yes" 
+                            className="mr-2 text-orange-600"
+                            checked={formData.disciplinaryAction === true}
+                            onChange={(e) => updateFormData('disciplinaryAction', true)}
+                          />
                           Yes
                         </label>
                         <label className="flex items-center">
-                          <input type="radio" name="disciplinary-action" value="no" className="mr-2 text-orange-600" />
+                          <input 
+                            type="radio" 
+                            name="disciplinary-action" 
+                            value="no" 
+                            className="mr-2 text-orange-600"
+                            checked={formData.disciplinaryAction === false}
+                            onChange={(e) => updateFormData('disciplinaryAction', false)}
+                          />
                           No
                         </label>
                       </div>
@@ -1095,6 +1109,8 @@ export default function WorkingApplicationForm() {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
                           rows={3}
                           placeholder="Please provide full details including dates and outcomes"
+                          value={formData.disciplinaryActionDetails}
+                          onChange={(e) => updateFormData('disciplinaryActionDetails', e.target.value)}
                         ></textarea>
                       </div>
                     </div>

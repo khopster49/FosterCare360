@@ -3,7 +3,6 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { RegistrationForm } from "@/components/auth/RegistrationForm";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-// import { Helmet } from "react-helmet";
 
 interface AuthProps {
   onAuthSuccess: (user: any) => void;

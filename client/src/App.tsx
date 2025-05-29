@@ -8,6 +8,7 @@ import { Home } from "@/pages/Home";
 import ApplicationForm from "@/pages/ApplicationForm";
 import SimpleApplicationForm from "@/pages/SimpleApplicationForm";
 import ApplicationFormComplete from "@/pages/ApplicationFormComplete";
+import WorkingApplicationForm from "@/pages/WorkingApplicationForm";
 import TestApp from "@/pages/TestApp";
 import Auth from "@/pages/Auth";
 import NotFound from "@/pages/not-found";
@@ -34,7 +35,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Home} />
-          <Route path="/application" component={ApplicationFormComplete} />
+          <Route path="/application" component={WorkingApplicationForm} />
           <Route component={NotFound} />
         </>
       )}

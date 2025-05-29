@@ -495,6 +495,21 @@ export default function WorkingApplicationForm() {
                           <option value="other">Other</option>
                         </select>
                       </div>
+                      
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Upload Work Document(s)
+                        </label>
+                        <input
+                          type="file"
+                          multiple
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Please upload the documents that prove your right to work in the UK. Accepted formats: PDF, Word documents, JPEG, PNG.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
@@ -556,35 +571,7 @@ export default function WorkingApplicationForm() {
                         />
                       </div>
                     </div>
-                    
-                    <div className="border-t pt-6">
-                      <h4 className="text-lg font-semibold text-orange-800 mb-4">Work Documents Upload</h4>
-                      <p className="text-gray-600 mb-4">Please upload any relevant work documents (CV, certificates, qualifications, etc.)</p>
-                      
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Upload Documents
-                          </label>
-                          <input
-                            type="file"
-                            multiple
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">
-                            Accepted formats: PDF, Word documents, JPEG, PNG. Maximum 10MB per file.
-                          </p>
-                        </div>
-                        
-                        <div className="bg-orange-50 p-3 rounded-lg">
-                          <p className="text-sm text-orange-800">
-                            <strong>Suggested documents:</strong> CV/Resume, Educational certificates, Professional qualifications, 
-                            Training certificates, DBS certificate (if available), References
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
               )}

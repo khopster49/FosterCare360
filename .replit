@@ -14,6 +14,10 @@ run = ["npm", "run", "start"]
 localPort = 5000
 externalPort = 80
 
+[postgres]
+version = "16"
+enabled = true
+
 [workflows]
 runButton = "Project"
 

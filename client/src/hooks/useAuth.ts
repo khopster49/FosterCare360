@@ -11,11 +11,33 @@ interface User {
 
 export function useAuth() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('authToken'));
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { data: user, isLoading, error } = useQuery({
     queryKey: ["/api/auth/user"],
     enabled: !!token,
     retry: false,
+    onError: async (error) => {
+      if (error.response?.status === 401 && !isRefreshing) {
+        setIsRefreshing(true);
+        try {
+          const response = await fetch('/api/auth/refresh', {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          if (response.ok) {
+            const { token: newToken } = await response.json();
+            localStorage.setItem('authToken', newToken);
+            setToken(newToken);
+          } else {
+            logout();
+          }
+        } catch (error) {
+          logout();
+        } finally {
+          setIsRefreshing(false);
+        }
+      }
+    },
     queryFn: async (): Promise<User> => {
       const response = await fetch('/api/auth/user', {
         headers: {

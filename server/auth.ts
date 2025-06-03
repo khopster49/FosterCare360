@@ -16,10 +16,38 @@ export interface AuthRequest extends Request {
 }
 
 export async function hashPassword(password: string): Promise<string> {
+  // Validate password strength
+  const result = zxcvbn(password);
+  if (result.score < 3) {
+    throw new Error('Password is too weak. Please use a stronger password.');
+  }
   const saltRounds = 10;
   return bcrypt.hash(password, saltRounds);
 }
 
+// Token refresh function
+export async function refreshToken(token: string): Promise<string | null> {
+  try {
+    const decoded = verifyToken(token);
+    if (!decoded) return null;
+    
+    // Check if token is close to expiry (within 1 hour)
+    const expiryTime = decoded.exp * 1000;
+    if (Date.now() > expiryTime - 3600000) {
+      // Generate new token
+      return generateToken({
+        id: decoded.id,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        role: decoded.role
+      });
+    }
+    return token;
+  } catch (error) {
+    return null;
+  }
+}
 export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
   return bcrypt.compare(password, hashedPassword);
 }
